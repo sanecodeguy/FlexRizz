@@ -46,14 +46,19 @@ For users who prefer to use Git to download the extension, follow these steps ba
 
 **Windows:**
 
-  Open Command Prompt or PowerShell.
-  Run these commands:
-  
-    git clone https://github.com/yourusername/FlexRizz.git
-    cd FlexRizz
+Download The Zip
+Extract The Zip file into a folder
 
+visit chrome://extensions
 
+![image](https://github.com/user-attachments/assets/be5dcaf9-5969-483d-be8f-cf78af088332)
 
-Continue with the Chrome installation steps.
+Enable Developer mode On
 
+![image](https://github.com/user-attachments/assets/f50f6595-fc6e-466e-84b3-139a1eb9303b)
+
+Load unpacked 
+![image](https://github.com/user-attachments/assets/d8f77316-aa49-4c5a-b637-41a9b7d2072d)
+
+**Now Visit your Portal and Enjoy**
 **This project is licensed under the rizzons - visit www.rizzons.com for more details.**
