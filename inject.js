@@ -1,40 +1,5 @@
-
-
 (function () {
-
-  
-const grades = {
-  "CL1000": "A",
-  "CL1002": "B",
-  "CS1002": "A",
-  "MT1003": "C",
-  "NS1001": "B+",
-  "SL1012": "A-",
-  "SS1012": "B",
-  "SS1013": "C+",
-  "SS1019": "NC" 
-};
-
-
-function updateTranscriptGrades() {
-  
-  const rows = document.querySelectorAll('table tbody tr');
-  rows.forEach(row => {
-      const courseCode = row.cells[0].textContent.trim(); 
-      
-      if (grades[courseCode]) {
-          const gradeCell = row.cells[4]; 
-          gradeCell.textContent = grades[courseCode]; 
-      }
-  });
-}
-
-
-window.onload = updateTranscriptGrades;
-
-  
-  
-  
+  // Define course grading types
   const gradingTypes = {
     "CL1000": "Relative",
     "CL1002": "Absolute",
@@ -46,17 +11,7 @@ window.onload = updateTranscriptGrades;
     "SS1012": "Relative",
     "SS1019": "Non-Credit"
   };
-
-  
-  function calculateGrade(courseCode, marks) {
-    if (gradingTypes[courseCode] === "Absolute") {
-      return getGrade(mca,percentage);
-    } else {
-      return "Relative grade (example: A+)";
-    }
-  }
-
-  
+  // Helper function to determine grade for absolute grading
   function calculateAbsoluteGrade(percentage) {
     if (percentage >= 90) return "A+";
     if (percentage >= 86) return "A";
@@ -72,8 +27,7 @@ window.onload = updateTranscriptGrades;
     return "F";
   }
 
-  
- 
+
 
 const createData = () => {
     var x = new Array(100);
@@ -284,7 +238,7 @@ const getLetter = (index) => {
   let j = 0;
 
   if (mca < 30 || mca > 91) {
-      return ret; 
+      return ret; // Out of range
   }
   if (s < 30 || s <= x[2]) {
       ret[0] = `F ${score}`;
@@ -361,11 +315,11 @@ const getLetter = (index) => {
   return ret;
 };
 
-  
+  // Find the div with class "m-portlet"
   const portlet = document.querySelector('.m-portlet');
   if (!portlet) return;
 
-  
+  // Create or find the necessary elements
   let gradingTypeElement = portlet.querySelector('h5[data-type="grading-type"]');
   let gradeDisplayElement = portlet.querySelector('h5[data-type="expected-grade"]');
   let percentageDisplayElement = portlet.querySelector('h5[data-type="percentage"]');
@@ -406,7 +360,7 @@ const getLetter = (index) => {
     portlet.appendChild(courseDisplayElement);
   }
 
-  
+  // Create or find elements for Total Marks, Obtained Marks, and Class Average
   if (!totalMarksElement) {
     totalMarksElement = document.createElement('h5');
     totalMarksElement.setAttribute('data-type', 'total');
@@ -431,19 +385,19 @@ const getLetter = (index) => {
     portlet.appendChild(classAverageElement);
   }
 
-  
+  // Find the div with class "active" to get the active course
   const activeCourseElement = document.querySelector('.nav-link.m-tabs__link.active');
   let courseCode = null;
 
-  
+  // Extract course code from the active course element
   if (activeCourseElement) {
     const href = activeCourseElement.getAttribute('href');
     if (href) {
-      courseCode = href.substring(1); 
+      courseCode = href.substring(1); // Remove the '#' from the href
     }
   }
 
-  
+  // If no course is selected, display unknown grading type
   if (!courseCode) {
     gradingTypeElement.textContent = "Grading Type: Unknown";
     gradeDisplayElement.textContent = "Expected Grade: Not Available";
@@ -452,14 +406,14 @@ const getLetter = (index) => {
     return;
   }
 
-  
+  // Display the name of the selected course
   courseDisplayElement.textContent = `Course: ${courseCode}`;
 
-  
+  // Determine the grading type for the course
   const gradingType = gradingTypes[courseCode] || "Unknown";
   gradingTypeElement.textContent = `Grading Type: ${gradingType}`;
 
-  
+  // Find and calculate total marks and obtained marks for absolute courses
   const activeDiv = document.querySelector('.tab-pane.active');
   let totalWeightage = 0;
   let totalObtMarks = 0;
@@ -504,15 +458,15 @@ const getLetter = (index) => {
     }
   }
 
-  
+  // Calculate the final average
   const finalCalculateAverage = isNaN(totalAverage) ? "Cannot Calculate, Missing Data" : totalAverage.toFixed(2);
 
-  
+  // Update the content of the total, obtained marks, and class average elements
   totalMarksElement.textContent = `Total Marks: ${totalWeightage.toFixed(2)}`;
   obtainedMarksElement.textContent = `Obtained Marks: ${totalObtMarks.toFixed(2)}`;
   classAverageElement.textContent = `Class Average: ${finalCalculateAverage}`;
 
-  
+  // If the grading type is "Absolute", calculate grade and percentage
   if (gradingType === "Absolute") {
     if (totalWeightage > 0) {
       const percentage = (totalObtMarks / totalWeightage) * 100;
@@ -524,9 +478,9 @@ const getLetter = (index) => {
       percentageDisplayElement.textContent = "Percentage: N/A";
     }
   } else if (gradingType === "Relative") {
-    const percentage = Math.round((totalObtMarks / totalWeightage) * 100); 
-    let mca = Math.round((finalCalculateAverage / totalWeightage) * 100); 
-    const relativeGrade =getGrade(mca,percentage); 
+    const percentage = Math.round((totalObtMarks / totalWeightage) * 100); // Class average is MCA
+    let mca = Math.round((finalCalculateAverage / totalWeightage) * 100); // Class average is MCA, rounded
+    const relativeGrade =getGrade(mca,percentage); // getGrade(mca,percentage);
     gradeDisplayElement.textContent = `Expected Grade: ${relativeGrade[0]}`;
     percentageDisplayElement.textContent = `Percentage: ${percentage.toFixed(2)}%`;
   } else if (gradingType === "Non-Credit") {
@@ -536,6 +490,7 @@ const getLetter = (index) => {
     gradeDisplayElement.textContent = "Grading Type: Unknown";
     percentageDisplayElement.textContent = "Percentage: N/A";
   }
-  
+
+  // Trigger message for page change
   chrome.runtime.sendMessage('pageChange');
 })();
