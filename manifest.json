@@ -1,0 +1,23 @@
+{
+  "name": "FlexRizz",
+  "version": "0.0.2",
+  "manifest_version": 2,
+  "description": "Displays Grand Total, Class Avg, Grade According to grading and more..",
+  "homepage_url": "https://www.rizzons.com",
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_title": "FlexRizz"
+  },
+  "permissions": [
+    "tabs",
+    "https://flexstudent.nu.edu.pk/*"
+  ],
+  "icons": {
+    "16": "icon.jpg",
+    "48": "icon.jpg",
+    "128": "icon.jpg"
+  }
+}
