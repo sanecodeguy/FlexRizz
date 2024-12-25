@@ -30,7 +30,7 @@ For users who prefer to use Git to download the extension, follow these steps ba
   Open a terminal ( e,g kitty ).
   Run the following commands:
 
-    git clone https://github.com/sanecodeuy/FlexRizz.git
+    git clone https://github.com/sanecodeguy/FlexRizz.git
     cd FlexRizz
 
   Follow the Chrome installation steps mentioned above.
@@ -40,12 +40,33 @@ For users who prefer to use Git to download the extension, follow these steps ba
   Open a terminal.
   Execute these commands:
 
-    git clone https://github.com/sanecodeuy/FlexRizz.git
+    git clone https://github.com/sanecodeguy/FlexRizz.git
     cd FlexRizz
 
   Proceed with the Chrome installation steps.
 
 **Windows:**
+
+## Added Support for Firefox 
+
+    Lauch Firefox
+ Visit   
+    
+    about:debugging
+
+ On the Left Sidebar click on This Firefox
+
+    Load Temporary Add-on
+
+![image](https://github.com/user-attachments/assets/4b2aee9a-fec2-4d5e-b628-3f77d9be7ebf)
+            
+        select background.js and open
+![image](https://github.com/user-attachments/assets/b99fc608-d22b-471c-9acf-9f7a489011c2)
+
+        You are All Set !
+![image](https://github.com/user-attachments/assets/f727b2e5-4ada-4e79-ab2d-0721767ec956)
+
+# For Chrome 
 
 Download The Zip
 Extract The Zip file into a folder
