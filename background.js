@@ -1,24 +1,19 @@
-// Listen for the browserAction to be clicked
-chrome.browserAction.onClicked.addListener(function (tab) {
-  // Only inject the script if on the right page
+const api = typeof browser !== "undefined" ? browser : chrome;
+
+api.browserAction.onClicked.addListener(function (tab) {
   if (tab.url.startsWith('https://flexstudent.nu.edu.pk/Student/StudentMarks')) {
-    chrome.tabs.executeScript(tab.id, { file: 'inject.js' });
+    api.tabs.executeScript(tab.id, { file: 'inject.js' });
   }
 });
 
-// Listen for tab updates
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  // Check if the page has finished loading and is the correct URL
+api.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.status === 'complete' && tab.url.startsWith('https://flexstudent.nu.edu.pk/Student/StudentMarks')) {
-    // Inject the script to update the page
-    chrome.tabs.executeScript(tabId, { file: 'inject.js' });
+    api.tabs.executeScript(tabId, { file: 'inject.js' });
   }
 });
 
-// Listen for content script messages (like page change messages)
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+api.runtime.onMessage.addListener(function(message, sender, sendResponse) {
   if (message === 'pageChange') {
-    // Inject the script when the page changes
-    chrome.tabs.executeScript(sender.tab.id, { file: 'inject.js' });
+    api.tabs.executeScript(sender.tab.id, { file: 'inject.js' });
   }
 });
