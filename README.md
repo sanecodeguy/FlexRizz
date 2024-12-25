@@ -1,10 +1,13 @@
 # FlexRizz
 
-![image](https://github.com/user-attachments/assets/1e312744-9599-49ba-b62f-86b80cc5b9bf)
-![image](https://github.com/user-attachments/assets/0d0f3bcd-a6aa-4bcc-a380-7452efe48070)
+**Updated Version with Transcript and SGPA**
+
+![image](https://github.com/user-attachments/assets/da9e866c-4eba-4ea5-b199-cde73eb44323)
+![image](https://github.com/user-attachments/assets/6cecaf05-fbdd-4e90-8c24-794141513afe)
 
 
-FlexRizz is a browser extension designed to enhance the Flex Student Portal by calculating and displaying expected course grades. The extension uses class averages to calculate expected grades based on the course's grading type (either relative or absolute). It provides students with quick insights into their likely performance based on current class averages, helping them stay informed about their academic standing.
+
+FlexRizz is a browser extension designed to enhance the Flex Student Portal by calculating and displaying expected course grades, Transcript and SGPA. The extension uses class averages (alternative to mca ) to calculate expected grades based on the course's grading type (either relative or absolute). It provides students with quick insights into their likely performance based on current class averages, helping them stay informed about their academic standing.
 
 **!! As of Now the Grading Scheme is Enabled for 1st Semester Only ~ Update Expected in V6.9.2 !!**
 
