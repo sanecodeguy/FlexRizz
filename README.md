@@ -1,4 +1,4 @@
-# FLexRizz
+# FlexRizz
 
 ![image](https://github.com/user-attachments/assets/1e312744-9599-49ba-b62f-86b80cc5b9bf)
 ![image](https://github.com/user-attachments/assets/0d0f3bcd-a6aa-4bcc-a380-7452efe48070)
