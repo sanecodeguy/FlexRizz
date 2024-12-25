@@ -1,35 +1,33 @@
 (function () {
-  // Define course grading types
-  const gradingTypes = {
-    "CL1000": "Relative",
-    "CL1002": "Absolute",
-    "CS1002": "Absolute",
-    "MT1003": "Relative",
-    "SL1012": "Relative",
-    "NS1001": "Relative",
-    "SS1013": "Relative",
-    "SS1012": "Relative",
-    "SS1019": "Non-Credit"
-  };
-  // Helper function to determine grade for absolute grading
-  function calculateAbsoluteGrade(percentage) {
-    if (percentage >= 90) return "A+";
-    if (percentage >= 86) return "A";
-    if (percentage >= 82) return "A-";
-    if (percentage >= 78) return "B+";
-    if (percentage >= 74) return "B";
-    if (percentage >= 70) return "B-";
-    if (percentage >= 66) return "C+";
-    if (percentage >= 62) return "C";
-    if (percentage >= 58) return "C-";
-    if (percentage >= 54) return "D+";
-    if (percentage >= 50) return "D";
-    return "F";
-  }
+  
+  const portlet = document.querySelector('.m-portlet');
 
+  
+  
+  const style = document.createElement('style');
+  style.textContent = `
+    .m-portlet__head, 
+    .m-portlet__head-tools, 
+    .m-portlet--brand, 
+    .m-portlet--head-solid-bg, 
+    .m-portlet--border-bottom-metal, 
+    .m-portlet--head-sm {
+      background-color: #1E1E2F !important;
+      color: orange !important;
+    }
 
+    #course-data-table tbody tr:hover {
+      background-color: #333;
+      cursor: pointer;
+    }
 
-const createData = () => {
+    #course-data-table th, 
+    #course-data-table td {
+      color: orange !important;
+    }
+  `;
+  document.head.appendChild(style);
+  const createData = () => {
     var x = new Array(100);
 
     for (var i = 0; i < x.length; i++) {
@@ -238,27 +236,27 @@ const getLetter = (index) => {
   let j = 0;
 
   if (mca < 30 || mca > 91) {
-      return ret; // Out of range
+      return ret; 
   }
   if (s < 30 || s <= x[2]) {
-      ret[0] = `F ${score}`;
+      ret[0] = `F`;
       ret[1] = "-";
       j = 3;
       while (x[j] === "0") {
           j++;
       }
-      ret[2] = getLetter(j) + " " + x[j];
+      ret[2] = getLetter(j);
       return ret;
   }
 
   if (Number(x[2]) >= s) {
-      ret[1] = `F ${score}`;
+      ret[1] = `F`;
       ret[0] = "-";
       j = 3;
       while (x[j] === '0') {
           j++;
       }
-      ret[2] = getLetter(j) + " " + x[j];
+      ret[2] = getLetter(j);
       check = true;
   } else {
       for (let i = 3; i < 14; i++) {
@@ -266,15 +264,15 @@ const getLetter = (index) => {
               continue;
           }
           if (Number(x[i]) === s) {
-              ret[0] = getLetter(i) + " " + score;
+              ret[0] = getLetter(i);
               if (i === 3) {
-                  ret[1] = `F ${(Number(x[i]) - 1)}`;
+                  ret[1] = `F`;
               } else {
                   j = i - 1;
                   while (x[j] === '0' && j > 2) {
                       j--;
                   }
-                  ret[1] = getLetter(j) + " " + (Number(x[i]) - 1);
+                  ret[1] = getLetter(j);
               }
               if (i === 13) {
                   ret[2] = "-";
@@ -283,214 +281,277 @@ const getLetter = (index) => {
                   while (x[j] === '0') {
                       j++;
                   }
-                  ret[2] = getLetter(j) + " " + x[j];
+                  ret[2] = getLetter(j);
               }
               check = true;
               break;
           }
           if (Number(x[i]) > s) {
-              ret[0] = getLetter(i - 1) + " " + score;
+              ret[0] = getLetter(i - 1);
 
               j = i - 2;
               while (x[j] === '0' && j > 2) {
                   j--;
               }
               if (j === 2) {
-                  ret[1] = `F ${x[2]}`;
+                  ret[1] = `F`;
               } else {
-                  ret[1] = getLetter(j) + " " + (Number(x[i - 1]) - 1);
+                  ret[1] = getLetter(j);
               }
 
-              ret[2] = getLetter(i) + " " + x[i];
+              ret[2] = getLetter(i);
               check = true;
               break;
           }
       }
   }
   if (check === false) {
-      ret[0] = `A+ ${score}`;
-      ret[1] = `A ${x[12]}`;
+      ret[0] = `A+`;
+      ret[1] = `A`;
       ret[2] = "-";
   }
   return ret;
 };
+  
+  const courses = {
+    "CL1000": { name:"IICT",grading: "Relative", credits: 1 },
+    "CL1002": { name:"PF Lab",grading: "Absolute", credits: 1 },
+    "CS1002": { name:"PF",grading: "Absolute", credits: 3 },
+    "MT1003": { name:"Calculus",grading: "Relative", credits: 3 },
+    "NS1001": { name:"Applied Physics",grading: "Relative", credits: 3 },
+    "SL1012": { name:"FE Lab",grading: "Relative", credits: 1 },
+    "SS1012": { name:"FE ",grading: "Relative", credits: 2 },
+    "SS1013": { name:"ICP",grading: "Relative", credits: 2 },
+  };
 
-  // Find the div with class "m-portlet"
-  const portlet = document.querySelector('.m-portlet');
-  if (!portlet) return;
+  let tableVisible = false;
+  let stopAutoClick = false;
 
-  // Create or find the necessary elements
-  let gradingTypeElement = portlet.querySelector('h5[data-type="grading-type"]');
-  let gradeDisplayElement = portlet.querySelector('h5[data-type="expected-grade"]');
-  let percentageDisplayElement = portlet.querySelector('h5[data-type="percentage"]');
-  let courseDisplayElement = portlet.querySelector('h5[data-type="course-name"]');
-  let totalMarksElement = portlet.querySelector('h5[data-type="total"]');
-  let obtainedMarksElement = portlet.querySelector('h5[data-type="obtained"]');
-  let classAverageElement = portlet.querySelector('h5[data-type="class-average"]');
-
-  if (!gradingTypeElement) {
-    gradingTypeElement = document.createElement('h5');
-    gradingTypeElement.setAttribute('data-type', 'grading-type');
-    gradingTypeElement.style.color = 'white';
-    gradingTypeElement.style.marginLeft = '30px';
-    portlet.appendChild(gradingTypeElement);
+  
+  function calculateAbsoluteGrade(percentage) {
+    if (percentage >= 90) return "A+";
+    if (percentage >= 86) return "A";
+    if (percentage >= 82) return "A-";
+    if (percentage >= 78) return "B+";
+    if (percentage >= 74) return "B";
+    if (percentage >= 70) return "B-";
+    if (percentage >= 66) return "C+";
+    if (percentage >= 62) return "C";
+    if (percentage >= 58) return "C-";
+    if (percentage >= 54) return "D+";
+    if (percentage >= 50) return "D";
+    return "F";
   }
 
-  if (!gradeDisplayElement) {
-    gradeDisplayElement = document.createElement('h5');
-    gradeDisplayElement.setAttribute('data-type', 'expected-grade');
-    gradeDisplayElement.style.color = 'white';
-    gradeDisplayElement.style.marginLeft = '30px';
-    portlet.appendChild(gradeDisplayElement);
+  
+  function getGradePoints(grade) {
+    const gradePoints = {
+      "A+": 4.0,
+      "A": 4.0,
+      "A-": 3.67,
+      "B+": 3.33,
+      "B": 3.0,
+      "B-": 2.67,
+      "C+": 2.33,
+      "C": 2.0,
+      "C-": 1.67,
+      "D+": 1.33,
+      "D": 1.0,
+      "F": 0,
+    };
+    return gradePoints[grade] || 0;
   }
 
-  if (!percentageDisplayElement) {
-    percentageDisplayElement = document.createElement('h5');
-    percentageDisplayElement.setAttribute('data-type', 'percentage');
-    percentageDisplayElement.style.color = 'white';
-    percentageDisplayElement.style.marginLeft = '30px';
-    portlet.appendChild(percentageDisplayElement);
-  }
+  
+  const createTable = () => {
+    const existingTable = portlet.querySelector('#course-data-table');
+    if (existingTable) return;
 
-  if (!courseDisplayElement) {
-    courseDisplayElement = document.createElement('h5');
-    courseDisplayElement.setAttribute('data-type', 'course-name');
-    courseDisplayElement.style.color = 'white';
-    courseDisplayElement.style.marginLeft = '30px';
-    portlet.appendChild(courseDisplayElement);
-  }
+    const table = document.createElement('table');
+    table.id = 'course-data-table';
+    table.style.cssText = `
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+      color: #f8f9fa;
+      background-color: #1e1e2f;
+    `;
 
-  // Create or find elements for Total Marks, Obtained Marks, and Class Average
-  if (!totalMarksElement) {
-    totalMarksElement = document.createElement('h5');
-    totalMarksElement.setAttribute('data-type', 'total');
-    totalMarksElement.style.color = 'white';
-    totalMarksElement.style.marginLeft = '30px';
-    portlet.appendChild(totalMarksElement);
-  }
+    const headerRow = `
+      <thead>
+        <tr style="background-color: #2c2c3b; text-align: left;">
+          <th style="padding: 12px; border: 1px solid #444; font-weight: bold; color: #ff9800;">Course Code</th>
+          <th style="padding: 12px; border: 1px solid #444; font-weight: bold; color: #ff9800;">Grading Type</th>
+          <th style="padding: 12px; border: 1px solid #444; font-weight: bold; color: #ff9800;">Class Average</th>
+          <th style="padding: 12px; border: 1px solid #444; font-weight: bold; color: #ff9800;">Obtained Marks</th>
+          <th style="padding: 12px; border: 1px solid #444; font-weight: bold; color: #ff9800;">Total Marks</th>
+          <th style="padding: 12px; border: 1px solid #444; font-weight: bold; color: #ff9800;">Grade</th>
+        </tr>
+      </thead>
+    `;
+    table.innerHTML = headerRow;
 
-  if (!obtainedMarksElement) {
-    obtainedMarksElement = document.createElement('h5');
-    obtainedMarksElement.setAttribute('data-type', 'obtained');
-    obtainedMarksElement.style.color = 'white';
-    obtainedMarksElement.style.marginLeft = '30px';
-    portlet.appendChild(obtainedMarksElement);
-  }
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
 
-  if (!classAverageElement) {
-    classAverageElement = document.createElement('h5');
-    classAverageElement.setAttribute('data-type', 'class-average');
-    classAverageElement.style.color = 'white';
-    classAverageElement.style.marginLeft = '30px';
-    portlet.appendChild(classAverageElement);
-  }
+    let totalCredits = 0;
+    let totalGradePoints = 0;
 
-  // Find the div with class "active" to get the active course
-  const activeCourseElement = document.querySelector('.nav-link.m-tabs__link.active');
-  let courseCode = null;
+    const addCourseDataToTable = (name, gradingType, finalCalculateAverage, totalObtMarks, totalWeightage, grade, credits) => {
+      const newRow = `
+        <tr style="border: 1px solid #444; text-align: left;">
+          <td style="padding: 10px; border: 1px solid #444;">${name}</td>
+          <td style="padding: 10px; border: 1px solid #444;">${gradingType}</td>
+          <td style="padding: 10px; border: 1px solid #444;">${finalCalculateAverage}</td>
+          <td style="padding: 10px; border: 1px solid #444;">${totalObtMarks.toFixed(2)}</td>
+          <td style="padding: 10px; border: 1px solid #444;">${totalWeightage.toFixed(2)}</td>
+          <td style="padding: 10px; border: 1px solid #444;">${grade}</td>
+        </tr>
+      `;
+      tbody.innerHTML += newRow;
 
-  // Extract course code from the active course element
-  if (activeCourseElement) {
-    const href = activeCourseElement.getAttribute('href');
-    if (href) {
-      courseCode = href.substring(1); // Remove the '#' from the href
+      
+      totalCredits += credits;
+      totalGradePoints += getGradePoints(grade) * credits;
+    };
+
+    Object.keys(courses).forEach((code, index) => {
+      if (stopAutoClick) return;
+
+      const gradingType = courses[code].grading;
+      const credits = courses[code].credits;
+      const courseLink = document.querySelector(`a.nav-link[href="#${code}"]`);
+      if (courseLink) {
+        courseLink.click();
+      }
+
+      const activeDiv = document.querySelector('.tab-pane.active');
+      if (!activeDiv) return;
+
+      let totalWeightage = 0;
+      let totalObtMarks = 0;
+      let totalAverage = 0;
+
+      const tables = activeDiv.querySelectorAll('.sum_table');
+
+      tables.forEach((table) => {
+        let rowCalculatedAverage = 0;
+        let tableWeightageSum = 0;
+
+        const rows = table.querySelectorAll('.calculationrow');
+        rows.forEach((row) => {
+          const weightRow = row.querySelector('.weightage');
+          const averageRow = row.querySelector('.AverageMarks');
+          const totalMarksRow = row.querySelector('.GrandTotal');
+
+          if (!weightRow || !averageRow || !totalMarksRow ||
+              weightRow.textContent.trim() === "0" || 
+              averageRow.textContent.trim() === "0" || 
+              totalMarksRow.textContent.trim() === "0") {
+            return;
+          }
+
+          tableWeightageSum += parseFloat(weightRow.textContent);
+          rowCalculatedAverage += (parseFloat(averageRow.textContent) / parseFloat(totalMarksRow.textContent)) * parseFloat(weightRow.textContent);
+        });
+
+        const totalSection = table.querySelector('[class*="totalColumn_"]');
+        if (totalSection) {
+          const colWeightage = totalSection.querySelector('.totalColweightage');
+          if (colWeightage && tableWeightageSum !== 0 && rowCalculatedAverage !== 0) {
+            rowCalculatedAverage = (rowCalculatedAverage / tableWeightageSum) * parseFloat(colWeightage.textContent);
+            totalAverage += rowCalculatedAverage;
+          }
+
+          const colObtMarks = totalSection.querySelector('.totalColObtMarks');
+          if (colWeightage && colObtMarks) {
+            totalWeightage += parseFloat(colWeightage.textContent);
+            totalObtMarks += parseFloat(colObtMarks.textContent);
+          }
+        }
+      });
+
+      const finalCalculateAverage = isNaN(totalAverage) ? "N/A" : totalAverage.toFixed(2);
+
+      let grade = "I"; 
+      if (gradingType === "Absolute") {
+        const percentage = (totalObtMarks / totalWeightage) * 100;
+        grade = calculateAbsoluteGrade(percentage);
+      }
+      else if (gradingType === "Relative") {
+        const percentage = Math.round((totalObtMarks / totalWeightage) * 100);
+        const mca=Math.round((totalAverage/totalWeightage)*100);
+        grade = getGrade(mca,percentage)[0];
+      }
+
+      addCourseDataToTable(courses[code].name, gradingType, finalCalculateAverage, totalObtMarks, totalWeightage, grade, credits);
+
+      if (index === Object.keys(courses).length - 1) {
+        stopAutoClick = true;
+      }
+    });
+
+    
+    const sgpa = (totalGradePoints / totalCredits).toFixed(2);
+    const sgpaRow = `
+      <tr style="background-color: #red; font-weight: bold;">
+        <td colspan="1" style="padding: 10px; border: 1px solid #444; text-align: right;">A rizzons project www.rizzons.com</td>
+        <td colspan="4" style="padding: 10px; border: 1px solid #444; text-align: right;">SGPA</td>
+        <td style="padding: 10px; border: 1px solid #444;">${sgpa}</td>
+      </tr>
+    `;
+    tbody.innerHTML += sgpaRow;
+
+    const portletBody = portlet.querySelector('.m-portlet__body');
+    if (portletBody) {
+      portlet.insertBefore(table, portletBody);
     }
-  }
 
-  // If no course is selected, display unknown grading type
-  if (!courseCode) {
-    gradingTypeElement.textContent = "Grading Type: Unknown";
-    gradeDisplayElement.textContent = "Expected Grade: Not Available";
-    percentageDisplayElement.textContent = "Percentage: N/A";
-    courseDisplayElement.textContent = "Course: Unknown";
-    return;
-  }
+    chrome.runtime.sendMessage('pageChange');
+  };
 
-  // Display the name of the selected course
-  courseDisplayElement.textContent = `Course: ${courseCode}`;
-
-  // Determine the grading type for the course
-  const gradingType = gradingTypes[courseCode] || "Unknown";
-  gradingTypeElement.textContent = `Grading Type: ${gradingType}`;
-
-  // Find and calculate total marks and obtained marks for absolute courses
-  const activeDiv = document.querySelector('.tab-pane.active');
-  let totalWeightage = 0;
-  let totalObtMarks = 0;
-  let totalAverage = 0;
-  const tables = activeDiv ? activeDiv.querySelectorAll('.sum_table') : [];
-
-  for (let i = 0; i < tables.length; i++) {
-    const table = tables[i];
-    const rows = table.querySelectorAll(".calculationrow");
-    let rowCalculatedAverage = 0;
-    let tableWeightageSum = 0;
-
-    for (let j = 0; j < rows.length; j++) {
-      const weightRow = rows[j].querySelectorAll(".weightage");
-      const averageRow = rows[j].querySelectorAll(".AverageMarks");
-      const totalMarksRow = rows[j].querySelectorAll(".GrandTotal");
-
-      if (weightRow.length == 0 || weightRow[0].textContent == "0 " ||
-        averageRow.length == 0 || averageRow[0].textContent == "0 " ||
-        totalMarksRow.length == 0 || totalMarksRow[0].textContent == "0 ") {
-        continue;
+  const existingButton = portlet.querySelector('#show-transcript-button');
+  if (!existingButton) {
+    const button = document.createElement('button');
+    button.id = 'show-transcript-button';
+    button.textContent = 'Show Transcript';
+    button.style.cssText = `
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      color: #ff9800;
+      background-color: #2c2c3b;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    `;
+    button.addEventListener('click', () => {
+      const existingTable = portlet.querySelector('#course-data-table');
+      if (existingTable) {
+        if (existingTable.style.display === 'none') {
+          existingTable.style.display = 'table';
+          button.textContent = 'Hide Transcript';
+          tableVisible = true;
+        } else {
+          existingTable.style.display = 'none';
+          button.textContent = 'Show Transcript';
+          tableVisible = false;
+        }
       } else {
-        tableWeightageSum += parseFloat(weightRow[0].textContent);
-        rowCalculatedAverage += (parseFloat(averageRow[0].textContent) / parseFloat(totalMarksRow[0].textContent)) * parseFloat(weightRow[0].textContent);
+        createTable();
+        button.textContent = 'Hide Transcript';
+        tableVisible = true;
       }
-    }
+    });
 
-    const totalSection = table.querySelectorAll('[class*="totalColumn_"]');
-    if (totalSection.length == 1 && tableWeightageSum != 0 && rowCalculatedAverage != 0) {
-      const tableColWeigtage = totalSection[0].querySelectorAll(".totalColweightage");
-      rowCalculatedAverage = rowCalculatedAverage / tableWeightageSum * parseFloat(tableColWeigtage[0].textContent);
-      totalAverage += rowCalculatedAverage;
-    }
-
-    if (totalSection.length == 1) {
-      const _tableColWeigtage = totalSection[0].querySelectorAll(".totalColweightage");
-      const _tableColObtMarks = totalSection[0].querySelectorAll(".totalColObtMarks");
-      if (_tableColWeigtage.length == 1 && _tableColObtMarks.length == 1) {
-        totalWeightage += parseFloat(_tableColWeigtage[0].textContent);
-        totalObtMarks += parseFloat(_tableColObtMarks[0].textContent);
-      }
+    const portletBody = portlet.querySelector('.m-portlet__body');
+    if (portletBody) {
+      portlet.insertBefore(button, portletBody);
     }
   }
-
-  // Calculate the final average
-  const finalCalculateAverage = isNaN(totalAverage) ? "Cannot Calculate, Missing Data" : totalAverage.toFixed(2);
-
-  // Update the content of the total, obtained marks, and class average elements
-  totalMarksElement.textContent = `Total Marks: ${totalWeightage.toFixed(2)}`;
-  obtainedMarksElement.textContent = `Obtained Marks: ${totalObtMarks.toFixed(2)}`;
-  classAverageElement.textContent = `Class Average: ${finalCalculateAverage}`;
-
-  // If the grading type is "Absolute", calculate grade and percentage
-  if (gradingType === "Absolute") {
-    if (totalWeightage > 0) {
-      const percentage = (totalObtMarks / totalWeightage) * 100;
-      const grade = calculateAbsoluteGrade(percentage);
-      gradeDisplayElement.textContent = `Expected Grade: ${grade}`;
-      percentageDisplayElement.textContent = `Percentage: ${percentage.toFixed(2)}%`;
-    } else {
-      gradeDisplayElement.textContent = `No Marks Available for Calculation`;
-      percentageDisplayElement.textContent = "Percentage: N/A";
-    }
-  } else if (gradingType === "Relative") {
-    const percentage = Math.round((totalObtMarks / totalWeightage) * 100); // Class average is MCA
-    let mca = Math.round((finalCalculateAverage / totalWeightage) * 100); // Class average is MCA, rounded
-    const relativeGrade =getGrade(mca,percentage); // getGrade(mca,percentage);
-    gradeDisplayElement.textContent = `Expected Grade: ${relativeGrade[0]}`;
-    percentageDisplayElement.textContent = `Percentage: ${percentage.toFixed(2)}%`;
-  } else if (gradingType === "Non-Credit") {
-    gradeDisplayElement.textContent = `Non-Credit Course`;
-    percentageDisplayElement.textContent = "Percentage: N/A";
-  } else {
-    gradeDisplayElement.textContent = "Grading Type: Unknown";
-    percentageDisplayElement.textContent = "Percentage: N/A";
-  }
-
-  // Trigger message for page change
-  chrome.runtime.sendMessage('pageChange');
 })();
