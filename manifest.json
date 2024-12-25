@@ -6,18 +6,23 @@
   "homepage_url": "https://www.rizzons.com",
   "background": {
     "scripts": ["background.js"],
-    "persistent": true
-  },
-  "browser_action": {
-    "default_title": "FlexRizz"
+    "persistent": false
   },
   "permissions": [
     "tabs",
     "https://flexstudent.nu.edu.pk/*"
   ],
+  "browser_action": {
+    "default_title": "FlexRizz"
+  },
   "icons": {
     "16": "icon.jpg",
     "48": "icon.jpg",
     "128": "icon.jpg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "flexrizz@mozilla.org"
+    }
   }
 }
