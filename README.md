@@ -1,21 +1,27 @@
 # FlexRizz
 
-**Updated Version with Transcript and SGPA**
+**Updated Version with new UI and SGPA**
 
-![image](https://github.com/user-attachments/assets/da9e866c-4eba-4ea5-b199-cde73eb44323)
-![image](https://github.com/user-attachments/assets/243b2778-dbe2-4a6e-ad87-7ec7a13f568e)
+Added Support for Semester 2 BSCS
+
+![image](https://github.com/user-attachments/assets/07c39b2e-8c8e-4533-a669-b6c644651b2f)
+![250124_14h59m29s_screenshot](https://github.com/user-attachments/assets/d3bb4cd6-87db-4a51-9110-ec37a1c8c19d)
+![image](https://github.com/user-attachments/assets/f1e5045d-a898-4b8e-ab0a-0331202aef40)
+
 
 
 FlexRizz is a browser extension designed to enhance the Flex Student Portal by calculating and displaying expected course grades, Transcript and SGPA. The extension uses class averages (alternative to mca ) to calculate expected grades based on the course's grading type (either relative or absolute). It provides students with quick insights into their likely performance based on current class averages, helping them stay informed about their academic standing.
 
-**!! As of Now the Grading Scheme is Enabled for 1st Semester Only ~ Update Expected in V6.9.2 !!**
+**!! As of Now the Grading Scheme is Enabled for 1st & 2nd Semester Only**
 
 **Features**
 
-    Grading Type Support: It supports both Relative and Absolute grading types, providing accurate grade expectations.
-    Class Average: The extension uses class averages to compute expected grades, ensuring a fair and informed grading system.
-    User-Friendly: A simple and intuitive interface that integrates directly into the Flex Student Portal for seamless use.
-
+     Retrieves Registered Courses from Marks Tab
+     Calulates Grades according to grading type (uses class average as mca)
+     Stores User info Locally as session cookies (name,degree,email,phone) due to session timeout or page isolation
+     Supports both Dark and Light Mode (broken - dark mode by default - update expected)
+     
+     
 **Installation Instructions**
 **Chrome:**
 
