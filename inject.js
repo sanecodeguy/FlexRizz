@@ -1,6 +1,6 @@
 
 
-let semester = 1; 
+let semester = 2; 
 let studentsgpa=0.00;
 const studentName = sessionStorage.getItem('studentName') || 'Unknown';
 const degree = sessionStorage.getItem('degree') || 'Unknown';
