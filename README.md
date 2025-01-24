@@ -1,4 +1,5 @@
-# FlexRizz
+![logo](https://github.com/user-attachments/assets/54474935-a79b-4b68-9889-26cb0f9b58e3)
+
 
 **Updated Version with new UI and SGPA**
 
