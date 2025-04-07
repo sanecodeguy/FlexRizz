@@ -2,6 +2,26 @@
   const portlet = document.querySelector('.m-portlet');
   if (!portlet) return;
 
+  const adContainer = document.createElement('div');
+  adContainer.innerHTML = `
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562"
+     crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-format="autorelaxed"
+         data-ad-client="ca-pub-9316188419448562"
+         data-ad-slot="8967735708"></ins>
+    <script>
+      (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+  `;
+
+  // Insert before portlet body
+  const portletBody = portlet.querySelector('.m-portlet__body');
+  if (portletBody) {
+    portlet.insertBefore(adContainer, portletBody);
+  }
+
   function getExtensionUrl(path) {
     // Try to find the extension's runtime URL
     if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
