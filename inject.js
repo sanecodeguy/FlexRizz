@@ -2,14 +2,29 @@
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
   
-    const adFrame = document.createElement('iframe');
-    adFrame.src = 'https://www.rizzons.com/showad';
-    adFrame.style.width = '100%';
-    adFrame.style.height = '150px';
-    adFrame.style.border = 'none';
-    adFrame.loading = 'lazy';
-    
-    portlet.prepend(adFrame);
+   const portlet = document.querySelector('.m-portlet');
+if (!portlet) return;
+
+// Check if image already exists
+if (document.querySelector('#injected-support-image')) return;
+
+// Create image container
+const imageContainer = document.createElement('div');
+imageContainer.style.margin = '20px 0';
+imageContainer.style.textAlign = 'center';
+
+// Create image
+const supportImg = document.createElement('img');
+supportImg.src = 'https://github.com/user-attachments/assets/54474935-a79b-4b68-9889-26cb0f9b58e3';
+supportImg.alt = 'Support us';
+supportImg.style.maxWidth = '100%';
+supportImg.style.borderRadius = '8px';
+supportImg.id = 'injected-support-image';
+
+// Append
+imageContainer.appendChild(supportImg);
+portlet.prepend(imageContainer);
+
     
     
     function getExtensionUrl(path) {
