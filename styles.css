@@ -501,4 +501,8 @@ a, .nav-link {
 .extension-content .m-portlet__head-tools {
   color: white !important; /* Ensure text in header section remains white */
 }
+.m-portlet * {
+  color: black !important; /* Set text color to black for all elements in .m-portlet */
+}
+
 
