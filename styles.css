@@ -449,23 +449,54 @@
 }
 
 .nav-tabs .nav-link {
-  color: #ccc !important; /* softer text on dark bg */
+  color: white !important; /* softer text on dark bg */
 }
 
 .nav-tabs .nav-link.active {
   border-color: #e43a45 !important; /* keep the red underline for active tab */
-  color: #fff !important;
-}
-
-/* Change color #3A4CA8 to black */
-* {
-  color: black !important;
+  color: white !important;
 }
 
 a, .nav-link {
-  color: black !important;
+  color: white !important;
 }
-/* Override background and text color to #121719 for these classes */
+/* Make all the default content inside .m-portlet have black text */
+.m-portlet * {
+  color: black !important; /* Set text color to black for all elements in .m-portlet */
+}
+
+/* Prevent overriding table text color */
+#course-data-table td,
+#course-data-table th {
+  color: var(--text-primary) !important; /* Retain the default text color for table content */
+}
+
+/* Ensure text inside the extension content remains white */
+.extension-content {
+  color: white !important;
+}
+
+.extension-content a,
+.extension-content .nav-link {
+  color: white !important; /* Ensure links inside extension content are white */
+}
+
+.extension-content .m-portlet__head-caption,
+.extension-content .m-portlet__head-tools {
+  color: white !important; /* Ensure text in header section remains white */
+}
+
+/* Other override rules for active tab links */
+.nav-tabs .nav-link.active {
+  border-color: #e43a45 !important; /* Keep the red underline for active tab */
+  color: white !important;
+}
+
+.nav-tabs .nav-link {
+  color: #ccc !important; /* Softer text on dark bg */
+}
+
+/* Ensure the portlet background color is as specified */
 .m-portlet,
 .m-portlet--brand,
 .m-portlet--head-solid-bg,
@@ -475,37 +506,25 @@ a, .nav-link {
   color: #121719 !important;
 }
 
-/* Nav tabs text color - white when active and inactive */
-.nav-tabs.m-tabs-line,
-.nav-tabs .nav-link {
-  color: white !important; /* Inactive tabs */
+/* Header background color */
+.m-portlet__head-caption,
+.m-portlet__head-tools,
+.m-portlet__head,
+.nav-tabs.m-tabs-line {
+  background-color: #121719 !important;
 }
 
-.nav-tabs .nav-link.active {
-  color: white !important; /* Active tab */
-  border-color: #e43a45 !important; /* Keep the red underline for active tab */
+.m-portlet__head-title {
+  color: var(--accent-color) !important; /* Keep accent color for title */
 }
 
-/* Target only the elements added by your extension */
-.extension-content {
-  color: white !important; /* Set text color to white for extension content */
+/* Reset the global color change for specific content */
+* {
+  color: black !important;
 }
 
-.extension-content a,
-.extension-content .nav-link {
-  color: white !important; /* Ensure links inside extension content are white */
-}
-
-/* If you have text that still needs to stand out on the dark background, adjust here */
-.extension-content .m-portlet__head-caption,
-.extension-content .m-portlet__head-tools {
-  color: white !important; /* Ensure text in header section remains white */
-}
-.m-portlet * {
-  color: black !important; /* Set text color to black for all elements in .m-portlet */
-}
-span[style*="color: var(--text-primary)"] {
-  color: white !important; /* Ensure the text is white */
+a, .nav-link {
+  color: black !important;
 }
 
 
