@@ -2,12 +2,24 @@
   const portlet = document.querySelector('.m-portlet');
   if (!portlet) return;
 
+  function getExtensionUrl(path) {
+    // Try to find the extension's runtime URL
+    if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
+      return chrome.runtime.getURL(path);
+    }
+    if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getURL) {
+      return browser.runtime.getURL(path);
+    }
+    // Fallback - assumes files are served from same origin
+    return path;
+  }
+
   // Load CSS
   if (!document.querySelector('link[href="styles.css"]')) {
-      const cssLink = document.createElement('link');
-      cssLink.href = chrome.runtime.getURL('styles.css');
-      cssLink.rel = 'stylesheet';
-      document.head.appendChild(cssLink);
+    const cssLink = document.createElement('link');
+    cssLink.href = getExtensionUrl('styles.css');
+    cssLink.rel = 'stylesheet';
+    document.head.appendChild(cssLink);
   }
 
   // Load font
@@ -80,35 +92,32 @@
     },
   };
 
-  // Try to load utils.js
   function loadUtils() {
     return new Promise((resolve) => {
-        // Check if gradeUtils exists and has getGrade
-        if (window.gradeUtils && typeof window.gradeUtils.getGrade === 'function') {
-            return resolve(window.gradeUtils);
-        }
+      if (window.gradeUtils && typeof window.gradeUtils.getGrade === 'function') {
+        return resolve(window.gradeUtils);
+      }
 
-        const script = document.createElement('script');
-        script.src = chrome.runtime.getURL('utils.js');
-        
-        script.onload = function() {
-            // Double check after loading
-            if (window.gradeUtils && typeof window.gradeUtils.getGrade === 'function') {
-                resolve(window.gradeUtils);
-            } else {
-                console.error('Utils loaded but getGrade missing');
-                resolve(fallbackUtils);
-            }
-        };
-        
-        script.onerror = function() {
-            console.warn('Failed to load utils.js, using fallback');
-            resolve(fallbackUtils);
-        };
-        
-        document.head.appendChild(script);
+      const script = document.createElement('script');
+      script.src = getExtensionUrl('utils.js');
+      
+      script.onload = function() {
+        if (window.gradeUtils && typeof window.gradeUtils.getGrade === 'function') {
+          resolve(window.gradeUtils);
+        } else {
+          console.error('Utils loaded but getGrade missing');
+          resolve(fallbackUtils);
+        }
+      };
+      
+      script.onerror = function() {
+        console.warn('Failed to load utils.js, using fallback');
+        resolve(fallbackUtils);
+      };
+      
+      document.head.appendChild(script);
     });
-}
+  }
 
   // Main initialization
   loadUtils().then((utils) => {
