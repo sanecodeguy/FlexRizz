@@ -1,39 +1,7 @@
 (function() {
 
-    async function loadAdSense() {
-        return new Promise((resolve) => {
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562';
-            script.crossOrigin = 'anonymous';
-            script.onload = resolve;
-            script.onerror = () => {
-                console.warn('AdSense failed to load');
-                resolve();
-            };
-            document.head.appendChild(script);
-        });
-    }
- // Function to create and insert ad
- function createAdContainer() {
-    const adContainer = document.createElement('div');
-    adContainer.className = 'ad-container';
-    adContainer.style.margin = '20px 0';
-    adContainer.style.minHeight = '90px';
-    adContainer.style.textAlign = 'center';
-    
-    adContainer.innerHTML = `
-        <!-- FlexRizz Top Ad -->
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-9316188419448562"
-             data-ad-slot="YOUR_AD_SLOT_ID"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-    `;
-    
-    return adContainer;
-}
+  
+
 
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
@@ -165,18 +133,9 @@
     });
   
   
-    async function init() {
-        await loadAdSense();
-        const portletBody = portlet.querySelector('.m-portlet__body');
-        if (portletBody) {
-            const adContainer = createAdContainer();
-            portlet.insertBefore(adContainer, portletBody);
-            
-            // Initialize the ad
-            if (window.adsbygoogle) {
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            }
-        }
+   async function init() {
+
+        await showAd();
       let shouldRoundUp = true;
       let tableVisible = false;
       let stopAutoClick = false;
@@ -808,6 +767,78 @@
             portlet.insertBefore(container, portletBody);
         }
     };
+    async function loadAdSense() {
+        return new Promise((resolve) => {
+          // Check if already loaded
+          if (window.adsbygoogle) return resolve();
+          
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562';
+          script.crossOrigin = 'anonymous';
+          script.onload = resolve;
+          script.onerror = () => {
+            console.warn('AdSense failed to load - using fallback');
+            resolve();
+          };
+          document.head.appendChild(script);
+        });
+      }
+      
+      function createAdContainer() {
+        const adContainer = document.createElement('div');
+        adContainer.className = 'ad-container';
+        
+        // Important styles to prevent layout shifts
+        adContainer.style.minHeight = '90px';
+        adContainer.style.width = '100%';
+        adContainer.style.margin = '20px 0';
+        adContainer.style.textAlign = 'center';
+        adContainer.style.backgroundColor = '#f5f5f5';
+        adContainer.style.borderRadius = '4px';
+        
+        // Create iframe as a workaround for blocking
+        const iframe = document.createElement('iframe');
+        iframe.style.border = 'none';
+        iframe.style.width = '100%';
+        iframe.style.minHeight = '90px';
+        iframe.sandbox = 'allow-scripts allow-same-origin';
+        iframe.srcdoc = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <script async src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562'></script>
+          </head>
+          <body style="margin:0">
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-9316188419448562"
+                 data-ad-slot="YOUR_AD_SLOT_ID"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+              (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+          </body>
+          </html>
+        `;
+        
+        adContainer.appendChild(iframe);
+        return adContainer;
+      }
+      
+      async function showAd() {
+        try {
+          await loadAdSense();
+          const portletBody = document.querySelector('.m-portlet__body');
+          if (portletBody) {
+            const adContainer = createAdContainer();
+            portletBody.parentNode.insertBefore(adContainer, portletBody);
+          }
+        } catch (error) {
+          console.error('Ad loading failed:', error);
+        }
+      }
       
       createToggleButtons();
   }
