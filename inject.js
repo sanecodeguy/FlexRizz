@@ -3,7 +3,7 @@
     if (!portlet) return;
   
     const adFrame = document.createElement('iframe');
-    adFrame.src = 'https://yourdomain.com/extension-ad.html';
+    adFrame.src = 'https://www.rizzons.com/showad';
     adFrame.style.width = '100%';
     adFrame.style.height = '150px';
     adFrame.style.border = 'none';
