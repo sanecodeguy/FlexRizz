@@ -475,10 +475,20 @@ a, .nav-link {
   color: #121719 !important;
 }
 
-/* Specific adjustments for links or any text inside those elements */
-.m-portlet a,
-.m-portlet .nav-link {
-  color: #121719 !important;
+/* Nav tabs text color - white when active and inactive */
+.nav-tabs.m-tabs-line,
+.nav-tabs .nav-link {
+  color: white !important; /* Inactive tabs */
+}
+
+.nav-tabs .nav-link.active {
+  color: white !important; /* Active tab */
+  border-color: #e43a45 !important; /* Keep the red underline for active tab */
+}
+
+/* Style for text such as <span style="color: var(--text-primary); font-size: 0.9rem;">Semester:</span> */
+span[style*="color: var(--text-primary)"] {
+  color: white !important; /* Ensure the text is white */
 }
 
 /* If you have text that still needs to stand out on the dark background, adjust here */
