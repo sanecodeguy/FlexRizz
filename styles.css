@@ -486,19 +486,19 @@ a, .nav-link {
   border-color: #e43a45 !important; /* Keep the red underline for active tab */
 }
 
-/* Style for text such as <span style="color: var(--text-primary); font-size: 0.9rem;">Semester:</span> */
-span[style*="color: var(--text-primary)"] {
-  color: white !important; /* Ensure the text is white */
+/* Target only the elements added by your extension */
+.extension-content {
+  color: white !important; /* Set text color to white for extension content */
+}
+
+.extension-content a,
+.extension-content .nav-link {
+  color: white !important; /* Ensure links inside extension content are white */
 }
 
 /* If you have text that still needs to stand out on the dark background, adjust here */
-.m-portlet .m-portlet__head-caption,
-.m-portlet .m-portlet__head-tools {
-  color: white !important; /* Keep text white for contrast */
-}
-
-/* Override any other text colors you want inside these portlet elements */
-.m-portlet * {
-  color: white !important; /* Force the color #121719 across all text */
+.extension-content .m-portlet__head-caption,
+.extension-content .m-portlet__head-tools {
+  color: white !important; /* Ensure text in header section remains white */
 }
 
