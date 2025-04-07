@@ -1,9 +1,7 @@
 (function() {
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
-  
-   const portlet = document.querySelector('.m-portlet');
-if (!portlet) return;
+
 
 // Check if image already exists
 if (document.querySelector('#injected-support-image')) return;
