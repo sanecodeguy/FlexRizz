@@ -424,3 +424,18 @@
     cursor: not-allowed !important;
     background: var(--metal-gray) !important;
 }
+.m-portlet__head-caption,
+.m-portlet__head-tools,
+.m-portlet__head,
+.nav-tabs.m-tabs-line {
+  background-color: #121719 !important;
+}
+
+.nav-tabs .nav-link {
+  color: #ccc !important; /* softer text on dark bg */
+}
+
+.nav-tabs .nav-link.active {
+  border-color: #e43a45 !important; /* keep the red underline for active tab */
+  color: #fff !important;
+}
