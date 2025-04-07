@@ -2,12 +2,15 @@
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
   
-    const iframe = document.createElement('iframe');
-    iframe.src = 'https://www.rizzons.com/showad'; // must be a page with AdSense
-    iframe.style.width = '100%';
-    iframe.style.height = '120px';
-    iframe.style.border = 'none';
-    adDiv.appendChild(iframe);
+    const adFrame = document.createElement('iframe');
+    adFrame.src = 'https://yourdomain.com/extension-ad.html';
+    adFrame.style.width = '100%';
+    adFrame.style.height = '150px';
+    adFrame.style.border = 'none';
+    adFrame.loading = 'lazy';
+    
+    portlet.prepend(adFrame);
+    
     
     function getExtensionUrl(path) {
       // Try to find the extension's runtime URL
