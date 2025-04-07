@@ -1,116 +1,40 @@
 (function() {
 
   
-    async function showAdWithFallback() {
-        const portletBody = document.querySelector('.m-portlet__body');
-        if (!portletBody) return;
-
-        const adContainer = document.createElement('div');
-        adContainer.className = 'ad-container';
-        adContainer.style.minHeight = '90px';
-        adContainer.style.width = '100%';
-        adContainer.style.margin = '20px 0';
-        adContainer.style.textAlign = 'center';
-        adContainer.style.backgroundColor = '#f5f5f5';
-        adContainer.style.borderRadius = '4px';
-        adContainer.style.overflow = 'hidden';
-        
-        // Try to load AdSense first
-        try {
-            await loadAdSense();
-            
-            const adHtml = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <script async src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562'></script>
-                </head>
-                <body style="margin:0;padding:0">
-                    <ins class="adsbygoogle"
-                         style="display:block"
-                         data-ad-client="ca-pub-9316188419448562"
-                         data-ad-slot="YOUR_AD_SLOT_ID"
-                         data-ad-format="auto"
-                         data-full-width-responsive="true"></ins>
-                    <script>
-                        (adsbygoogle = window.adsbygoogle || []).push({});
-                    </script>
-                </body>
-                </html>
-            `;
-            
-            const iframe = document.createElement('iframe');
-            iframe.style.border = 'none';
-            iframe.style.width = '100%';
-            iframe.style.minHeight = '90px';
-            iframe.sandbox = 'allow-scripts allow-same-origin';
-            iframe.srcdoc = adHtml;
-            adContainer.appendChild(iframe);
-            
-            // Fallback in case ad doesn't load
-            setTimeout(() => {
-                if (!adContainer.querySelector('ins iframe')) {
-                    showFallbackAd(adContainer);
-                }
-            }, 3000);
-            
-        } catch (error) {
-            console.error('AdSense failed:', error);
-            showFallbackAd(adContainer);
-        }
-        
-        portletBody.parentNode.append(adContainer, portletBody);
-    }
-
-    function showFallbackAd(container) {
-        container.innerHTML = '';
-        
-        // Create a placeholder image
-        const placeholder = document.createElement('img');
-        placeholder.style.width = '100%';
-        placeholder.style.height = '90px';
-        placeholder.style.objectFit = 'cover';
-        placeholder.alt = 'Advertisement placeholder';
-        
-        // Use a placeholder service or your own image
-        placeholder.src = 'https://via.placeholder.com/728x90.png?text=Support+Our+Extension';
-        
-        // Optional: Make it clickable to your website
-        const link = document.createElement('a');
-        link.href = 'https://www.rizzons.com';
-        link.target = '_blank';
-        link.appendChild(placeholder);
-        
-        container.appendChild(link);
-        
-        // Optional: Add a small message
-        const message = document.createElement('p');
-        message.style.margin = '5px 0 0';
-        message.style.fontSize = '12px';
-        message.style.color = '#666';
-        message.textContent = 'Disable ad blocker to support us';
-        container.appendChild(message);
-    }
-
-    async function loadAdSense() {
-        return new Promise((resolve) => {
-            if (window.adsbygoogle) return resolve();
-            
-            const script = document.createElement('script');
-            script.async = true;
-            script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562';
-            script.crossOrigin = 'anonymous';
-            script.onload = resolve;
-            script.onerror = () => {
-                throw new Error('AdSense script failed to load');
-            };
-            document.head.appendChild(script);
-        });
-    }
-
+   
+   
+   
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
   
+
+
+    const adContainer = document.createElement('div');
+    adContainer.className = 'ad-container';
+    adContainer.style.margin = '20px 0';
+    adContainer.style.minHeight = '90px';
+    adContainer.style.textAlign = 'center';
+  
+    // Insert the ad code directly
+    adContainer.innerHTML = `
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562"
+         crossorigin="anonymous"></script>
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-format="autorelaxed"
+           data-ad-client="ca-pub-9316188419448562"
+           data-ad-slot="8967735708"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    `;
+  
+    // Insert before portlet body
+    const portletBody = portlet.querySelector('.m-portlet__body');
+    if (portletBody) {
+      portlet.insertBefore(adContainer, portletBody);
+    }
+
     function getExtensionUrl(path) {
       // Try to find the extension's runtime URL
       if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
@@ -239,8 +163,6 @@
   
   
    async function init() {
-
-    await showAdWithFallback();
       let shouldRoundUp = true;
       let tableVisible = false;
       let stopAutoClick = false;
@@ -872,6 +794,7 @@
             portlet.insertBefore(container, portletBody);
         }
     };
+
       
       createToggleButtons();
   }
