@@ -204,9 +204,9 @@
     });
   
   
-   async function init() {
-
-        await showAd();
+    function init() {
+        showAd();
+        
       let shouldRoundUp = true;
       let tableVisible = false;
       let stopAutoClick = false;
