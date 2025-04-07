@@ -3,24 +3,25 @@
     if (!portlet) return;
 
 
-// Check if image already exists
-if (document.querySelector('#injected-support-image')) return;
-
-// Create image container
+/ Create image wrapper
 const imageContainer = document.createElement('div');
 imageContainer.style.margin = '20px 0';
 imageContainer.style.textAlign = 'center';
+imageContainer.style.background = 'transparent';
 
-// Create image
+// Create the image
 const supportImg = document.createElement('img');
 supportImg.src = 'https://github.com/user-attachments/assets/54474935-a79b-4b68-9889-26cb0f9b58e3';
 supportImg.alt = 'Support us';
-supportImg.style.maxWidth = '100%';
-supportImg.style.borderRadius = '8px';
+supportImg.style.maxHeight = '80px'; // ✅ Adjusted height
+supportImg.style.width = 'auto';
+supportImg.style.borderRadius = '0'; // No rounding unless you want it
+supportImg.style.background = 'transparent';
 supportImg.id = 'injected-support-image';
 
-// Append
+// Inject into page
 imageContainer.appendChild(supportImg);
+portlet.prepend(imageContainer);
 portlet.prepend(imageContainer);
 
     
