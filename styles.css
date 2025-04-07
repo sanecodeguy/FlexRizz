@@ -439,3 +439,31 @@
   border-color: #e43a45 !important; /* keep the red underline for active tab */
   color: #fff !important;
 }
+
+
+.m-portlet__head-caption,
+.m-portlet__head-tools,
+.m-portlet__head,
+.nav-tabs.m-tabs-line {
+  background-color: #121719 !important;
+}
+
+.nav-tabs .nav-link {
+  color: #ccc !important; /* softer text on dark bg */
+}
+
+.nav-tabs .nav-link.active {
+  border-color: #e43a45 !important; /* keep the red underline for active tab */
+  color: #fff !important;
+}
+
+/* Change color #3A4CA8 to black */
+* {
+  color: black !important;
+}
+
+a, .nav-link {
+  color: black !important;
+}
+
+/* Add more specific selectors if necessary */
