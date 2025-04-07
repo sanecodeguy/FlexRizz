@@ -2,25 +2,36 @@
   const portlet = document.querySelector('.m-portlet');
   if (!portlet) return;
 
-  const adContainer = document.createElement('div');
-  adContainer.innerHTML = `
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562"
-     crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-format="autorelaxed"
-         data-ad-client="ca-pub-9316188419448562"
-         data-ad-slot="8967735708"></ins>
-    <script>
-      (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-  `;
+const adDiv = document.createElement('div');
+  adDiv.style.minHeight = '90px';
+  adDiv.style.margin = '20px 0';
+  
+  // 2. Add directly to page body
+  const target = document.querySelector('.m-portlet') || document.body;
+  target.prepend(adDiv);
 
-  // Insert before portlet body
-  const portletBody = portlet.querySelector('.m-portlet__body');
-  if (portletBody) {
-    portlet.insertBefore(adContainer, portletBody);
-  }
+  // 3. Load AdSense (works in some Firefox configurations)
+  const script = document.createElement('script');
+  script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9316188419448562';
+  script.async = true;
+  script.crossOrigin = 'anonymous';
+  document.head.appendChild(script);
+
+  // 4. Create ad (may still be blocked)
+  setTimeout(() => {
+    if (window.adsbygoogle) {
+      adDiv.innerHTML = `
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-9316188419448562"
+             data-ad-slot="8967735708"
+             data-ad-format="auto"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+      `;
+    } else {
+      adDiv.innerHTML = '<div style="text-align:center;padding:20px;background:#f5f5f5;">Support us by disabling ad blockers</div>';
+    }
+  }, 1000);
 
   function getExtensionUrl(path) {
     // Try to find the extension's runtime URL
