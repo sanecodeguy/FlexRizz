@@ -2,22 +2,21 @@
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
 
-
-    
-    if (document.querySelector('#injected-support-image')) return;
+if (document.querySelector('#injected-support-image')) return;
 
 // Create image wrapper
 const imageContainer = document.createElement('div');
+imageContainer.classList.add('extension-content');  // Add a unique class for extension content
 imageContainer.style.margin = '20px 0';
 imageContainer.style.textAlign = 'center';
-imageContainer.style.background = '#121719'; // ✅ match portlet body color
+imageContainer.style.background = '#121719'; // match portlet body color
 imageContainer.style.padding = '10px';
 imageContainer.style.borderRadius = '8px'; // optional rounded edges
 
 // Create the image
 const supportImg = document.createElement('img');
 supportImg.src = 'https://github.com/user-attachments/assets/54474935-a79b-4b68-9889-26cb0f9b58e3';
-supportImg.alt = 'a doubleroote project';
+supportImg.alt = 'Support us';
 supportImg.style.maxHeight = '80px';
 supportImg.style.width = 'auto';
 supportImg.style.background = 'transparent';
@@ -26,7 +25,6 @@ supportImg.id = 'injected-support-image';
 // Inject into page
 imageContainer.appendChild(supportImg);
 portlet.prepend(imageContainer);
-
 
     function getExtensionUrl(path) {
       // Try to find the extension's runtime URL
