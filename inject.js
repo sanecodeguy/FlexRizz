@@ -3,7 +3,6 @@
     if (!portlet) return;
 
 
-/ Create image wrapper
 const imageContainer = document.createElement('div');
 imageContainer.style.margin = '20px 0';
 imageContainer.style.textAlign = 'center';
