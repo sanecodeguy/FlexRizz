@@ -499,6 +499,6 @@ span[style*="color: var(--text-primary)"] {
 
 /* Override any other text colors you want inside these portlet elements */
 .m-portlet * {
-  color: #121719 !important; /* Force the color #121719 across all text */
+  color: white !important; /* Force the color #121719 across all text */
 }
 
