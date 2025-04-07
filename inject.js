@@ -59,7 +59,7 @@
             showFallbackAd(adContainer);
         }
         
-        portletBody.parentNode.insertBefore(adContainer, portletBody);
+        portletBody.parentNode.append(adContainer, portletBody);
     }
 
     function showFallbackAd(container) {
