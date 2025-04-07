@@ -424,107 +424,34 @@
     cursor: not-allowed !important;
     background: var(--metal-gray) !important;
 }
-.m-portlet__head-caption,
-.m-portlet__head-tools,
-.m-portlet__head,
-.nav-tabs.m-tabs-line {
-  background-color: #121719 !important;
-}
-
-.nav-tabs .nav-link {
-  color: #ccc !important; /* softer text on dark bg */
-}
-
-.nav-tabs .nav-link.active {
-  border-color: #e43a45 !important; /* keep the red underline for active tab */
-  color: #fff !important;
-}
-
-
-.m-portlet__head-caption,
-.m-portlet__head-tools,
-.m-portlet__head,
-.nav-tabs.m-tabs-line {
-  background-color: #121719 !important;
-}
-
-.nav-tabs .nav-link {
-  color: white !important; /* softer text on dark bg */
-}
-
-.nav-tabs .nav-link.active {
-  border-color: #e43a45 !important; /* keep the red underline for active tab */
-  color: white !important;
-}
-
-a, .nav-link {
-  color: white !important;
-}
-/* Make all the default content inside .m-portlet have black text */
-.m-portlet * {
-  color: black !important; /* Set text color to black for all elements in .m-portlet */
+/* Ensure the table content text color is not affected by the global reset */
+#course-data-table td,
+#course-data-table th {
+    color: var(--text-primary) !important; /* Retain the default text color for table content */
 }
 
 /* Prevent overriding table text color */
-#course-data-table td,
-#course-data-table th {
-  color: var(--text-primary) !important; /* Retain the default text color for table content */
+.m-portlet * {
+    color: black !important; /* Set text color to black for all elements in .m-portlet */
 }
 
-/* Ensure text inside the extension content remains white */
+/* Ensure the course data table text remains white */
+#course-data-table td,
+#course-data-table th {
+    color: var(--text-primary) !important; /* Make sure the course table text remains white */
+}
+
+/* Prevent any other global overrides on links inside the table */
+#course-data-table a {
+    color: var(--accent-color) !important; /* Ensure table links retain the accent color */
+}
+
+/* Prevent overriding content inside the extension */
 .extension-content {
-  color: white !important;
+    color: white !important;
 }
 
 .extension-content a,
 .extension-content .nav-link {
-  color: white !important; /* Ensure links inside extension content are white */
+    color: white !important; /* Ensure links inside extension content are white */
 }
-
-.extension-content .m-portlet__head-caption,
-.extension-content .m-portlet__head-tools {
-  color: white !important; /* Ensure text in header section remains white */
-}
-
-/* Other override rules for active tab links */
-.nav-tabs .nav-link.active {
-  border-color: #e43a45 !important; /* Keep the red underline for active tab */
-  color: white !important;
-}
-
-.nav-tabs .nav-link {
-  color: #ccc !important; /* Softer text on dark bg */
-}
-
-/* Ensure the portlet background color is as specified */
-.m-portlet,
-.m-portlet--brand,
-.m-portlet--head-solid-bg,
-.m-portlet--border-bottom-metal,
-.m-portlet--head-sm {
-  background-color: #121719 !important;
-  color: #121719 !important;
-}
-
-/* Header background color */
-.m-portlet__head-caption,
-.m-portlet__head-tools,
-.m-portlet__head,
-.nav-tabs.m-tabs-line {
-  background-color: #121719 !important;
-}
-
-.m-portlet__head-title {
-  color: var(--accent-color) !important; /* Keep accent color for title */
-}
-
-/* Reset the global color change for specific content */
-* {
-  color: black !important;
-}
-
-a, .nav-link {
-  color: black !important;
-}
-
-
