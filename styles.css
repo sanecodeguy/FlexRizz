@@ -452,16 +452,3 @@
     color: white !important; /* Force white text */
     padding: 10px; /* Optional: Match tools section */
 }
-.m-portlet.m-portlet--brand.m-portlet--head-solid-bg.m-portlet--border-bottom-metal.m-portlet--head-sm [style*="#5162A4"],
-.m-portlet.m-portlet--brand.m-portlet--head-solid-bg.m-portlet--border-bottom-metal.m-portlet--head-sm {
-    background-color: rgb(18, 23, 25) !important;
-    border-color: rgb(18, 23, 25) !important;
-    color: white !important; /* Ensures text remains readable */
-}
-
-/* Override any text, borders, or backgrounds using #5162A4 */
-.m-portlet.m-portlet--brand.m-portlet--head-solid-bg.m-portlet--border-bottom-metal.m-portlet--head-sm * {
-    background-color: inherit !important;
-    border-color: inherit !important;
-    color: inherit !important;
-}
