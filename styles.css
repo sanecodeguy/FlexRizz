@@ -429,4 +429,7 @@
 }
 /* Ensure the table content text color is not affected by the global reset */
 
-
+.extension-content img {
+    margin: 0 !important;
+    padding: 0 !important;
+}
