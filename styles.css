@@ -427,28 +427,5 @@
     background: var(--metal-gray) !important;
 }
 /* Ensure the table content text color is not affected by the global reset */
-#course-data-table td,
-#course-data-table th {
-    color: var(--text-primary) !important; /* Retain the default text color for table content */
-}
 
-/* Ensure the course data table text remains white */
-#course-data-table td,
-#course-data-table th {
-    color: var(--text-primary) !important; /* Make sure the course table text remains white */
-}
 
-/* Prevent any other global overrides on links inside the table */
-#course-data-table a {
-    color: var(--accent-color) !important; /* Ensure table links retain the accent color */
-}
-
-/* Prevent overriding content inside the extension */
-.extension-content {
-    color: white !important;
-}
-
-.extension-content a,
-.extension-content .nav-link {
-    color: white !important; /* Ensure links inside extension content are white */
-}
