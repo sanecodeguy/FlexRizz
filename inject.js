@@ -7,11 +7,11 @@ if (document.querySelector('#injected-support-image')) return;
 // Create image wrapper
 const imageContainer = document.createElement('div');
 imageContainer.classList.add('extension-content');  // Add a unique class for extension content
-imageContainer.style.margin = '20px 0';
+imageContainer.style.margin = '0px 0';
 imageContainer.style.textAlign = 'center';
 imageContainer.style.background = '#121719'; // match portlet body color
-imageContainer.style.padding = '10px';
-imageContainer.style.borderRadius = '8px'; // optional rounded edges
+imageContainer.style.padding = '0px';
+imageContainer.style.borderRadius = '0px'; // optional rounded edges
 
 // Create the image
 const supportImg = document.createElement('img');
