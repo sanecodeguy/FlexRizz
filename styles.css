@@ -407,6 +407,7 @@
 .semester-btn {
     min-width: 30px !important;
     padding: 5px 10px !important;
+     color: var(--text-primary) !important;
     font-size: 1rem !important;
     background: var(--metal-gray) !important;
     transition: all 0.2s ease !important;
@@ -428,11 +429,6 @@
 #course-data-table td,
 #course-data-table th {
     color: var(--text-primary) !important; /* Retain the default text color for table content */
-}
-
-/* Prevent overriding table text color */
-.m-portlet * {
-    color: black !important; /* Set text color to black for all elements in .m-portlet */
 }
 
 /* Ensure the course data table text remains white */
