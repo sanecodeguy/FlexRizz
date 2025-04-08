@@ -437,3 +437,18 @@
     margin: 0 !important;
     padding: 0 !important;
 }
+
+/* For m-portlet__head-tools */
+.m-portlet__head-tools {
+    background-color: rgb(18, 23, 25) !important; /* Same as your image background */
+    color: white !important; /* Force white text */
+    padding: 10px; /* Optional: Adjust as needed */
+    border-radius: 5px; /* Optional: Match image if desired */
+}
+
+/* For m-portlet__head-caption */
+.m-portlet__head-caption {
+    background-color: rgb(18, 23, 25) !important; /* Same as your image background */
+    color: white !important; /* Force white text */
+    padding: 10px; /* Optional: Match tools section */
+}
