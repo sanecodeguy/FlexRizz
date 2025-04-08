@@ -167,19 +167,20 @@
     font-size: 0.95rem;
 }
 
-/* GRADES COLOR FIX - HIGH CONTRAST */
-.grade-Aplus { color: #00FF9D !important; font-weight: 800; }
-.grade-A { color: #00FF9D !important; font-weight: 600; }
-.grade-Aminus { color: #00FF9D !important; opacity: 0.9; }
-.grade-Bplus { color: #00D1FF !important; font-weight: 600; }
-.grade-B { color: #00D1FF !important; }
-.grade-Bminus { color: #00D1FF !important; opacity: 0.8; }
-.grade-Cplus { color: #FFB800 !important; }
-.grade-C { color: #FFB800 !important; }
-.grade-Cminus { color: #FFB800 !important; opacity: 0.8; }
-.grade-Dplus { color: #FF5E7D !important; }
-.grade-D { color: #FF5E7D !important; }
-.grade-F { color: #FF2D78 !important; font-weight: 800; }
+/* GRADES COLOR FIX - HIGH CONTRAST (Scoped with stronger selectors) */
+#course-data-table td.grade-Aplus { color: #00FF9D !important; font-weight: 800; }
+#course-data-table td.grade-A { color: #00FF9D !important; font-weight: 600; }
+#course-data-table td.grade-Aminus { color: #00FF9D !important; opacity: 0.9 !important; }
+#course-data-table td.grade-Bplus { color: #00D1FF !important; font-weight: 600; }
+#course-data-table td.grade-B { color: #00D1FF !important; }
+#course-data-table td.grade-Bminus { color: #00D1FF !important; opacity: 0.8 !important; }
+#course-data-table td.grade-Cplus { color: #FFB800 !important; }
+#course-data-table td.grade-C { color: #FFB800 !important; }
+#course-data-table td.grade-Cminus { color: #FFB800 !important; opacity: 0.8 !important; }
+#course-data-table td.grade-Dplus { color: #FF5E7D !important; }
+#course-data-table td.grade-D { color: #FF5E7D !important; }
+#course-data-table td.grade-F { color: #FF2D78 !important; font-weight: 800; }
+
 /* SGPA - GLOW EFFECT */
 .sgpa-row {
     background: linear-gradient(90deg, 
