@@ -3,24 +3,26 @@
 
 **Updated Version with new UI and SGPA**
 
-Added Support for Semester 2 BSCS
-
-![image](https://github.com/user-attachments/assets/07c39b2e-8c8e-4533-a669-b6c644651b2f)
-![250124_14h59m29s_screenshot](https://github.com/user-attachments/assets/d3bb4cd6-87db-4a51-9110-ec37a1c8c19d)
-![image](https://github.com/user-attachments/assets/f1e5045d-a898-4b8e-ab0a-0331202aef40)
-
+![250409_21h03m00s_screenshot](https://github.com/user-attachments/assets/2b389a29-1fb7-499b-bd11-7e0bb489317b)
+![250409_21h03m28s_screenshot](https://github.com/user-attachments/assets/96ea72e3-12a5-48a8-85c1-ae6c99a3e909)
+![250409_21h04m22s_screenshot](https://github.com/user-attachments/assets/545ce935-ef17-4675-be0a-b1a35e2de52d)
+![250409_21h05m18s_screenshot](https://github.com/user-attachments/assets/baeef62d-3db3-4c04-871c-0785465b1259)
 
 
 FlexRizz is a browser extension designed to enhance the Flex Student Portal by calculating and displaying expected course grades, Transcript and SGPA. The extension uses class averages (alternative to mca ) to calculate expected grades based on the course's grading type (either relative or absolute). It provides students with quick insights into their likely performance based on current class averages, helping them stay informed about their academic standing.
 
-**!! As of Now the Grading Scheme is Enabled for 1st & 2nd Semester Only**
+**!! Automatic Semester Selection - Custom Semester Can be Selected**
+**Firefox Users Will need to Load the temporary Addon - have to load each time the browser is restarted - Update Expected**
 
 **Features**
 
      Retrieves Registered Courses from Marks Tab
      Calulates Grades according to grading type (uses class average as mca)
-     Stores User info Locally as session cookies (name,degree,email,phone) due to session timeout or page isolation
-     Supports both Dark and Light Mode (broken - dark mode by default - update expected)
+     Rounding ON-OFF Toggle (takes the ceil of totalObtained for a better estimation of Course Grade)
+     Custom Grades - You can now Add Custom Grades Using our Built in Grade Selection ModalBox
+     Sleek UI with Dark Theme
+     Automatic Updates - Source Files are loaded directly from our github page inorder to keep the extension Updated without the hassle to remove old files and reinstall the extension.
+     Compatible with most browsers including Chrome and Firefox
      
      
 **Installation Instructions**
@@ -92,4 +94,5 @@ Load unpacked
 ![image](https://github.com/user-attachments/assets/d8f77316-aa49-4c5a-b637-41a9b7d2072d)
 
 **Now Visit your Portal and Enjoy**
-**This project is licensed under the rizzons - visit www.rizzons.com for more details.**
+**This project is licensed under rizzons - visit www.rizzons.com for more details.**
+**Contact Me via Email ceo@rizzons.com : rizvicottage2@gmail.com**
