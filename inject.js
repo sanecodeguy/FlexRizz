@@ -358,7 +358,7 @@ portlet.prepend(imageContainer);
           const sgpaRow = `
               <tr class="sgpa-row">
                   <td colspan="4" style="text-align: left;">
-                      <span class="credit-text">A project by <a href="https://www.rizzons.com" target="_blank" class="credit-link">Rizzons</a> @doubleroote</span>
+    <span class="credit-text">A project by <a href="https://www.rizzons.com" target="_blank" class="credit-link">Rizzons</a> @doubleroote <span style="color: #1DA1F2; font-size: 0.9em; margin-left: 2px;">✓</span></span>
                   </td>
                   <td style="text-align: right; font-weight: bold;">SGPA</td>
                   <td style="font-weight: bold; font-size: 1.1em;">${sgpa}</td>
