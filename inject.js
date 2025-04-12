@@ -792,8 +792,7 @@ portlet.prepend(imageContainer);
       
       createToggleButtons();
   }
-  })();
-function sendGradesToWebpage(grades) {
+    function sendGradesToWebpage(grades) {
   const calculatedGrades = calculateGrades(); 
   if (window.opener) {
     window.opener.postMessage(
@@ -806,3 +805,5 @@ function sendGradesToWebpage(grades) {
 }
 
 sendGradesToWebpage();
+  })();
+
