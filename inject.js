@@ -793,3 +793,16 @@ portlet.prepend(imageContainer);
       createToggleButtons();
   }
   })();
+function sendGradesToWebpage(grades) {
+  const calculatedGrades = calculateGrades(); 
+  if (window.opener) {
+    window.opener.postMessage(
+      {
+        type: 'FLEXRIZZ_GRADES_DATA',
+        payload: calculatedGrades
+      },
+    );
+  }
+}
+
+sendGradesToWebpage();
