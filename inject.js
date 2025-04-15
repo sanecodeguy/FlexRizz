@@ -219,6 +219,7 @@ portlet.prepend(imageContainer);
     }
     let currentSemester = detectCurrentSemester();
     let courses = detectRegisteredCourses(); // Now using detected courses instead of semester-based
+    let semesterCourses=courses;
       function loadHtml2Pdf() {
         return new Promise((resolve, reject) => {
             // Check if html2pdf is already loaded
