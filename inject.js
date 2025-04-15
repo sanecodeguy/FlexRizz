@@ -161,6 +161,7 @@
             "SS1012": { name: "Functional English", grading: "Relative", credits: 2, semester: 1 },
             "SL1012": { name: "Functional English Lab", grading: "Relative", credits: 1, semester: 1 },
             "SL1014": { name: "ICP", grading: "Relative", credits: 2, semester: 1 },
+
             "CL1004": { name: "OOP Lab", grading: "Absolute", credits: 1, semester: 2 },
             "CS1004": { name: "OOP", grading: "Absolute", credits: 3, semester: 2 },
             "EE1005": { name: "DLD", grading: "Absolute", credits: 3, semester: 2 },
@@ -172,7 +173,6 @@
             "SL1014": { name: "Expo Lab", grading: "Relative", credits: 1, semester: 2 },
             "CS2001": { name: "Data Structures", grading: "Absolute", credits: 3, semester: 3 },
             "CL2001": { name: "DS Lab", grading: "Absolute", credits: 1, semester: 3 },
-            // Add more courses as needed
         };
 
         // Function to detect registered courses from the marks tab
@@ -397,7 +397,7 @@
                 color: 'var(--text-primary)',
                 fontSize: '0.9rem'
             });
-            semesterLabel.textContent = 'Semester:';
+            semesterLabel.textContent = 'Semester (revoked) :';
 
             const decreaseBtn = document.createElement('button');
             decreaseBtn.innerHTML = '&minus;';
@@ -797,6 +797,5 @@
         
         createToggleButtons();
     }
-
 
 })();
