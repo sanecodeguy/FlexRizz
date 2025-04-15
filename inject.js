@@ -46,7 +46,7 @@
     if (!document.querySelector('#inter-font')) {
         const fontLink = document.createElement('link');
         fontLink.id = 'inter-font';
-        fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap';
+        fontLink.href = 'https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&display=swap';
         fontLink.rel = 'stylesheet';
         document.head.appendChild(fontLink);
     }
@@ -194,6 +194,7 @@
             }
             
             // Fallback to existing method
+            console
             return row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
         }
         // Function to detect registered courses from the marks tab
