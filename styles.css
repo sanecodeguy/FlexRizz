@@ -452,3 +452,49 @@
     color: white !important; /* Force white text */
     padding: 10px; /* Optional: Match tools section */
 }
+/* Stats Modal Styles */
+.stats-modal {
+    --accent-color: #4CAF50;
+    --carbon: #2c3e50;
+    --primary-bg: #121719;
+    --border-color: #2a363b;
+    --text-primary: #e1e3e5;
+    --text-secondary: #8b949e;
+    --elevated-black: #1e2629;
+}
+
+.stats-modal h3, .stats-modal h4, .stats-modal h5 {
+    color: var(--accent-color);
+}
+
+.stats-modal table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.stats-modal th {
+    text-align: left;
+    padding: 8px 10px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+.stats-modal td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Grade colors (same as your existing ones) */
+.grade-Aplus { color: #4CAF50; }
+.grade-A { color: #4CAF50; }
+.grade-Aminus { color: #8BC34A; }
+.grade-Bplus { color: #CDDC39; }
+.grade-B { color: #FFEB3B; }
+.grade-Bminus { color: #FFC107; }
+.grade-Cplus { color: #FF9800; }
+.grade-C { color: #FF5722; }
+.grade-Cminus { color: #F44336; }
+.grade-Dplus { color: #E91E63; }
+.grade-D { color: #9C27B0; }
+.grade-F { color: #607D8B; }
