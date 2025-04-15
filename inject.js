@@ -189,6 +189,7 @@
                 const dataTarget = button.getAttribute('data-target');
                 // Extract the last part after the last hyphen
                 const assessmentType = dataTarget.split('-').pop();
+                console.log(assessmentNameMapping[assessmentType]);
                 return assessmentNameMapping[assessmentType] || assessmentType;
             }
             
