@@ -2,6 +2,16 @@
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
 
+const script = document.createElement('script');
+script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
+script.onload = function() {
+  // Now utils.js can use CryptoJS
+  const utilsScript = document.createElement('script');
+  utilsScript.src = chrome.runtime.getURL('utils.js');
+  document.head.appendChild(utilsScript);
+};
+document.head.appendChild(script);
+
 if (document.querySelector('#injected-support-image')) return;
 
 // Create image wrapper
