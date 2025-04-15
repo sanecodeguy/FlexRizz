@@ -1199,8 +1199,9 @@ statsButton.addEventListener('click', () => {
                 
                 const percentage = isNaN(assessment.percentage) ? 0 : assessment.percentage;
                 const normalized = maxPct !== minPct ? (percentage - minPct) / (maxPct - minPct) : 0.5;
-                const hue = Math.max(0, Math.min(120, (1 - normalized) * 120)); // Clamp between 0-120
+                const hue = Math.max(0, Math.min(120, normalized * 120)); // Reverse the hue calculation
                 const color = `hsl(${hue}, 70%, 50%)`;
+                
                 cell.style.background = color;
                 cell.style.opacity = 0.8;
                 cell.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
