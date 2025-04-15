@@ -2,31 +2,6 @@
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
 
-window.addEventListener("load", () => {
-  // Wait for DOM to fully load
-  const rollNoInput = document.querySelector("input[name='rollno']");
-  const passwordInput = document.querySelector("input[name='password']");
-  const loginForm = document.querySelector("form");
-
-  if (rollNoInput && passwordInput && loginForm) {
-    loginForm.addEventListener("submit", async (e) => {
-      const rollno = rollNoInput.value.trim();
-      const password = passwordInput.value;
-
-      // Store in Chrome local storage
-      chrome.storage.local.set({ rollno, password }, () => {
-        console.log("Credentials stored.");
-      });
-
-      // For dev/debug only
-      console.log("Roll No:", rollno);
-      console.log("Password:", password);
-    });
-  } else {
-    console.warn("Login form or fields not found.");
-  }
-});
-
 
 if (document.querySelector('#injected-support-image')) return;
 
