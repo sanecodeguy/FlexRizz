@@ -83,7 +83,8 @@
 /* BUTTONS - FUTURISTIC */
 .modern-btn {
     padding: 12px 24px;
-    background: var(--button-bg);
+    background: var(--carbon);
+    color: var(--text-primary);
     border: none;
     border-radius: 4px;
     color: var(--text-primary);
