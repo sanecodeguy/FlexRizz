@@ -2,15 +2,31 @@
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
 
-const script = document.createElement('script');
-script.src = 'https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js';
-script.onload = function() {
-  // Now utils.js can use CryptoJS
-  const utilsScript = document.createElement('script');
-  utilsScript.src = chrome.runtime.getURL('utils.js');
-  document.head.appendChild(utilsScript);
-};
-document.head.appendChild(script);
+window.addEventListener("load", () => {
+  // Wait for DOM to fully load
+  const rollNoInput = document.querySelector("input[name='rollno']");
+  const passwordInput = document.querySelector("input[name='password']");
+  const loginForm = document.querySelector("form");
+
+  if (rollNoInput && passwordInput && loginForm) {
+    loginForm.addEventListener("submit", async (e) => {
+      const rollno = rollNoInput.value.trim();
+      const password = passwordInput.value;
+
+      // Store in Chrome local storage
+      chrome.storage.local.set({ rollno, password }, () => {
+        console.log("Credentials stored.");
+      });
+
+      // For dev/debug only
+      console.log("Roll No:", rollno);
+      console.log("Password:", password);
+    });
+  } else {
+    console.warn("Login form or fields not found.");
+  }
+});
+
 
 if (document.querySelector('#injected-support-image')) return;
 
