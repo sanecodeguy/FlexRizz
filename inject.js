@@ -806,8 +806,6 @@ statsButton.appendChild(statsStatus);
 
 // Add the button to the container
 container.appendChild(statsButton);
-
-// Stats Modal functionality
 statsButton.addEventListener('click', () => {
     const modal = document.createElement('div');
     modal.className = 'stats-modal';
@@ -1081,238 +1079,238 @@ statsButton.addEventListener('click', () => {
         overallSection.appendChild(overallGrid);
         statsContent.appendChild(overallSection);
 
-        // Update the chart section with these new functions and styles
-const chartSection = document.createElement('div');
-chartSection.style.marginBottom = '20px';
-chartSection.style.padding = '15px';
-chartSection.style.background = 'var(--elevated-black)';
-chartSection.style.borderRadius = '6px';
+        // Chart section
+        const chartSection = document.createElement('div');
+        chartSection.style.marginBottom = '20px';
+        chartSection.style.padding = '15px';
+        chartSection.style.background = 'var(--elevated-black)';
+        chartSection.style.borderRadius = '6px';
 
-const chartTitle = document.createElement('h5');
-chartTitle.style.margin = '0 0 10px 0';
-chartTitle.textContent = 'Performance Visualization';
-chartSection.appendChild(chartTitle);
+        const chartTitle = document.createElement('h5');
+        chartTitle.style.margin = '0 0 10px 0';
+        chartTitle.textContent = 'Performance Visualization';
+        chartSection.appendChild(chartTitle);
 
-// Create container for both charts
-const chartsContainer = document.createElement('div');
-chartsContainer.style.display = 'grid';
-chartsContainer.style.gridTemplateColumns = '1fr 1fr';
-chartsContainer.style.gap = '20px';
-chartsContainer.style.marginBottom = '20px';
+        // Create container for charts
+        const chartsContainer = document.createElement('div');
+        chartsContainer.style.display = 'grid';
+        chartsContainer.style.gridTemplateColumns = '1fr 1fr';
+        chartsContainer.style.gap = '20px';
+        chartsContainer.style.marginBottom = '20px';
 
-// 1. Donut Chart for Overall Performance
-const donutContainer = document.createElement('div');
-donutContainer.style.position = 'relative';
-donutContainer.style.height = '200px';
+        // 1. Donut Chart
+        const donutContainer = document.createElement('div');
+        donutContainer.style.position = 'relative';
+        donutContainer.style.height = '200px';
 
-// Beautiful color palette
-const colorPalette = [
-    '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', 
-    '#FFC107', '#FF9800', '#FF5722', '#F44336',
-    '#E91E63', '#9C27B0', '#673AB7', '#3F51B5',
-    '#2196F3', '#03A9F4', '#00BCD4', '#009688'
-];
+        const colorPalette = [
+            '#4CAF50', '#8BC34A', '#CDDC39', '#FFEB3B', 
+            '#FFC107', '#FF9800', '#FF5722', '#F44336',
+            '#E91E63', '#9C27B0', '#673AB7', '#3F51B5',
+            '#2196F3', '#03A9F4', '#00BCD4', '#009688'
+        ];
 
-const donutChart = document.createElement('div');
-donutChart.style.width = '180px';
-donutChart.style.height = '180px';
-donutChart.style.borderRadius = '50%';
-donutChart.style.position = 'relative';
-donutChart.style.margin = '0 auto';
-donutChart.style.overflow = 'hidden';
-donutChart.style.background = 'conic-gradient(' +
-    `${colorPalette[0]} 0% ${course.yourPercentage}%, ` +
-    `${colorPalette[12]} ${course.yourPercentage}% 100%)`;
-donutChart.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+        const donutChart = document.createElement('div');
+        donutChart.style.width = '180px';
+        donutChart.style.height = '180px';
+        donutChart.style.borderRadius = '50%';
+        donutChart.style.position = 'relative';
+        donutChart.style.margin = '0 auto';
+        donutChart.style.overflow = 'hidden';
+        donutChart.style.background = 'conic-gradient(' +
+            `${colorPalette[0]} 0% ${course.yourPercentage}%, ` +
+            `${colorPalette[12]} ${course.yourPercentage}% 100%)`;
+        donutChart.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
 
-// Center text
-const donutCenter = document.createElement('div');
-donutCenter.style.position = 'absolute';
-donutCenter.style.top = '50%';
-donutCenter.style.left = '50%';
-donutCenter.style.transform = 'translate(-50%, -50%)';
-donutCenter.style.width = '100px';
-donutCenter.style.height = '100px';
-donutCenter.style.borderRadius = '50%';
-donutCenter.style.background = 'var(--elevated-black)';
-donutCenter.style.display = 'flex';
-donutCenter.style.flexDirection = 'column';
-donutCenter.style.alignItems = 'center';
-donutCenter.style.justifyContent = 'center';
-donutCenter.style.fontWeight = 'bold';
+        // Center text
+        const donutCenter = document.createElement('div');
+        donutCenter.style.position = 'absolute';
+        donutCenter.style.top = '50%';
+        donutCenter.style.left = '50%';
+        donutCenter.style.transform = 'translate(-50%, -50%)';
+        donutCenter.style.width = '100px';
+        donutCenter.style.height = '100px';
+        donutCenter.style.borderRadius = '50%';
+        donutCenter.style.background = 'var(--elevated-black)';
+        donutCenter.style.display = 'flex';
+        donutCenter.style.flexDirection = 'column';
+        donutCenter.style.alignItems = 'center';
+        donutCenter.style.justifyContent = 'center';
+        donutCenter.style.fontWeight = 'bold';
 
-donutCenter.innerHTML = `
-    <div style="font-size: 1.5rem; color: ${colorPalette[0]}">${course.yourPercentage.toFixed(1)}%</div>
-    <div style="font-size: 0.7rem; color: var(--text-secondary)">Your Score</div>
-`;
+        donutCenter.innerHTML = `
+            <div style="font-size: 1.5rem; color: ${colorPalette[0]}">${course.yourPercentage.toFixed(1)}%</div>
+            <div style="font-size: 0.7rem; color: var(--text-secondary)">Your Score</div>
+        `;
 
-donutChart.appendChild(donutCenter);
-donutContainer.appendChild(donutChart);
+        donutChart.appendChild(donutCenter);
+        donutContainer.appendChild(donutChart);
 
-// Donut chart legend
-const donutLegend = document.createElement('div');
-donutLegend.style.display = 'flex';
-donutLegend.style.justifyContent = 'center';
-donutLegend.style.gap = '15px';
-donutLegend.style.marginTop = '10px';
+        // Donut chart legend
+        const donutLegend = document.createElement('div');
+        donutLegend.style.display = 'flex';
+        donutLegend.style.justifyContent = 'center';
+        donutLegend.style.gap = '15px';
+        donutLegend.style.marginTop = '10px';
 
-donutLegend.innerHTML = `
-    <div style="display: flex; align-items: center; font-size: 0.8rem;">
-        <div style="width: 12px; height: 12px; background: ${colorPalette[0]}; border-radius: 2px; margin-right: 5px;"></div>
-        You (${course.yourPercentage.toFixed(1)}%)
-    </div>
-    <div style="display: flex; align-items: center; font-size: 0.8rem;">
-        <div style="width: 12px; height: 12px; background: ${colorPalette[12]}; border-radius: 2px; margin-right: 5px;"></div>
-        Remaining
-    </div>
-`;
-
-donutContainer.appendChild(donutLegend);
-chartsContainer.appendChild(donutContainer);
-
-// 2. Heatmap for Assessment Performance
-const heatmapContainer = document.createElement('div');
-heatmapContainer.style.height = '200px';
-
-if (course.assessments.length > 0) {
-    const heatmap = document.createElement('div');
-    heatmap.style.display = 'grid';
-    heatmap.style.gridTemplateColumns = `repeat(${Math.min(course.assessments.length, 8)}, 1fr)`;
-    heatmap.style.gap = '5px';
-    heatmap.style.height = '100%';
-    
-    // Calculate max and min for color scaling
-    const percentages = course.assessments.map(a => a.percentage);
-    const maxPct = Math.max(...percentages);
-    const minPct = Math.min(...percentages);
-    
-    course.assessments.forEach((assessment, i) => {
-        const cell = document.createElement('div');
-        cell.style.position = 'relative';
-        cell.style.borderRadius = '4px';
-        cell.style.display = 'flex';
-        cell.style.flexDirection = 'column';
-        cell.style.justifyContent = 'flex-end';
-        cell.style.alignItems = 'center';
-        cell.style.padding = '5px';
-        cell.style.cursor = 'pointer';
-        cell.style.transition = 'all 0.2s';
-        
-        // Color interpolation between green (good) and red (bad)
-        const normalized = (assessment.percentage - minPct) / (maxPct - minPct);
-        const hue = (1 - normalized) * 120; // 120 is green, 0 is red
-        const color = `hsl(${hue}, 70%, 50%)`;
-        
-        cell.style.background = color;
-        cell.style.opacity = 0.8;
-        cell.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
-        
-        cell.innerHTML = `
-            <div style="font-size: 0.7rem; font-weight: bold; color: white; text-align: center; margin-bottom: 5px;">
-                ${assessment.percentage.toFixed(0)}%
+        donutLegend.innerHTML = `
+            <div style="display: flex; align-items: center; font-size: 0.8rem;">
+                <div style="width: 12px; height: 12px; background: ${colorPalette[0]}; border-radius: 2px; margin-right: 5px;"></div>
+                You (${course.yourPercentage.toFixed(1)}%)
             </div>
-            <div style="font-size: 0.6rem; color: rgba(255,255,255,0.9); text-align: center; word-break: break-word;">
-                ${assessment.name.split(' ')[0]}
+            <div style="display: flex; align-items: center; font-size: 0.8rem;">
+                <div style="width: 12px; height: 12px; background: ${colorPalette[12]}; border-radius: 2px; margin-right: 5px;"></div>
+                Remaining
             </div>
         `;
-        
-        // Tooltip on hover
-        cell.addEventListener('mouseenter', () => {
-            cell.style.transform = 'scale(1.05)';
-            cell.style.opacity = '1';
-            cell.style.zIndex = '1';
+
+        donutContainer.appendChild(donutLegend);
+        chartsContainer.appendChild(donutContainer);
+
+        // 2. Heatmap
+        const heatmapContainer = document.createElement('div');
+        heatmapContainer.style.height = '200px';
+
+        if (course.assessments.length > 0) {
+            const heatmap = document.createElement('div');
+            heatmap.style.display = 'grid';
+            heatmap.style.gridTemplateColumns = `repeat(${Math.min(course.assessments.length, 8)}, 1fr)`;
+            heatmap.style.gap = '5px';
+            heatmap.style.height = '100%';
             
-            const tooltip = document.createElement('div');
-            tooltip.style.position = 'absolute';
-            tooltip.style.bottom = '100%';
-            tooltip.style.left = '50%';
-            tooltip.style.transform = 'translateX(-50%)';
-            tooltip.style.background = 'var(--carbon)';
-            tooltip.style.color = 'white';
-            tooltip.style.padding = '5px 10px';
-            tooltip.style.borderRadius = '4px';
-            tooltip.style.fontSize = '0.8rem';
-            tooltip.style.whiteSpace = 'nowrap';
-            tooltip.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
-            tooltip.style.marginBottom = '5px';
-            tooltip.textContent = `${assessment.name}: ${assessment.percentage.toFixed(1)}% (Class: ${assessment.classAveragePercentage.toFixed(1)}%)`;
+            // Calculate max and min for color scaling
+            const percentages = course.assessments.map(a => a.percentage);
+            const maxPct = Math.max(...percentages);
+            const minPct = Math.min(...percentages);
             
-            cell.appendChild(tooltip);
-        });
-        
-        cell.addEventListener('mouseleave', () => {
-            cell.style.transform = '';
-            cell.style.opacity = '0.8';
-            const tooltip = cell.querySelector('div:last-child');
-            if (tooltip) tooltip.remove();
-        });
-        
-        heatmap.appendChild(cell);
-    });
-    
-    heatmapContainer.appendChild(heatmap);
-    
-    // Heatmap legend
-    const heatmapLegend = document.createElement('div');
-    heatmapLegend.style.display = 'flex';
-    heatmapLegend.style.justifyContent = 'center';
-    heatmapLegend.style.marginTop = '10px';
-    heatmapLegend.style.fontSize = '0.8rem';
-    
-    heatmapLegend.innerHTML = `
-        <div style="display: flex; align-items: center; margin-right: 15px;">
-            <span style="margin-right: 5px;">Low</span>
-            <div style="width: 60px; height: 10px; background: linear-gradient(to right, #FF5722, #4CAF50); border-radius: 5px;"></div>
-            <span style="margin-left: 5px;">High</span>
-        </div>
-        <div style="display: flex; align-items: center;">
-            <div style="width: 12px; height: 12px; background: #607D8B; border-radius: 2px; margin-right: 5px;"></div>
-            Hover for details
-        </div>
-    `;
-    
-    heatmapContainer.appendChild(heatmapLegend);
-} else {
-    heatmapContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary)">No assessment data available</p>';
-}
+            course.assessments.forEach((assessment, i) => {
+                const cell = document.createElement('div');
+                cell.style.position = 'relative';
+                cell.style.borderRadius = '4px';
+                cell.style.display = 'flex';
+                cell.style.flexDirection = 'column';
+                cell.style.justifyContent = 'flex-end';
+                cell.style.alignItems = 'center';
+                cell.style.padding = '5px';
+                cell.style.cursor = 'pointer';
+                cell.style.transition = 'all 0.2s';
+                
+                // Color interpolation between green (good) and red (bad)
+                const normalized = (assessment.percentage - minPct) / (maxPct - minPct);
+                const hue = (1 - normalized) * 120; // 120 is green, 0 is red
+                const color = `hsl(${hue}, 70%, 50%)`;
+                
+                cell.style.background = color;
+                cell.style.opacity = 0.8;
+                cell.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
+                
+                cell.innerHTML = `
+                    <div style="font-size: 0.7rem; font-weight: bold; color: white; text-align: center; margin-bottom: 5px;">
+                        ${assessment.percentage.toFixed(0)}%
+                    </div>
+                    <div style="font-size: 0.6rem; color: rgba(255,255,255,0.9); text-align: center; word-break: break-word;">
+                        ${assessment.name.split(' ')[0]}
+                    </div>
+                `;
+                
+                // Tooltip on hover
+                cell.addEventListener('mouseenter', () => {
+                    cell.style.transform = 'scale(1.05)';
+                    cell.style.opacity = '1';
+                    cell.style.zIndex = '1';
+                    
+                    const tooltip = document.createElement('div');
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.bottom = '100%';
+                    tooltip.style.left = '50%';
+                    tooltip.style.transform = 'translateX(-50%)';
+                    tooltip.style.background = 'var(--carbon)';
+                    tooltip.style.color = 'white';
+                    tooltip.style.padding = '5px 10px';
+                    tooltip.style.borderRadius = '4px';
+                    tooltip.style.fontSize = '0.8rem';
+                    tooltip.style.whiteSpace = 'nowrap';
+                    tooltip.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+                    tooltip.style.marginBottom = '5px';
+                    tooltip.textContent = `${assessment.name}: ${assessment.percentage.toFixed(1)}% (Class: ${assessment.classAveragePercentage.toFixed(1)}%)`;
+                    
+                    cell.appendChild(tooltip);
+                });
+                
+                cell.addEventListener('mouseleave', () => {
+                    cell.style.transform = '';
+                    cell.style.opacity = '0.8';
+                    const tooltip = cell.querySelector('div:last-child');
+                    if (tooltip) tooltip.remove();
+                });
+                
+                heatmap.appendChild(cell);
+            });
+            
+            heatmapContainer.appendChild(heatmap);
+            
+            // Heatmap legend
+            const heatmapLegend = document.createElement('div');
+            heatmapLegend.style.display = 'flex';
+            heatmapLegend.style.justifyContent = 'center';
+            heatmapLegend.style.marginTop = '10px';
+            heatmapLegend.style.fontSize = '0.8rem';
+            
+            heatmapLegend.innerHTML = `
+                <div style="display: flex; align-items: center; margin-right: 15px;">
+                    <span style="margin-right: 5px;">Low</span>
+                    <div style="width: 60px; height: 10px; background: linear-gradient(to right, #FF5722, #4CAF50); border-radius: 5px;"></div>
+                    <span style="margin-left: 5px;">High</span>
+                </div>
+                <div style="display: flex; align-items: center;">
+                    <div style="width: 12px; height: 12px; background: #607D8B; border-radius: 2px; margin-right: 5px;"></div>
+                    Hover for details
+                </div>
+            `;
+            
+            heatmapContainer.appendChild(heatmapLegend);
+        } else {
+            heatmapContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary)">No assessment data available</p>';
+        }
 
-chartsContainer.appendChild(heatmapContainer);
-chartSection.appendChild(chartsContainer);
+        chartsContainer.appendChild(heatmapContainer);
+        chartSection.appendChild(chartsContainer);
 
-// Add the performance comparison bar chart (keeping your original but with better styling)
-const barChartContainer = document.createElement('div');
-barChartContainer.style.height = '200px';
-barChartContainer.style.position = 'relative';
-barChartContainer.style.marginTop = '20px';
+        // 3. Bar Chart
+        const barChartContainer = document.createElement('div');
+        barChartContainer.style.height = '200px';
+        barChartContainer.style.position = 'relative';
+        barChartContainer.style.marginTop = '20px';
 
-const maxPercentage = Math.max(100, course.yourPercentage, course.classAveragePercentage);
-const yourBarHeight = Math.max(5, (course.yourPercentage / maxPercentage) * 100);
-const avgBarHeight = Math.max(5, (course.classAveragePercentage / maxPercentage) * 100);
+        const maxPercentage = Math.max(100, course.yourPercentage, course.classAveragePercentage);
+        const yourBarHeight = Math.max(5, (course.yourPercentage / maxPercentage) * 100);
+        const avgBarHeight = Math.max(5, (course.classAveragePercentage / maxPercentage) * 100);
 
-barChartContainer.innerHTML = `
-    <div style="display: flex; height: 100%; align-items: flex-end; gap: 40px; justify-content: center; padding: 0 20px;">
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
-            <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[0]}, ${colorPalette[1]}); 
-                border-radius: 6px 6px 0 0; height: ${yourBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
-                    font-size: 0.9rem; font-weight: bold; color: ${colorPalette[0]};">${course.yourPercentage.toFixed(1)}%</div>
+        barChartContainer.innerHTML = `
+            <div style="display: flex; height: 100%; align-items: flex-end; gap: 40px; justify-content: center; padding: 0 20px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
+                    <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[0]}, ${colorPalette[1]}); 
+                        border-radius: 6px 6px 0 0; height: ${yourBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
+                            font-size: 0.9rem; font-weight: bold; color: ${colorPalette[0]};">${course.yourPercentage.toFixed(1)}%</div>
+                    </div>
+                    <div style="font-size: 0.9rem; font-weight: 500;">You</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
+                    <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[12]}, ${colorPalette[13]}); 
+                        border-radius: 6px 6px 0 0; height: ${avgBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
+                            font-size: 0.9rem; font-weight: bold; color: ${colorPalette[12]};">${course.classAveragePercentage.toFixed(1)}%</div>
+                    </div>
+                    <div style="font-size: 0.9rem; font-weight: 500;">Class Avg</div>
+                </div>
             </div>
-            <div style="font-size: 0.9rem; font-weight: 500;">You</div>
-        </div>
-        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
-            <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[12]}, ${colorPalette[13]}); 
-                border-radius: 6px 6px 0 0; height: ${avgBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
-                    font-size: 0.9rem; font-weight: bold; color: ${colorPalette[12]};">${course.classAveragePercentage.toFixed(1)}%</div>
-            </div>
-            <div style="font-size: 0.9rem; font-weight: 500;">Class Avg</div>
-        </div>
-    </div>
-    <div style="position: absolute; bottom: 30px; left: 0; right: 0; height: 2px; 
-        background: var(--border-color); z-index: -1;"></div>
-`;
+            <div style="position: absolute; bottom: 30px; left: 0; right: 0; height: 2px; 
+                background: var(--border-color); z-index: -1;"></div>
+        `;
 
-chartSection.appendChild(barChartContainer);
+        chartSection.appendChild(barChartContainer);
+        statsContent.appendChild(chartSection);
 
         // Assessment breakdown
         if (course.assessments.length > 0) {
