@@ -555,7 +555,7 @@ body {
     }
     
     .modern-btn {
-        width: 100%;
+        width: 60%;
         padding: 1rem;
         font-size: 0.95rem;
     }
@@ -747,7 +747,7 @@ body {
     text-transform: uppercase;
     position: relative;
     overflow: hidden;
-    min-width: 160px;
+    min-width: 90px;
     text-align: center;
 }
 
@@ -998,30 +998,3 @@ body {
     border-top: none;
 }
 
-/* Cyberpunk terminal flicker effect */
-@keyframes terminalFlicker {
-    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
-    20%, 22%, 24%, 55% { opacity: 0.7; }
-}
-
-.terminal-flicker {
-    animation: terminalFlicker 10s infinite;
-}
-
-/* Cyberpunk glitch effect */
-@keyframes glitch {
-    0% { transform: translate(0); }
-    20% { transform: translate(-3px, 3px); }
-    40% { transform: translate(-3px, -3px); }
-    60% { transform: translate(3px, 3px); }
-    80% { transform: translate(3px, -3px); }
-    100% { transform: translate(0); }
-}
-
-.glitch-effect {
-    animation: glitch 0.5s infinite;
-}
-
-.glitch-effect:hover {
-    animation: none;
-}
