@@ -1177,11 +1177,13 @@ statsButton.addEventListener('click', () => {
             heatmap.style.gridTemplateColumns = `repeat(${Math.min(course.assessments.length, 8)}, 1fr)`;
             heatmap.style.gap = '5px';
             heatmap.style.height = '100%';
+            heatmap.style.minHeight = '150px'; // Ensure minimum height
             
-            // Calculate max and min for color scaling
-            const percentages = course.assessments.map(a => a.percentage);
-            const maxPct = Math.max(...percentages);
-            const minPct = Math.min(...percentages);
+            // Calculate max and min for color scaling with fallbacks
+            const percentages = course.assessments.map(a => a.percentage).filter(p => !isNaN(p));
+            const maxPct = percentages.length > 0 ? Math.max(...percentages, 1) : 100;
+            const minPct = percentages.length > 0 ? Math.min(...percentages, 0) : 0;
+            
             
             course.assessments.forEach((assessment, i) => {
                 const cell = document.createElement('div');
@@ -1195,11 +1197,10 @@ statsButton.addEventListener('click', () => {
                 cell.style.cursor = 'pointer';
                 cell.style.transition = 'all 0.2s';
                 
-                // Color interpolation between green (good) and red (bad)
-                const normalized = (assessment.percentage - minPct) / (maxPct - minPct);
-                const hue = (1 - normalized) * 120; // 120 is green, 0 is red
+                const percentage = isNaN(assessment.percentage) ? 0 : assessment.percentage;
+                const normalized = maxPct !== minPct ? (percentage - minPct) / (maxPct - minPct) : 0.5;
+                const hue = Math.max(0, Math.min(120, (1 - normalized) * 120)); // Clamp between 0-120
                 const color = `hsl(${hue}, 70%, 50%)`;
-                
                 cell.style.background = color;
                 cell.style.opacity = 0.8;
                 cell.style.boxShadow = '0 2px 5px rgba(0,0,0,0.1)';
@@ -1246,6 +1247,9 @@ statsButton.addEventListener('click', () => {
                 
                 heatmap.appendChild(cell);
             });
+            if (course.assessments.length === 0) {
+                heatmapContainer.innerHTML = '<p style="text-align: center; color: var(--text-secondary)">No assessment data available</p>';
+            }
             
             heatmapContainer.appendChild(heatmap);
             
@@ -1277,37 +1281,40 @@ statsButton.addEventListener('click', () => {
         chartSection.appendChild(chartsContainer);
 
         // 3. Bar Chart
-        const barChartContainer = document.createElement('div');
-        barChartContainer.style.height = '200px';
-        barChartContainer.style.position = 'relative';
-        barChartContainer.style.marginTop = '20px';
+       // Replace the bar chart container code with this:
+const barChartContainer = document.createElement('div');
+barChartContainer.style.height = '200px';
+barChartContainer.style.position = 'relative';
+barChartContainer.style.marginTop = '20px';
+barChartContainer.style.display = 'block'; // Ensure it's displayed
 
-        const maxPercentage = Math.max(100, course.yourPercentage, course.classAveragePercentage);
-        const yourBarHeight = Math.max(5, (course.yourPercentage / maxPercentage) * 100);
-        const avgBarHeight = Math.max(5, (course.classAveragePercentage / maxPercentage) * 100);
+// Add these checks for NaN values
+const yourPct = isNaN(course.yourPercentage) ? 0 : course.yourPercentage;
+const avgPct = isNaN(course.classAveragePercentage) ? 0 : course.classAveragePercentage;
+const maxPercentage = Math.max(100, yourPct, avgPct);
 
-        barChartContainer.innerHTML = `
-            <div style="display: flex; height: 100%; align-items: flex-end; gap: 40px; justify-content: center; padding: 0 20px;">
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
-                    <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[0]}, ${colorPalette[1]}); 
-                        border-radius: 6px 6px 0 0; height: ${yourBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                        <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
-                            font-size: 0.9rem; font-weight: bold; color: ${colorPalette[0]};">${course.yourPercentage.toFixed(1)}%</div>
-                    </div>
-                    <div style="font-size: 0.9rem; font-weight: 500;">You</div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
-                    <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[12]}, ${colorPalette[13]}); 
-                        border-radius: 6px 6px 0 0; height: ${avgBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                        <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
-                            font-size: 0.9rem; font-weight: bold; color: ${colorPalette[12]};">${course.classAveragePercentage.toFixed(1)}%</div>
-                    </div>
-                    <div style="font-size: 0.9rem; font-weight: 500;">Class Avg</div>
-                </div>
+barChartContainer.innerHTML = `
+    <div style="display: flex; height: 100%; align-items: flex-end; gap: 40px; justify-content: center; padding: 0 20px;">
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
+            <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[0]}, ${colorPalette[1]}); 
+                border-radius: 6px 6px 0 0; height: ${Math.max(5, (yourPct / maxPercentage) * 100}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
+                    font-size: 0.9rem; font-weight: bold; color: ${colorPalette[0]};">${yourPct.toFixed(1)}%</div>
             </div>
-            <div style="position: absolute; bottom: 30px; left: 0; right: 0; height: 2px; 
-                background: var(--border-color); z-index: -1;"></div>
-        `;
+            <div style="font-size: 0.9rem; font-weight: 500;">You</div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
+            <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[12]}, ${colorPalette[13]}); 
+                border-radius: 6px 6px 0 0; height: ${Math.max(5, (avgPct / maxPercentage) * 100}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
+                    font-size: 0.9rem; font-weight: bold; color: ${colorPalette[12]};">${avgPct.toFixed(1)}%</div>
+            </div>
+            <div style="font-size: 0.9rem; font-weight: 500;">Class Avg</div>
+        </div>
+    </div>
+    <div style="position: absolute; bottom: 30px; left: 0; right: 0; height: 2px; 
+        background: var(--border-color); z-index: -1;"></div>
+`;
 
         chartSection.appendChild(barChartContainer);
         statsContent.appendChild(chartSection);
