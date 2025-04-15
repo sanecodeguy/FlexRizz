@@ -12,7 +12,6 @@
 FlexRizz is a browser extension designed to enhance the Flex Student Portal by calculating and displaying expected course grades, Transcript and SGPA. The extension uses class averages (alternative to mca ) to calculate expected grades based on the course's grading type (either relative or absolute). It provides students with quick insights into their likely performance based on current class averages, helping them stay informed about their academic standing.
 
 **!! Automatic Semester Selection - Custom Semester Can be Selected**
-**Firefox Users Will need to Load the temporary Addon - have to load each time the browser is restarted - Update Expected**
 
 **Features**
 
@@ -26,6 +25,11 @@ FlexRizz is a browser extension designed to enhance the Flex Student Portal by c
      
      
 **Installation Instructions**
+## Added Support for Firefox 
+
+**Firefox User Can install Directly from** [FlexRizz - SGPA & Grades Extension](https://addons.mozilla.org/en-US/firefox/addon/flexrizz-sgpa-grades-extension/)
+
+
 **Chrome:**
 
     Download the extension ZIP file.
@@ -58,24 +62,6 @@ For users who prefer to use Git to download the extension, follow these steps ba
 
 **Windows:**
 
-## Added Support for Firefox 
-
-    Lauch Firefox
- Visit   
-    
-    about:debugging
-
- On the Left Sidebar click on This Firefox
-
-    Load Temporary Add-on
-
-![image](https://github.com/user-attachments/assets/4b2aee9a-fec2-4d5e-b628-3f77d9be7ebf)
-            
-        select background.js and open
-![image](https://github.com/user-attachments/assets/b99fc608-d22b-471c-9acf-9f7a489011c2)
-
-        You are All Set !
-![image](https://github.com/user-attachments/assets/f727b2e5-4ada-4e79-ab2d-0721767ec956)
 
 # For Chrome 
 
