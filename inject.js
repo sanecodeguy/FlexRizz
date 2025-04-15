@@ -174,7 +174,27 @@
             "CS2001": { name: "Data Structures", grading: "Absolute", credits: 3, semester: 3 },
             "CL2001": { name: "DS Lab", grading: "Absolute", credits: 1, semester: 3 },
         };
-
+        const assessmentNameMapping = {
+            'Assignment': 'Assignment',
+            'Quiz': 'Quiz',
+            'Sessional-I': 'Sessional I',
+            'Sessional-II': 'Sessional II',
+            'Lab Work': 'Lab Work',
+            'Project': 'Project',
+        };
+        function getAssessmentName(row) {
+            // Try to find the button first
+            const button = row.querySelector('button.btn.btn-link[data-target]');
+            if (button) {
+                const dataTarget = button.getAttribute('data-target');
+                // Extract the last part after the last hyphen
+                const assessmentType = dataTarget.split('-').pop();
+                return assessmentNameMapping[assessmentType] || assessmentType;
+            }
+            
+            // Fallback to existing method
+            return row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
+        }
         // Function to detect registered courses from the marks tab
         function detectRegisteredCourses() {
             const registeredCourses = {};
@@ -891,7 +911,7 @@ statsButton.addEventListener('click', () => {
 
             const rows = table.querySelectorAll('.calculationrow');
             rows.forEach((row) => {
-                const assessmentName = row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
+                   const assessmentName=getAssessmentName(row);
                 const weightRow = row.querySelector('.weightage');
                 const averageRow = row.querySelector('.AverageMarks');
                 const totalMarksRow = row.querySelector('.GrandTotal');
