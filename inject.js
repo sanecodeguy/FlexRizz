@@ -1102,28 +1102,38 @@ statsButton.addEventListener('click', () => {
         const yourBarHeight = (course.yourPercentage / maxPercentage) * 100;
         const avgBarHeight = (course.classAveragePercentage / maxPercentage) * 100;
 
+        // chartContainer.innerHTML = `
+        //     <div style="display: flex; height: 100%; align-items: flex-end; gap: 30px; justify-content: center;">
+        //         <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+        //             <div style="width: 40px; background: var(--accent-color); border-radius: 4px 4px 0 0; 
+        //                 height: ${yourBarHeight}%; position: relative;">
+        //                 <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
+        //                     font-size: 0.8rem; font-weight: bold;">${course.yourPercentage.toFixed(1)}%</div>
+        //             </div>
+        //             <div style="font-size: 0.8rem;">You</div>
+        //         </div>
+        //         <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+        //             <div style="width: 40px; background: var(--carbon); border-radius: 4px 4px 0 0; 
+        //                 height: ${avgBarHeight}%; position: relative;">
+        //                 <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
+        //                     font-size: 0.8rem; font-weight: bold;">${course.classAveragePercentage.toFixed(1)}%</div>
+        //             </div>
+        //             <div style="font-size: 0.8rem;">Class Avg</div>
+        //         </div>
+        //     </div>
+        //     <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 1px; 
+        //         background: var(--border-color);"></div>
+        // `;
         chartContainer.innerHTML = `
-            <div style="display: flex; height: 100%; align-items: flex-end; gap: 30px; justify-content: center;">
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                    <div style="width: 40px; background: var(--accent-color); border-radius: 4px 4px 0 0; 
-                        height: ${yourBarHeight}%; position: relative;">
-                        <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
-                            font-size: 0.8rem; font-weight: bold;">${course.yourPercentage.toFixed(1)}%</div>
-                    </div>
-                    <div style="font-size: 0.8rem;">You</div>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                    <div style="width: 40px; background: var(--carbon); border-radius: 4px 4px 0 0; 
-                        height: ${avgBarHeight}%; position: relative;">
-                        <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
-                            font-size: 0.8rem; font-weight: bold;">${course.classAveragePercentage.toFixed(1)}%</div>
-                    </div>
-                    <div style="font-size: 0.8rem;">Class Avg</div>
-                </div>
-            </div>
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 1px; 
-                background: var(--border-color);"></div>
-        `;
+        <div style="height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 40px;">
+            <div style="width: 40px; background: green; height: ${course.yourPercentage}%;"></div>
+            <div style="width: 40px; background: blue; height: ${course.classAveragePercentage}%;"></div>
+        </div>
+        <div style="text-align: center; margin-top: 10px;">
+            <span style="margin-right: 40px;">You: ${course.yourPercentage.toFixed(1)}%</span>
+            <span>Class Avg: ${course.classAveragePercentage.toFixed(1)}%</span>
+        </div>
+    `;
 
         chartSection.appendChild(chartContainer);
         statsContent.appendChild(chartSection);
