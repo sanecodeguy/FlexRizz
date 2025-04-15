@@ -1,6 +1,6 @@
-/* CYBERPUNK 2077 THEME - HIGH OCTANE VERSION */
+/* CYBERPUNK 2077 THEME - ULTRA ENHANCED EDITION */
 :root {
-    /* Base colors - Night City Palette */
+    /* Enhanced color palette with more cyberpunk vibrancy */
     --night-black: #000000;
     --city-dark: #0A0A0A;
     --neon-street: #1A1A1A;
@@ -8,49 +8,62 @@
     --cyber-yellow: #FFD300;
     --cyber-yellow-dark: #FFB800;
     
-    /* Neon accents */
+    /* Supercharged neon accents */
     --neon-pink: #FF2D78;
     --neon-blue: #00F0FF;
     --neon-purple: #B57BFF;
     --neon-green: #00FF9D;
+    --neon-orange: #FF5E1A;
     
-    /* UI Elements */
+    /* UI Elements - Enhanced contrast and glow */
     --primary-bg: var(--city-dark);
     --secondary-bg: var(--neon-street);
     --table-bg: var(--night-black);
     --accent-color: var(--cyber-yellow);
     --success-color: var(--neon-green);
-    --warning-color: var(--cyber-yellow-dark);
+    --warning-color: var(--neon-orange);
     --danger-color: var(--neon-pink);
     --text-primary: #FFFFFF;
     --text-secondary: #AAAAAA;
     --border-color: var(--metal-panel);
     --hover-bg: rgba(255, 211, 0, 0.15);
     --button-bg: var(--metal-panel);
-    --glow-effect: 0 0 10px rgba(255, 211, 0, 0.7);
+    --glow-effect: 0 0 15px rgba(255, 211, 0, 0.8);
+    --text-glow: 0 0 8px currentColor;
     
-    /* Cyberpunk scanlines overlay */
+    /* Cyberpunk scanlines overlay - more pronounced */
     --scanlines: repeating-linear-gradient(
         0deg,
-        rgba(0, 0, 0, 0.15),
-        rgba(0, 0, 0, 0.15) 1px,
+        rgba(0, 0, 0, 0.2),
+        rgba(0, 0, 0, 0.2) 1px,
         transparent 1px,
         transparent 2px
     );
+    
+    /* New holographic effect variables */
+    --hologram-effect: linear-gradient(
+        135deg,
+        rgba(0, 240, 255, 0.05) 0%,
+        rgba(255, 45, 120, 0.05) 50%,
+        rgba(0, 240, 255, 0.05) 100%
+    );
 }
 
-/* TERMINAL STYLE OVERRIDES */
+/* TERMINAL STYLE OVERRIDES - MORE IMMERSIVE */
 body {
     background-color: var(--night-black);
     background-image: 
-        radial-gradient(circle at 25% 25%, rgba(255, 211, 0, 0.05) 0%, transparent 50%),
-        var(--scanlines);
+        radial-gradient(circle at 25% 25%, rgba(255, 211, 0, 0.08) 0%, transparent 50%),
+        var(--scanlines),
+        var(--hologram-effect);
     color: var(--text-primary);
     font-family: 'Rajdhani', 'Inter', sans-serif;
     letter-spacing: 0.5px;
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
-/* PORTLET - CYBER TERMINAL STYLE */
+/* PORTLET - CORPO TERMINAL WITH HOLOGRAPHIC EFFECT */
 .m-portlet {
     width: 100%;
     max-width: 1200px;
@@ -60,10 +73,11 @@ body {
     overflow: hidden;
     border: 1px solid var(--cyber-yellow);
     box-shadow: 
-        0 0 15px rgba(255, 211, 0, 0.3),
-        inset 0 0 10px rgba(255, 211, 0, 0.2);
+        0 0 25px rgba(255, 211, 0, 0.4),
+        inset 0 0 15px rgba(255, 211, 0, 0.3);
     position: relative;
     font-family: 'Rajdhani', sans-serif;
+    backdrop-filter: blur(1px);
 }
 
 .m-portlet::before {
@@ -72,50 +86,94 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(90deg, 
         transparent 0%, 
         var(--cyber-yellow) 20%, 
-        var(--neon-pink) 50%, 
+        var(--neon-pink) 40%,
+        var(--neon-blue) 60%,
         var(--cyber-yellow) 80%, 
         transparent 100%);
-    animation: scanline 3s linear infinite;
+    animation: scanline 2.5s linear infinite;
+    z-index: 5;
+}
+
+.m-portlet::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(0, 240, 255, 0.02) 0%,
+        rgba(255, 45, 120, 0.02) 50%,
+        rgba(0, 240, 255, 0.02) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
 }
 
 @keyframes scanline {
-    0% { opacity: 0.3; }
-    50% { opacity: 1; }
-    100% { opacity: 0.3; }
+    0% { opacity: 0.2; transform: translateX(-100%); }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0.2; transform: translateX(100%); }
 }
 
-/* HEADER - CORPO STYLE */
+/* HEADER - CORPO STYLE WITH MORE IMPACT */
 .m-portlet__head {
     padding: 1.5rem 2rem;
     background: linear-gradient(to right, var(--city-dark), var(--neon-street));
     position: relative;
     border-bottom: 1px solid var(--cyber-yellow);
+    z-index: 2;
 }
 
 .m-portlet__head-title {
     margin: 0;
     color: var(--cyber-yellow);
-    font-size: 1.8rem;
+    font-size: 2rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    text-shadow: 0 0 8px rgba(255, 211, 0, 0.5);
+    text-shadow: 0 0 12px rgba(255, 211, 0, 0.7);
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    position: relative;
+    display: inline-block;
 }
 
-/* BUTTON CONTAINER - NEON GRID */
+.m-portlet__head-title::after {
+    content: "";
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--cyber-yellow);
+    box-shadow: 0 0 10px var(--cyber-yellow);
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: titleUnderline 3s ease-in-out infinite;
+}
+
+@keyframes titleUnderline {
+    0%, 100% { transform: scaleX(0); }
+    50% { transform: scaleX(1); }
+}
+
+/* BUTTON CONTAINER - NEON GRID ENHANCED */
 .toggle-container {
     display: flex;
     justify-content: center;
-    gap: 1rem;
-    padding: 1.2rem;
+    gap: 1.5rem;
+    padding: 1.5rem;
     background: var(--city-dark);
     border-bottom: 1px solid var(--cyber-yellow);
     position: relative;
+    z-index: 2;
+    flex-wrap: wrap;
 }
 
 .toggle-container::after {
@@ -128,44 +186,48 @@ body {
     background: linear-gradient(90deg, 
         transparent 0%, 
         var(--cyber-yellow) 20%, 
+        var(--neon-blue) 50%,
+        var(--cyber-yellow) 80%,
         transparent 100%);
+    animation: pulse 4s ease infinite;
 }
 
-/* BUTTONS - CYBERPUNK UI */
+@keyframes pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* BUTTONS - CYBERPUNK UI ENHANCED TO MATCH CUSTOM GRADES BUTTON */
 .modern-btn {
-    padding: 0.8rem 1.8rem;
-    background: var(--metal-panel);
+    padding: 1rem 2rem;
+    background: var(--cyber-yellow);
     border: none;
     border-radius: 0;
-    color: var(--text-primary);
-    font-weight: 600;
+    color: var(--night-black);
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.65, 0.05, 0.36, 1);
     position: relative;
     overflow: hidden;
     font-family: 'Rajdhani', sans-serif;
-    font-size: 0.95rem;
-    letter-spacing: 0.5px;
+    font-size: 1rem;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    box-shadow: 0 0 0 1px var(--cyber-yellow);
-}
-
-.modern-btn:hover {
-    background: var(--neon-street);
-    transform: translateY(-2px);
-    box-shadow: 
-        0 0 10px rgba(255, 211, 0, 0.5),
-        0 0 20px rgba(255, 211, 0, 0.2);
-}
-
-.modern-btn.active {
-    background: var(--cyber-yellow);
-    color: var(--night-black);
-    font-weight: 700;
     box-shadow: 
         0 0 15px rgba(255, 211, 0, 0.8),
         0 0 30px rgba(255, 211, 0, 0.3);
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    z-index: 2;
+    min-width: 180px;
+    text-align: center;
+}
+
+.modern-btn:hover {
+    background: var(--cyber-yellow-dark);
+    transform: translateY(-3px);
+    box-shadow: 
+        0 0 20px rgba(255, 211, 0, 0.9),
+        0 0 40px rgba(255, 211, 0, 0.4);
 }
 
 .modern-btn::before {
@@ -177,11 +239,11 @@ body {
     height: 200%;
     background: linear-gradient(
         to bottom right,
-        rgba(255, 211, 0, 0) 0%,
-        rgba(255, 211, 0, 0) 45%,
-        rgba(255, 211, 0, 0.3) 50%,
-        rgba(255, 211, 0, 0) 55%,
-        rgba(255, 211, 0, 0) 100%
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0) 45%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0) 55%,
+        rgba(255, 255, 255, 0) 100%
     );
     transform: rotate(30deg);
     transition: all 0.7s cubic-bezier(0.65, 0.05, 0.36, 1);
@@ -189,43 +251,67 @@ body {
 
 .modern-btn:hover::before {
     left: 100%;
+    top: 100%;
 }
 
-/* STATUS INDICATORS - PULSING NEON */
+.modern-btn:disabled {
+    background: var(--metal-panel) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+    cursor: not-allowed;
+    transform: none !important;
+    opacity: 0.7;
+}
+
+/* STATUS INDICATORS - ENHANCED PULSING NEON */
 .status-indicator {
     display: inline-block;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
     border-radius: 50%;
-    margin-left: 8px;
+    margin-left: 10px;
     vertical-align: middle;
-    box-shadow: 0 0 5px currentColor;
-    animation: pulse 2s infinite;
+    box-shadow: 0 0 8px currentColor;
+    animation: pulse 1.5s infinite ease-in-out;
+    position: relative;
 }
 
-@keyframes pulse {
-    0% { opacity: 0.7; }
-    50% { opacity: 1; }
-    100% { opacity: 0.7; }
+.status-indicator::before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0;
+    animation: pulseRing 2s infinite ease-out;
+}
+
+@keyframes pulseRing {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.5); opacity: 0; }
 }
 
 .status-on {
     background: var(--neon-green);
-    box-shadow: 0 0 10px var(--neon-green);
+    box-shadow: 0 0 15px var(--neon-green);
 }
 
 .status-off {
     background: var(--neon-pink);
-    box-shadow: 0 0 10px var(--neon-pink);
+    box-shadow: 0 0 15px var(--neon-pink);
 }
 
-/* TABLE - DATATERM STYLE */
+/* TABLE - DATATERM STYLE ENHANCED */
 #course-data-table {
     width: 100%;
     border-collapse: collapse;
     background: var(--table-bg);
     font-family: 'Rajdhani', sans-serif;
     position: relative;
+    z-index: 2;
 }
 
 #course-data-table::before {
@@ -236,75 +322,138 @@ body {
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background: linear-gradient(
-        to bottom,
-        transparent 95%,
-        rgba(255, 211, 0, 0.1) 100%
-    );
-    animation: scan 15s linear infinite;
-}
-
-@keyframes scan {
-    0% { background-position: 0 0; }
-    100% { background-position: 0 100%; }
+    background: 
+        linear-gradient(
+            to bottom,
+            transparent 95%,
+            rgba(255, 211, 0, 0.1) 100%
+        ),
+        var(--hologram-effect);
+    animation: scan 12s linear infinite;
 }
 
 #course-data-table thead th {
-    padding: 1.2rem 1.5rem;
+    padding: 1.5rem;
     text-align: left;
     background: linear-gradient(to right, var(--city-dark), var(--neon-street));
     color: var(--cyber-yellow);
     font-weight: 700;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
+    font-size: 1rem;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     border-bottom: 2px solid var(--cyber-yellow);
     position: sticky;
     top: 0;
     z-index: 10;
+    text-shadow: var(--text-glow);
 }
 
 #course-data-table tbody tr {
-    border-bottom: 1px solid rgba(255, 211, 0, 0.1);
+    border-bottom: 1px solid rgba(255, 211, 0, 0.15);
     transition: all 0.2s ease-out;
 }
 
 #course-data-table tbody tr:last-child {
-    border-bottom: none;
+    border-bottom: 2px solid var(--cyber-yellow);
 }
 
 #course-data-table tbody tr:hover {
     background: var(--hover-bg);
-    box-shadow: 0 0 15px rgba(255, 211, 0, 0.1);
+    box-shadow: 0 0 20px rgba(255, 211, 0, 0.15);
 }
 
 #course-data-table td {
-    padding: 1.2rem 1.5rem;
+    padding: 1.5rem;
     color: var(--text-primary);
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 1rem;
     position: relative;
 }
 
-/* GRADE COLORS - NEON VIBRANT */
-.grade-Aplus { color: var(--neon-green) !important; font-weight: 800; text-shadow: 0 0 8px rgba(0, 255, 157, 0.5); }
-.grade-A { color: var(--neon-green) !important; font-weight: 600; text-shadow: 0 0 5px rgba(0, 255, 157, 0.3); }
-.grade-Aminus { color: var(--neon-green) !important; opacity: 0.9; }
-.grade-Bplus { color: var(--neon-blue) !important; font-weight: 600; text-shadow: 0 0 5px rgba(0, 240, 255, 0.3); }
-.grade-B { color: var(--neon-blue) !important; }
-.grade-Bminus { color: var(--neon-blue) !important; opacity: 0.8; }
-.grade-Cplus { color: var(--cyber-yellow) !important; text-shadow: 0 0 5px rgba(255, 211, 0, 0.3); }
-.grade-C { color: var(--cyber-yellow-dark) !important; }
-.grade-Cminus { color: var(--cyber-yellow-dark) !important; opacity: 0.8; }
-.grade-Dplus { color: var(--neon-pink) !important; text-shadow: 0 0 5px rgba(255, 45, 120, 0.3); }
-.grade-D { color: var(--neon-pink) !important; }
-.grade-F { color: var(--neon-pink) !important; font-weight: 800; text-shadow: 0 0 10px rgba(255, 45, 120, 0.5); }
+#course-data-table td::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 211, 0, 0.2), transparent);
+}
 
-/* SGPA - GLOWING HIGHLIGHT */
+/* GRADE COLORS - SUPERCHARGED NEON VIBRANCY */
+.grade-Aplus { 
+    color: var(--neon-green) !important; 
+    font-weight: 800; 
+    text-shadow: 0 0 12px rgba(0, 255, 157, 0.7); 
+    animation: textGlow 2s infinite alternate;
+}
+.grade-A { 
+    color: var(--neon-green) !important; 
+    font-weight: 700; 
+    text-shadow: 0 0 8px rgba(0, 255, 157, 0.5); 
+}
+.grade-Aminus { 
+    color: var(--neon-green) !important; 
+    opacity: 0.9; 
+    text-shadow: 0 0 5px rgba(0, 255, 157, 0.3); 
+}
+.grade-Bplus { 
+    color: var(--neon-blue) !important; 
+    font-weight: 700; 
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.5); 
+}
+.grade-B { 
+    color: var(--neon-blue) !important; 
+    text-shadow: 0 0 5px rgba(0, 240, 255, 0.3); 
+}
+.grade-Bminus { 
+    color: var(--neon-blue) !important; 
+    opacity: 0.8; 
+    text-shadow: 0 0 3px rgba(0, 240, 255, 0.2); 
+}
+.grade-Cplus { 
+    color: var(--cyber-yellow) !important; 
+    text-shadow: 0 0 8px rgba(255, 211, 0, 0.5); 
+}
+.grade-C { 
+    color: var(--cyber-yellow-dark) !important; 
+    text-shadow: 0 0 5px rgba(255, 184, 0, 0.3); 
+}
+.grade-Cminus { 
+    color: var(--cyber-yellow-dark) !important; 
+    opacity: 0.8; 
+}
+.grade-Dplus { 
+    color: var(--neon-pink) !important; 
+    text-shadow: 0 0 8px rgba(255, 45, 120, 0.5); 
+}
+.grade-D { 
+    color: var(--neon-pink) !important; 
+    text-shadow: 0 0 5px rgba(255, 45, 120, 0.3); 
+}
+.grade-F { 
+    color: var(--neon-pink) !important; 
+    font-weight: 800; 
+    text-shadow: 0 0 15px rgba(255, 45, 120, 0.7); 
+    animation: textPulse 1.5s infinite alternate;
+}
+
+@keyframes textGlow {
+    from { text-shadow: 0 0 5px currentColor; }
+    to { text-shadow: 0 0 15px currentColor; }
+}
+
+@keyframes textPulse {
+    from { opacity: 0.8; }
+    to { opacity: 1; }
+}
+
+/* SGPA - ENHANCED GLOWING HIGHLIGHT */
 .sgpa-row {
     background: linear-gradient(90deg, 
-        rgba(255, 211, 0, 0.1) 0%, 
-        rgba(255, 211, 0, 0.05) 100%) !important;
+        rgba(255, 211, 0, 0.15) 0%, 
+        rgba(255, 211, 0, 0.08) 50%,
+        rgba(255, 211, 0, 0.15) 100%) !important;
     position: relative;
 }
 
@@ -314,31 +463,51 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 1px;
+    height: 2px;
     background: linear-gradient(90deg, 
         transparent 0%, 
-        var(--cyber-yellow) 50%, 
+        var(--cyber-yellow) 20%,
+        var(--neon-blue) 50%,
+        var(--cyber-yellow) 80%,
         transparent 100%);
+    animation: pulse 3s infinite;
 }
 
 .sgpa-row td {
-    padding: 1.4rem 1.5rem !important;
-    font-weight: 600 !important;
+    padding: 1.6rem 1.5rem !important;
+    font-weight: 700 !important;
     color: var(--cyber-yellow) !important;
+    text-shadow: 0 0 10px rgba(255, 211, 0, 0.5) !important;
+    font-size: 1.1rem !important;
 }
 
-/* CREDIT TEXT - TERMINAL STYLE */
+/* CREDIT TEXT - ENHANCED TERMINAL STYLE */
 .credit-text {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
     font-family: 'Courier New', monospace;
+    text-align: center;
+    padding: 1.5rem;
+    position: relative;
+}
+
+.credit-text::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyber-yellow), transparent);
 }
 
 .credit-link {
     color: var(--cyber-yellow);
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     position: relative;
+    font-weight: 600;
 }
 
 .credit-link:hover {
@@ -361,11 +530,14 @@ body {
     width: 100%;
 }
 
-/* RESPONSIVE - MOBILE ADAPTATION */
+/* RESPONSIVE - ENHANCED MOBILE ADAPTATION */
 @media (max-width: 768px) {
     .m-portlet {
         margin: 1rem auto;
         border-width: 1px;
+        box-shadow: 
+            0 0 15px rgba(255, 211, 0, 0.3),
+            inset 0 0 10px rgba(255, 211, 0, 0.2);
     }
     
     .m-portlet__head {
@@ -373,67 +545,75 @@ body {
     }
     
     .m-portlet__head-title {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
     }
     
     .toggle-container {
         flex-direction: column;
-        gap: 0.8rem;
-        padding: 1rem;
+        gap: 1rem;
+        padding: 1.2rem;
     }
     
     .modern-btn {
         width: 100%;
-        padding: 0.8rem;
+        padding: 1rem;
+        font-size: 0.95rem;
     }
     
     #course-data-table th,
     #course-data-table td {
-        padding: 0.8rem 1rem;
-        font-size: 0.85rem;
+        padding: 1rem;
+        font-size: 0.9rem;
     }
     
     .modern-btn:disabled {
         opacity: 0.6;
-        cursor: not-allowed;
-        box-shadow: none;
-    }
-    
-    .modern-btn:disabled:hover {
-        transform: none;
-        background: var(--metal-panel);
     }
 }
 
-/* SPINNER - CYBERPUNK STYLE */
+/* SPINNER - ENHANCED CYBERPUNK STYLE */
 .spinner {
     display: inline-block;
-    width: 14px;
-    height: 14px;
-    border: 2px solid rgba(255, 211, 0, 0.3);
+    width: 16px;
+    height: 16px;
+    border: 3px solid rgba(255, 211, 0, 0.3);
     border-top-color: var(--cyber-yellow);
     border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-right: 8px;
+    animation: spin 0.8s linear infinite;
+    margin-right: 10px;
     vertical-align: middle;
-    box-shadow: 0 0 5px var(--cyber-yellow);
+    box-shadow: 0 0 8px var(--cyber-yellow);
+    position: relative;
+}
+
+.spinner::after {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    border-top-color: rgba(255, 211, 0, 0.2);
+    animation: spin 1.5s linear infinite;
 }
 
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
 
-/* CUSTOM GRADES MODAL - CORPO TERMINAL */
+/* CUSTOM GRADES MODAL - ENHANCED CORPO TERMINAL */
 .custom-grades-modal {
-    width: 500px;
-    max-width: 90%;
+    width: 550px;
+    max-width: 95%;
     background: var(--city-dark);
     border: 1px solid var(--cyber-yellow);
     border-radius: 0;
-    padding: 2rem;
+    padding: 2.5rem;
     box-shadow: 
-        0 0 20px rgba(255, 211, 0, 0.5),
-        inset 0 0 10px rgba(255, 211, 0, 0.2);
+        0 0 30px rgba(255, 211, 0, 0.7),
+        inset 0 0 15px rgba(255, 211, 0, 0.3);
     z-index: 1000;
     font-family: 'Rajdhani', sans-serif;
     position: relative;
@@ -446,42 +626,53 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: var(--cyber-yellow);
-    animation: scanline 3s linear infinite;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--cyber-yellow) 20%, 
+        var(--neon-pink) 50%,
+        var(--cyber-yellow) 80%, 
+        transparent 100%);
+    animation: scanline 2.5s linear infinite;
+}
+
+.custom-grades-modal::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--hologram-effect);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .custom-grades-modal h3 {
     color: var(--cyber-yellow);
-    font-size: 1.5rem;
-    margin: 0 0 1.5rem 0;
-    padding-bottom: 0.8rem;
+    font-size: 1.8rem;
+    margin: 0 0 2rem 0;
+    padding-bottom: 1rem;
     border-bottom: 1px solid var(--cyber-yellow);
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
-}
-
-.custom-grades-modal p {
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.5;
+    text-shadow: 0 0 10px rgba(255, 211, 0, 0.5);
 }
 
 .grade-inputs {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: 1.2rem;
+    margin-bottom: 2rem;
 }
 
 .grade-input-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.8rem 0;
+    padding: 1rem 0;
     border-bottom: 1px solid var(--metal-panel);
     position: relative;
 }
@@ -491,148 +682,184 @@ body {
     position: absolute;
     bottom: -1px;
     left: 0;
-    width: 30%;
-    height: 1px;
+    width: 40%;
+    height: 2px;
     background: var(--cyber-yellow);
+    box-shadow: 0 0 8px var(--cyber-yellow);
+    animation: widthPulse 3s infinite;
+}
+
+@keyframes widthPulse {
+    0%, 100% { width: 30%; }
+    50% { width: 50%; }
 }
 
 .grade-input-row label {
     color: var(--text-primary);
-    font-size: 0.95rem;
+    font-size: 1.1rem;
     flex: 1;
     letter-spacing: 0.5px;
+    font-weight: 500;
 }
 
 .grade-input {
     background: var(--neon-street);
     border: 1px solid var(--cyber-yellow);
     color: var(--text-primary);
-    padding: 0.6rem 1rem;
-    width: 80px;
+    padding: 0.8rem 1.2rem;
+    width: 100px;
     text-align: center;
     border-radius: 0;
     font-family: 'Rajdhani', sans-serif;
     font-weight: 600;
+    font-size: 1rem;
     transition: all 0.3s ease;
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+    box-shadow: 
+        inset 0 0 8px rgba(0, 0, 0, 0.5),
+        0 0 5px rgba(255, 211, 0, 0.3);
 }
 
 .grade-input:focus {
     outline: none;
     border-color: var(--neon-blue);
     box-shadow: 
-        inset 0 0 5px rgba(0, 0, 0, 0.5),
-        0 0 10px rgba(0, 240, 255, 0.3);
+        inset 0 0 10px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(0, 240, 255, 0.5);
 }
 
 .modal-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1.5rem;
+    gap: 1.5rem;
+    margin-top: 2rem;
 }
 
 .modal-actions button {
-    padding: 0.8rem 1.8rem;
+    padding: 1rem 2.2rem;
     border: none;
     border-radius: 0;
     font-family: 'Rajdhani', sans-serif;
-    font-weight: 600;
+    font-weight: 700;
+    font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     text-transform: uppercase;
     position: relative;
     overflow: hidden;
+    min-width: 160px;
+    text-align: center;
 }
 
 #apply-custom-grades {
     background: var(--cyber-yellow);
     color: var(--night-black);
-    font-weight: 700;
-    box-shadow: 0 0 10px rgba(255, 211, 0, 0.5);
+    box-shadow: 
+        0 0 15px rgba(255, 211, 0, 0.7),
+        0 0 30px rgba(255, 211, 0, 0.3);
 }
 
 #apply-custom-grades:hover {
     background: var(--cyber-yellow-dark);
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(255, 211, 0, 0.8);
+    transform: translateY(-3px);
+    box-shadow: 
+        0 0 20px rgba(255, 211, 0, 0.9),
+        0 0 40px rgba(255, 211, 0, 0.4);
 }
 
 #cancel-custom-grades {
     background: transparent;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     border: 1px solid var(--cyber-yellow);
+    box-shadow: 0 0 10px rgba(255, 211, 0, 0.2);
 }
 
 #cancel-custom-grades:hover {
-    background: rgba(255, 211, 0, 0.1);
+    background: rgba(255, 211, 0, 0.15);
     color: var(--text-primary);
+    box-shadow: 0 0 15px rgba(255, 211, 0, 0.4);
 }
 
-/* MODAL BACKDROP - NIGHT CITY STYLE */
+/* MODAL BACKDROP - ENHANCED NIGHT CITY STYLE */
 .modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0, 0, 0, 0.9);
     z-index: 999;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* SEMESTER SELECTOR - CORPO UI */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* SEMESTER SELECTOR - ENHANCED CORPO UI */
 .semester-selector {
     margin-right: auto;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.8rem;
+    flex-wrap: wrap;
 }
 
 .semester-btn {
-    min-width: 30px !important;
-    padding: 0.5rem 1rem !important;
+    min-width: 40px !important;
+    padding: 0.8rem 1.2rem !important;
     color: var(--text-primary) !important;
-    font-size: 1rem !important;
-    background: var(--metal-panel) !important;
+    font-size: 1.1rem !important;
+    background: var(--cyber-yellow) !important;
+    color: var(--night-black) !important;
     transition: all 0.3s ease !important;
-    border: 1px solid var(--cyber-yellow) !important;
+    border: none !important;
     border-radius: 0 !important;
     font-family: 'Rajdhani', sans-serif !important;
     letter-spacing: 0.5px !important;
+    font-weight: 700 !important;
+    box-shadow: 
+        0 0 15px rgba(255, 211, 0, 0.7),
+        0 0 30px rgba(255, 211, 0, 0.3) !important;
 }
 
 .semester-btn:hover:not(:disabled) {
-    background: var(--neon-street) !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 0 10px rgba(255, 211, 0, 0.3) !important;
+    background: var(--cyber-yellow-dark) !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 
+        0 0 20px rgba(255, 211, 0, 0.9),
+        0 0 40px rgba(255, 211, 0, 0.4) !important;
     cursor: pointer !important;
 }
 
 .semester-btn:disabled {
-    opacity: 0.5 !important;
+    opacity: 0.7 !important;
     cursor: not-allowed !important;
     background: var(--metal-panel) !important;
-    border-color: var(--text-secondary) !important;
+    color: var(--text-secondary) !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
-/* STATS MODAL - DATATERM STYLE */
+/* STATS MODAL - ENHANCED DATATERM STYLE */
 .stats-modal {
-    width: 600px;
+    width: 650px;
     max-width: 95%;
     background: var(--city-dark);
     border: 1px solid var(--cyber-yellow);
-    padding: 2rem;
+    padding: 2.5rem;
     box-shadow: 
-        0 0 20px rgba(255, 211, 0, 0.5),
-        inset 0 0 10px rgba(255, 211, 0, 0.2);
+        0 0 30px rgba(255, 211, 0, 0.7),
+        inset 0 0 15px rgba(255, 211, 0, 0.3);
     position: relative;
     overflow: hidden;
     font-family: 'Rajdhani', sans-serif;
+    z-index: 1001;
 }
 
 .stats-modal::before {
@@ -641,41 +868,62 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
-    background: var(--cyber-yellow);
-    animation: scanline 3s linear infinite;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--cyber-yellow) 20%, 
+        var(--neon-pink) 50%,
+        var(--cyber-yellow) 80%, 
+        transparent 100%);
+    animation: scanline 2.5s linear infinite;
+}
+
+.stats-modal::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--hologram-effect);
+    pointer-events: none;
+    z-index: -1;
 }
 
 .stats-modal h3 {
     color: var(--cyber-yellow);
-    font-size: 1.6rem;
-    margin: 0 0 1.5rem 0;
-    padding-bottom: 0.8rem;
+    font-size: 2rem;
+    margin: 0 0 2rem 0;
+    padding-bottom: 1rem;
     border-bottom: 1px solid var(--cyber-yellow);
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
     font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    text-shadow: 0 0 10px rgba(255, 211, 0, 0.5);
 }
 
 .stats-modal h4 {
     color: var(--neon-blue);
-    font-size: 1.2rem;
-    margin: 1.5rem 0 1rem 0;
+    font-size: 1.4rem;
+    margin: 2rem 0 1.2rem 0;
     font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+    letter-spacing: 0.5px;
 }
 
 .stats-modal h5 {
     color: var(--text-primary);
-    font-size: 1rem;
-    margin: 1rem 0 0.5rem 0;
+    font-size: 1.1rem;
+    margin: 1.5rem 0 0.8rem 0;
     font-weight: 500;
+    letter-spacing: 0.5px;
 }
 
 .stats-modal table {
     width: 100%;
     border-collapse: collapse;
-    margin: 1rem 0;
+    margin: 1.5rem 0;
     position: relative;
 }
 
@@ -687,37 +935,93 @@ body {
     right: 0;
     bottom: 0;
     pointer-events: none;
-    background: linear-gradient(
-        to bottom,
-        transparent 95%,
-        rgba(255, 211, 0, 0.1) 100%
-    );
-    animation: scan 15s linear infinite;
+    background: 
+        linear-gradient(
+            to bottom,
+            transparent 95%,
+            rgba(255, 211, 0, 0.1) 100%
+        ),
+        var(--hologram-effect);
+    animation: scan 12s linear infinite;
 }
 
 .stats-modal th {
     text-align: left;
-    padding: 0.8rem 1rem;
-    font-weight: 600;
+    padding: 1.2rem;
+    font-weight: 700;
     color: var(--cyber-yellow);
-    font-size: 0.9rem;
+    font-size: 1rem;
     border-bottom: 1px solid var(--cyber-yellow);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
 }
 
 .stats-modal td {
-    padding: 0.8rem 1rem;
-    border-bottom: 1px solid rgba(255, 211, 0, 0.1);
+    padding: 1.2rem;
+    border-bottom: 1px solid rgba(255, 211, 0, 0.15);
     color: var(--text-primary);
     font-weight: 500;
+    font-size: 1rem;
 }
 
 .stats-modal tr:hover td {
-    background: rgba(255, 211, 0, 0.05);
+    background: rgba(255, 211, 0, 0.08);
 }
 
-/* Add these fonts to your HTML head for full effect */
-/*
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-*/
+/* NEW CYBERPUNK ELEMENTS */
+/* Cyberpunk corner brackets */
+.corner-brackets {
+    position: relative;
+}
+
+.corner-brackets::before,
+.corner-brackets::after {
+    content: "";
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border: 2px solid var(--cyber-yellow);
+    opacity: 0.7;
+}
+
+.corner-brackets::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+}
+
+.corner-brackets::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+}
+
+/* Cyberpunk terminal flicker effect */
+@keyframes terminalFlicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+    20%, 22%, 24%, 55% { opacity: 0.7; }
+}
+
+.terminal-flicker {
+    animation: terminalFlicker 10s infinite;
+}
+
+/* Cyberpunk glitch effect */
+@keyframes glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-3px, 3px); }
+    40% { transform: translate(-3px, -3px); }
+    60% { transform: translate(3px, 3px); }
+    80% { transform: translate(3px, -3px); }
+    100% { transform: translate(0); }
+}
+
+.glitch-effect {
+    animation: glitch 0.5s infinite;
+}
+
+.glitch-effect:hover {
+    animation: none;
+}
