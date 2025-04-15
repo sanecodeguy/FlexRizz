@@ -1289,6 +1289,9 @@ statsButton.addEventListener('click', () => {
         const maxPercentage = Math.max(100, course.yourPercentage, course.classAveragePercentage);
         const yourBarHeight = Math.max(5, (course.yourPercentage / maxPercentage) * 100);
         const avgBarHeight = Math.max(5, (course.classAveragePercentage / maxPercentage) * 100);
+        const yourPct=course.yourPercentage;
+        const avgPct=course.classAveragePercentage;
+
         barChartContainer.innerHTML =`
         <div style="display: flex; height: 100%; align-items: flex-end; gap: 40px; justify-content: center; padding: 0 20px;">
             <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
