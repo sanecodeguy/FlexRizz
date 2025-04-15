@@ -159,36 +159,28 @@ portlet.prepend(imageContainer);
       let tableVisible = false;
       let stopAutoClick = false;
       
-      const semesterCourses = {
-        1:{
-          "CL1002": { name:"PF Lab", grading: "Absolute", credits: 1 },
-          "CS1002": { name:"PF", grading: "Absolute", credits:3 },
-          "CL1000": { name:"IICT", grading: "Absolute", credits: 1 },
-          "NS1001": { name:"Applied Physics", grading: "Relative", credits: 3 },
-          "MT1003": { name:"Calculus", grading: "Relative", credits: 3 },
-          "SS1012": { name:"Functional English", grading: "Relative", credits: 2 },
-          "SL1012": { name:"Functional English Lab", grading: "Relative", credits: 1 },
-          "SL1014": { name:"ICP", grading: "Relative", credits: 2 },
-        },
-          2: {
-              "CL1004": { name:"OOP Lab", grading: "Absolute", credits: 1 },
-              "CS1004": { name:"OOP", grading: "Absolute", credits:3 },
-              "EE1005": { name:"DLD", grading: "Absolute", credits: 3 },
-              "EL1005": { name:"DLD Lab", grading: "Absolute", credits: 1 },
-              "MT1008": { name:"Multivariable Calculus", grading: "Relative", credits: 3 },
-              "SS2043": { name:"Civics", grading: "Relative", credits: 2 },
-              "SS1007": { name:"Islamic Studies", grading: "Relative", credits: 2 },
-              "SS1014": { name:"Expo", grading: "Relative", credits: 2 },
-              "SL1014": { name:"Expo Lab", grading: "Relative", credits: 1 },
-          },
-          3: {
-              // Add your semester 3 courses here
-              "CS2001": { name:"Data Structures", grading: "Absolute", credits: 3 },
-              "CL2001": { name:"DS Lab", grading: "Absolute", credits: 1 },
-              // ... add other courses
-          },4:{},5:{},6:{},7:{},8:{}
-          // Add more semesters as needed
-      };
+      const allCourses = {
+        "CL1002": { name: "PF Lab", grading: "Absolute", credits: 1, semester: 1 },
+        "CS1002": { name: "PF", grading: "Absolute", credits: 3, semester: 1 },
+        "CL1000": { name: "IICT", grading: "Absolute", credits: 1, semester: 1 },
+        "NS1001": { name: "Applied Physics", grading: "Relative", credits: 3, semester: 1 },
+        "MT1003": { name: "Calculus", grading: "Relative", credits: 3, semester: 1 },
+        "SS1012": { name: "Functional English", grading: "Relative", credits: 2, semester: 1 },
+        "SL1012": { name: "Functional English Lab", grading: "Relative", credits: 1, semester: 1 },
+        "SL1014": { name: "ICP", grading: "Relative", credits: 2, semester: 1 },
+        "CL1004": { name: "OOP Lab", grading: "Absolute", credits: 1, semester: 2 },
+        "CS1004": { name: "OOP", grading: "Absolute", credits: 3, semester: 2 },
+        "EE1005": { name: "DLD", grading: "Absolute", credits: 3, semester: 2 },
+        "EL1005": { name: "DLD Lab", grading: "Absolute", credits: 1, semester: 2 },
+        "MT1008": { name: "Multivariable Calculus", grading: "Relative", credits: 3, semester: 2 },
+        "SS2043": { name: "Civics", grading: "Relative", credits: 2, semester: 2 },
+        "SS1007": { name: "Islamic Studies", grading: "Relative", credits: 2, semester: 2 },
+        "SS1014": { name: "Expo", grading: "Relative", credits: 2, semester: 2 },
+        "SL1014": { name: "Expo Lab", grading: "Relative", credits: 1, semester: 2 },
+        "CS2001": { name: "Data Structures", grading: "Absolute", credits: 3, semester: 3 },
+        "CL2001": { name: "DS Lab", grading: "Absolute", credits: 1, semester: 3 },
+        
+    };
       const detectCurrentSemester = () => {
         const semesterDropdown = document.querySelector('select#SemId');
         if (!semesterDropdown) return 2; // Default to semester 2 if dropdown not found
@@ -207,10 +199,26 @@ portlet.prepend(imageContainer);
         
         return semesterMap[semesterText] || 2; // Default to semester 2 if no match
     };
-  
+    function detectRegisteredCourses() {
+        const registeredCourses = {};
+        
+        // Find all course tabs in the marks section
+        const courseTabs = document.querySelectorAll('.m-portlet__head-tools .nav-link.m-tabs__link');
+        
+        courseTabs.forEach(tab => {
+            const href = tab.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                const courseCode = href.substring(1);
+                if (allCourses[courseCode]) {
+                    registeredCourses[courseCode] = allCourses[courseCode];
+                }
+            }
+        });
+        
+        return registeredCourses;
+    }
     let currentSemester = detectCurrentSemester();
-    let courses = semesterCourses[currentSemester] || semesterCourses[2]; // Fallback to semester 2 if no courses defined
-      
+    let courses = detectRegisteredCourses(); // Now using detected courses instead of semester-based
       function loadHtml2Pdf() {
         return new Promise((resolve, reject) => {
             // Check if html2pdf is already loaded
@@ -228,55 +236,54 @@ portlet.prepend(imageContainer);
         });
     }
     
-    
-      const createTable = () => {
-          const existingTable = portlet.querySelector('#course-data-table');
-          if (existingTable) {
-              existingTable.remove();
-          }
-  
-          stopAutoClick = false;
-  
-          const table = document.createElement('table');
-          table.id = 'course-data-table';
-  
-          const headerRow = `
-              <thead>
-                  <tr>
-                      <th data-tooltip="Course Name">Course</th>
-                      <th data-tooltip="Absolute or Relative Grading">Type</th>
-                      <th data-tooltip="Class Average">Avg</th>
-                      <th data-tooltip="Marks Obtained">Obtained</th>
-                      <th data-tooltip="Total Marks">Total</th>
-                      <th data-tooltip="Final Grade">Grade</th>
-                  </tr>
-              </thead>
-          `;
-          table.innerHTML = headerRow;
-  
-          const tbody = document.createElement('tbody');
-          table.appendChild(tbody);
-  
-          let totalCredits = 0;
-          let totalGradePoints = 0;
-  
-          const addCourseDataToTable = (name, gradingType, finalCalculateAverage, totalObtMarks, totalWeightage, grade, credits) => {
-              const gradeClass = window.gradeUtils.getGradeClass(grade);
-              const newRow = `
-                  <tr>
-                      <td>${name}</td>
-                      <td>${gradingType}</td>
-                      <td>${finalCalculateAverage}</td>
-                      <td>${totalObtMarks.toFixed(2)}</td>
-                      <td>${totalWeightage.toFixed(2)}</td>
-                      <td class="${gradeClass}" style="font-weight: bold;">${grade}</td>
-                  </tr>
-              `;
-              tbody.innerHTML += newRow;
-  
-              totalCredits += credits;
-              totalGradePoints += window.gradeUtils.getGradePoints(grade) * credits;
-          };
+    const createTable = () => {
+        const existingTable = portlet.querySelector('#course-data-table');
+        if (existingTable) {
+            existingTable.remove();
+        }
+
+        stopAutoClick = false;
+
+        const table = document.createElement('table');
+        table.id = 'course-data-table';
+
+        const headerRow = `
+            <thead>
+                <tr>
+                    <th data-tooltip="Course Name">Course</th>
+                    <th data-tooltip="Absolute or Relative Grading">Type</th>
+                    <th data-tooltip="Class Average">Avg</th>
+                    <th data-tooltip="Marks Obtained">Obtained</th>
+                    <th data-tooltip="Total Marks">Total</th>
+                    <th data-tooltip="Final Grade">Grade</th>
+                </tr>
+            </thead>
+        `;
+        table.innerHTML = headerRow;
+
+        const tbody = document.createElement('tbody');
+        table.appendChild(tbody);
+
+        let totalCredits = 0;
+        let totalGradePoints = 0;
+
+        const addCourseDataToTable = (name, gradingType, finalCalculateAverage, totalObtMarks, totalWeightage, grade, credits) => {
+            const gradeClass = window.gradeUtils.getGradeClass(grade);
+            const newRow = `
+                <tr>
+                    <td>${name}</td>
+                    <td>${gradingType}</td>
+                    <td>${finalCalculateAverage}</td>
+                    <td>${totalObtMarks.toFixed(2)}</td>
+                    <td>${totalWeightage.toFixed(2)}</td>
+                    <td class="${gradeClass}" style="font-weight: bold;">${grade}</td>
+                </tr>
+            `;
+            tbody.innerHTML += newRow;
+
+            totalCredits += credits;
+            totalGradePoints += window.gradeUtils.getGradePoints(grade) * credits;
+        };
   
           Object.keys(courses).forEach((code, index) => {
               if (stopAutoClick) return;
