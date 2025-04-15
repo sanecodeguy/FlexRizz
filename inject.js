@@ -793,6 +793,450 @@
             if (portletBody) {
                 portlet.insertBefore(container, portletBody);
             }
+            // Add this after the other button creation code in the createToggleButtons function
+
+// Show Stats Button
+const statsButton = document.createElement('button');
+statsButton.id = 'show-stats-button';
+statsButton.className = 'modern-btn';
+statsButton.innerHTML = 'Show Stats';
+const statsStatus = document.createElement('span');
+statsStatus.className = 'status-indicator status-off';
+statsButton.appendChild(statsStatus);
+
+// Add the button to the container
+container.appendChild(statsButton);
+
+// Stats Modal functionality
+statsButton.addEventListener('click', () => {
+    const modal = document.createElement('div');
+    modal.className = 'stats-modal';
+    Object.assign(modal.style, {
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        backgroundColor: 'var(--primary-bg)',
+        border: '1px solid var(--border-color)',
+        padding: '20px',
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+        zIndex: '1000',
+        width: 'min(90vw, 800px)',
+        maxHeight: '80vh',
+        overflowY: 'auto',
+        color: 'var(--text-primary)',
+        fontFamily: "'Inter', sans-serif",
+        borderRadius: '8px'
+    });
+
+    // Modal header
+    const header = document.createElement('div');
+    header.style.display = 'flex';
+    header.style.justifyContent = 'space-between';
+    header.style.alignItems = 'center';
+    header.style.marginBottom = '15px';
+    header.style.paddingBottom = '10px';
+    header.style.borderBottom = '1px solid var(--border-color)';
+
+    const title = document.createElement('h3');
+    title.textContent = 'Course Statistics';
+    title.style.margin = '0';
+    title.style.color = 'var(--accent-color)';
+
+    const closeButton = document.createElement('button');
+    closeButton.textContent = '×';
+    closeButton.style.background = 'none';
+    closeButton.style.border = 'none';
+    closeButton.style.fontSize = '1.5rem';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.color = 'var(--text-secondary)';
+
+    header.appendChild(title);
+    header.appendChild(closeButton);
+    modal.appendChild(header);
+
+    // Stats content
+    const content = document.createElement('div');
+    content.style.display = 'grid';
+    content.style.gap = '20px';
+
+    // Collect all course data first
+    const courseStats = [];
+    
+    Object.keys(courses).forEach((code) => {
+        const gradingType = courses[code].grading;
+        const credits = courses[code].credits;
+        const courseLink = document.querySelector(`a.nav-link[href="#${code}"]`);
+        if (!courseLink) return;
+
+        // Temporarily click to get the data
+        const wasVisible = tableVisible;
+        if (wasVisible) {
+            const transcriptButton = portlet.querySelector('#show-transcript-button');
+            if (transcriptButton) transcriptButton.click();
+        }
+        
+        courseLink.click();
+
+        const activeDiv = document.querySelector('.tab-pane.active');
+        if (!activeDiv) return;
+
+        let totalWeightage = 0;
+        let totalObtMarks = 0;
+        let totalAverage = 0;
+        let assessmentDetails = [];
+
+        const tables = activeDiv.querySelectorAll('.sum_table');
+        tables.forEach((table) => {
+            let rowCalculatedAverage = 0;
+            let tableWeightageSum = 0;
+
+            const rows = table.querySelectorAll('.calculationrow');
+            rows.forEach((row) => {
+                const assessmentName = row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
+                const weightRow = row.querySelector('.weightage');
+                const averageRow = row.querySelector('.AverageMarks');
+                const totalMarksRow = row.querySelector('.GrandTotal');
+                const obtMarksRow = row.querySelector('.ObtMarks');
+
+                if (!weightRow || !averageRow || !totalMarksRow || !obtMarksRow ||
+                    weightRow.textContent.trim() === "0" || 
+                    totalMarksRow.textContent.trim() === "0") {
+                    return;
+                }
+
+                const weight = parseFloat(weightRow.textContent);
+                const average = parseFloat(averageRow.textContent);
+                const total = parseFloat(totalMarksRow.textContent);
+                const obt = parseFloat(obtMarksRow.textContent);
+
+                tableWeightageSum += weight;
+                rowCalculatedAverage += (average / total) * weight;
+
+                assessmentDetails.push({
+                    name: assessmentName,
+                    weight: weight,
+                    classAverage: average,
+                    totalMarks: total,
+                    yourScore: obt,
+                    percentage: (obt / total) * 100,
+                    classAveragePercentage: (average / total) * 100
+                });
+            });
+
+            const totalSection = table.querySelector('[class*="totalColumn_"]');
+            if (totalSection) {
+                const colWeightage = totalSection.querySelector('.totalColweightage');
+                if (colWeightage && tableWeightageSum !== 0 && rowCalculatedAverage !== 0) {
+                    rowCalculatedAverage = (rowCalculatedAverage / tableWeightageSum) * parseFloat(colWeightage.textContent);
+                    totalAverage += rowCalculatedAverage;
+                }
+
+                const colObtMarks = totalSection.querySelector('.totalColObtMarks');
+                if (colWeightage && colObtMarks) {
+                    totalWeightage += parseFloat(colWeightage.textContent);
+                    totalObtMarks += parseFloat(colObtMarks.textContent);
+                }
+            }
+        });
+
+        const finalCalculateAverage = isNaN(totalAverage) ? 0 : totalAverage;
+        const finalMarks = shouldRoundUp ? Math.ceil(totalObtMarks) : totalObtMarks;
+        
+        let grade = "I";
+        if (gradingType === "Absolute") {
+            const percentage = (finalMarks / totalWeightage) * 100;            
+            grade = window.gradeUtils.calculateAbsoluteGrade(percentage);
+        }
+        else if (gradingType === "Relative") {
+            const percentage = Math.round((finalMarks / totalWeightage) * 100);
+            const mca = Math.round((totalAverage / totalWeightage) * 100);
+            grade = window.gradeUtils.getGrade(mca, percentage)[0];
+        }
+
+        courseStats.push({
+            code: code,
+            name: courses[code].name,
+            gradingType: gradingType,
+            classAverage: finalCalculateAverage,
+            yourScore: finalMarks,
+            totalMarks: totalWeightage,
+            grade: grade,
+            credits: credits,
+            assessments: assessmentDetails,
+            yourPercentage: (finalMarks / totalWeightage) * 100,
+            classAveragePercentage: (finalCalculateAverage / totalWeightage) * 100
+        });
+
+        // Restore previous state
+        if (wasVisible) {
+            const transcriptButton = portlet.querySelector('#show-transcript-button');
+            if (transcriptButton) transcriptButton.click();
+        }
+    });
+
+    // Create tabs for each course
+    const tabsContainer = document.createElement('div');
+    tabsContainer.style.display = 'flex';
+    tabsContainer.style.gap = '5px';
+    tabsContainer.style.marginBottom = '15px';
+    tabsContainer.style.overflowX = 'auto';
+    tabsContainer.style.paddingBottom = '5px';
+
+    const statsContent = document.createElement('div');
+    statsContent.style.minHeight = '400px';
+
+    courseStats.forEach((course, index) => {
+        const tab = document.createElement('button');
+        tab.textContent = course.code;
+        tab.style.padding = '8px 12px';
+        tab.style.border = '1px solid var(--border-color)';
+        tab.style.background = index === 0 ? 'var(--carbon)' : 'transparent';
+        tab.style.color = index === 0 ? 'var(--text-primary)' : 'var(--text-secondary)';
+        tab.style.borderRadius = '4px';
+        tab.style.cursor = 'pointer';
+        tab.style.whiteSpace = 'nowrap';
+        tab.style.transition = 'all 0.2s';
+
+        tab.addEventListener('click', () => {
+            // Update all tabs
+            tabsContainer.querySelectorAll('button').forEach((t, i) => {
+                t.style.background = i === index ? 'var(--carbon)' : 'transparent';
+                t.style.color = i === index ? 'var(--text-primary)' : 'var(--text-secondary)';
+            });
+
+            // Update content
+            updateStatsContent(course);
+        });
+
+        tabsContainer.appendChild(tab);
+    });
+
+    // Function to update stats content
+    const updateStatsContent = (course) => {
+        statsContent.innerHTML = '';
+
+        // Course header
+        const courseHeader = document.createElement('div');
+        courseHeader.style.marginBottom = '20px';
+        courseHeader.style.paddingBottom = '10px';
+        courseHeader.style.borderBottom = '1px solid var(--border-color)';
+
+        const courseTitle = document.createElement('h4');
+        courseTitle.style.margin = '0 0 5px 0';
+        courseTitle.textContent = `${course.name} (${course.code})`;
+        
+        const courseSubtitle = document.createElement('div');
+        courseSubtitle.style.display = 'flex';
+        courseSubtitle.style.gap = '15px';
+        courseSubtitle.style.fontSize = '0.9rem';
+        courseSubtitle.style.color = 'var(--text-secondary)';
+
+        courseSubtitle.innerHTML = `
+            <span>Credits: ${course.credits}</span>
+            <span>Grading: ${course.gradingType}</span>
+            <span>Grade: <span class="${window.gradeUtils.getGradeClass(course.grade)}" style="font-weight: bold;">${course.grade}</span></span>
+        `;
+
+        courseHeader.appendChild(courseTitle);
+        courseHeader.appendChild(courseSubtitle);
+        statsContent.appendChild(courseHeader);
+
+        // Overall performance
+        const overallSection = document.createElement('div');
+        overallSection.style.marginBottom = '20px';
+        overallSection.style.padding = '15px';
+        overallSection.style.background = 'var(--elevated-black)';
+        overallSection.style.borderRadius = '6px';
+
+        const overallTitle = document.createElement('h5');
+        overallTitle.style.margin = '0 0 10px 0';
+        overallTitle.textContent = 'Overall Performance';
+        overallSection.appendChild(overallTitle);
+
+        const overallGrid = document.createElement('div');
+        overallGrid.style.display = 'grid';
+        overallGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
+        overallGrid.style.gap = '15px';
+
+        overallGrid.innerHTML = `
+            <div style="padding: 10px; border-radius: 4px; background: var(--primary-bg);">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Your Score</div>
+                <div style="font-size: 1.3rem; font-weight: bold;">${course.yourScore.toFixed(2)} / ${course.totalMarks.toFixed(2)}</div>
+            </div>
+            <div style="padding: 10px; border-radius: 4px; background: var(--primary-bg);">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Your Percentage</div>
+                <div style="font-size: 1.3rem; font-weight: bold;">${course.yourPercentage.toFixed(2)}%</div>
+            </div>
+            <div style="padding: 10px; border-radius: 4px; background: var(--primary-bg);">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Class Average</div>
+                <div style="font-size: 1.3rem; font-weight: bold;">${course.classAverage.toFixed(2)} / ${course.totalMarks.toFixed(2)}</div>
+            </div>
+            <div style="padding: 10px; border-radius: 4px; background: var(--primary-bg);">
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Class Avg %</div>
+                <div style="font-size: 1.3rem; font-weight: bold;">${course.classAveragePercentage.toFixed(2)}%</div>
+            </div>
+        `;
+
+        overallSection.appendChild(overallGrid);
+        statsContent.appendChild(overallSection);
+
+        // Performance comparison chart
+        const chartSection = document.createElement('div');
+        chartSection.style.marginBottom = '20px';
+        chartSection.style.padding = '15px';
+        chartSection.style.background = 'var(--elevated-black)';
+        chartSection.style.borderRadius = '6px';
+
+        const chartTitle = document.createElement('h5');
+        chartTitle.style.margin = '0 0 10px 0';
+        chartTitle.textContent = 'Performance Comparison';
+        chartSection.appendChild(chartTitle);
+
+        const chartContainer = document.createElement('div');
+        chartContainer.style.height = '200px';
+        chartContainer.style.position = 'relative';
+
+        // Create a simple bar chart using divs
+        const maxPercentage = Math.max(100, course.yourPercentage, course.classAveragePercentage);
+        const yourBarHeight = (course.yourPercentage / maxPercentage) * 100;
+        const avgBarHeight = (course.classAveragePercentage / maxPercentage) * 100;
+
+        chartContainer.innerHTML = `
+            <div style="display: flex; height: 100%; align-items: flex-end; gap: 30px; justify-content: center;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                    <div style="width: 40px; background: var(--accent-color); border-radius: 4px 4px 0 0; 
+                        height: ${yourBarHeight}%; position: relative;">
+                        <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
+                            font-size: 0.8rem; font-weight: bold;">${course.yourPercentage.toFixed(1)}%</div>
+                    </div>
+                    <div style="font-size: 0.8rem;">You</div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                    <div style="width: 40px; background: var(--carbon); border-radius: 4px 4px 0 0; 
+                        height: ${avgBarHeight}%; position: relative;">
+                        <div style="position: absolute; top: -25px; left: 50%; transform: translateX(-50%); 
+                            font-size: 0.8rem; font-weight: bold;">${course.classAveragePercentage.toFixed(1)}%</div>
+                    </div>
+                    <div style="font-size: 0.8rem;">Class Avg</div>
+                </div>
+            </div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 1px; 
+                background: var(--border-color);"></div>
+        `;
+
+        chartSection.appendChild(chartContainer);
+        statsContent.appendChild(chartSection);
+
+        // Assessment breakdown
+        if (course.assessments.length > 0) {
+            const breakdownSection = document.createElement('div');
+            breakdownSection.style.marginBottom = '10px';
+
+            const breakdownTitle = document.createElement('h5');
+            breakdownTitle.style.margin = '0 0 10px 0';
+            breakdownTitle.textContent = 'Assessment Breakdown';
+            breakdownSection.appendChild(breakdownTitle);
+
+            const breakdownTable = document.createElement('table');
+            breakdownTable.style.width = '100%';
+            breakdownTable.style.borderCollapse = 'collapse';
+            breakdownTable.innerHTML = `
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--border-color);">
+                        <th style="text-align: left; padding: 8px 10px;">Assessment</th>
+                        <th style="text-align: right; padding: 8px 10px;">Weight</th>
+                        <th style="text-align: right; padding: 8px 10px;">Your Score</th>
+                        <th style="text-align: right; padding: 8px 10px;">Class Avg</th>
+                        <th style="text-align: right; padding: 8px 10px;">% Diff</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${course.assessments.map(assessment => `
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 8px 10px;">${assessment.name}</td>
+                            <td style="text-align: right; padding: 8px 10px;">${assessment.weight}%</td>
+                            <td style="text-align: right; padding: 8px 10px;">${assessment.yourScore}/${assessment.totalMarks}</td>
+                            <td style="text-align: right; padding: 8px 10px;">${assessment.classAverage.toFixed(1)}/${assessment.totalMarks}</td>
+                            <td style="text-align: right; padding: 8px 10px; color: ${assessment.percentage > assessment.classAveragePercentage ? '#4CAF50' : '#F44336'}">
+                                ${(assessment.percentage - assessment.classAveragePercentage).toFixed(1)}%
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+
+            breakdownSection.appendChild(breakdownTable);
+            statsContent.appendChild(breakdownSection);
+        }
+
+        // Grade explanation
+        const explanationSection = document.createElement('div');
+        explanationSection.style.marginTop = '20px';
+        explanationSection.style.padding = '15px';
+        explanationSection.style.background = 'var(--elevated-black)';
+        explanationSection.style.borderRadius = '6px';
+        explanationSection.style.fontSize = '0.9rem';
+
+        explanationSection.innerHTML = `
+            <h5 style="margin: 0 0 10px 0;">Grade Explanation</h5>
+            <p style="margin: 0;">
+                This course uses <strong>${course.gradingType} grading</strong>. 
+                ${course.gradingType === 'Absolute' ? 
+                    'Your grade is determined by fixed percentage thresholds regardless of class performance.' : 
+                    'Your grade is determined relative to the class average performance.'}
+            </p>
+        `;
+
+        statsContent.appendChild(explanationSection);
+    };
+
+    // Initialize with first course
+    if (courseStats.length > 0) {
+        updateStatsContent(courseStats[0]);
+    } else {
+        statsContent.innerHTML = '<p>No course data available</p>';
+    }
+
+    modal.appendChild(tabsContainer);
+    modal.appendChild(statsContent);
+
+    // Backdrop
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop';
+    Object.assign(backdrop.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        right: '0',
+        bottom: '0',
+        background: 'rgba(0, 0, 0, 0.7)',
+        zIndex: '999',
+        backdropFilter: 'blur(3px)'
+    });
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+
+    // Close handlers
+    closeButton.addEventListener('click', () => {
+        modal.remove();
+        backdrop.remove();
+    });
+
+    backdrop.addEventListener('click', () => {
+        modal.remove();
+        backdrop.remove();
+    });
+
+    document.addEventListener('keydown', function handleKeyDown(e) {
+        if (e.key === 'Escape') {
+            modal.remove();
+            backdrop.remove();
+            document.removeEventListener('keydown', handleKeyDown);
+        }
+    });
+});
         };
         
         createToggleButtons();
