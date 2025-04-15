@@ -1289,31 +1289,29 @@ statsButton.addEventListener('click', () => {
         const maxPercentage = Math.max(100, course.yourPercentage, course.classAveragePercentage);
         const yourBarHeight = Math.max(5, (course.yourPercentage / maxPercentage) * 100);
         const avgBarHeight = Math.max(5, (course.classAveragePercentage / maxPercentage) * 100);
-        const yourPct=course.yourPercentage;
-        const avgPct=course.classAveragePercentage;
 
-        barChartContainer.innerHTML =`
-        <div style="display: flex; height: 100%; align-items: flex-end; gap: 40px; justify-content: center; padding: 0 20px;">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
-                <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[0]}, ${colorPalette[1]}); 
-                    border-radius: 6px 6px 0 0; height: ${Math.max(5, (yourPct / maxPercentage) * 100)}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                    <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
-                        font-size: 0.9rem; font-weight: bold; color: ${colorPalette[0]};">${yourPct.toFixed(1)}%</div>
+        barChartContainer.innerHTML = `
+            <div style="display: flex; height: 100%; align-items: flex-end; gap: 40px; justify-content: center; padding: 0 20px;">
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
+                    <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[0]}, ${colorPalette[1]}); 
+                        border-radius: 6px 6px 0 0; height: ${yourBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
+                            font-size: 0.9rem; font-weight: bold; color: ${colorPalette[0]};">${course.yourPercentage.toFixed(1)}%</div>
+                    </div>
+                    <div style="font-size: 0.9rem; font-weight: 500;">You</div>
                 </div>
-                <div style="font-size: 0.9rem; font-weight: 500;">You</div>
-            </div>
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
-                <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[12]}, ${colorPalette[13]}); 
-                    border-radius: 6px 6px 0 0; height: ${Math.max(5, (avgPct / maxPercentage) * 100)}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
-                    <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
-                        font-size: 0.9rem; font-weight: bold; color: ${colorPalette[12]};">${avgPct.toFixed(1)}%</div>
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; flex: 1; max-width: 100px;">
+                    <div style="width: 100%; background: linear-gradient(to bottom, ${colorPalette[12]}, ${colorPalette[13]}); 
+                        border-radius: 6px 6px 0 0; height: ${avgBarHeight}%; position: relative; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+                        <div style="position: absolute; top: -25px; left: 0; right: 0; text-align: center; 
+                            font-size: 0.9rem; font-weight: bold; color: ${colorPalette[12]};">${course.classAveragePercentage.toFixed(1)}%</div>
+                    </div>
+                    <div style="font-size: 0.9rem; font-weight: 500;">Class Avg</div>
                 </div>
-                <div style="font-size: 0.9rem; font-weight: 500;">Class Avg</div>
             </div>
-        </div>
-        <div style="position: absolute; bottom: 30px; left: 0; right: 0; height: 2px; 
-            background: var(--border-color); z-index: -1;"></div>`;
-    
+            <div style="position: absolute; bottom: 30px; left: 0; right: 0; height: 2px; 
+                background: var(--border-color); z-index: -1;"></div>
+        `;
 
         chartSection.appendChild(barChartContainer);
         statsContent.appendChild(chartSection);
