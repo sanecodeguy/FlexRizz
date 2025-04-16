@@ -1,67 +1,68 @@
 /* ==================== */
 /* CYBERPUNK 2077 THEME */
-/* NEON OVERDRIVE EDITION */
+/* EDGERUNNER EDITION */
 /* ==================== */
 :root {
-    /* Enhanced Cyberpunk Palette */
-    --neon-pink: #FF2D78;
-    --neon-blue: #00F0FF;
-    --neon-green: #00FF9D;
-    --neon-purple: #9D00FF;
-    --neon-yellow: #FFEE00;
-    --neon-orange: #FF5E00;
-    --neon-red: #FF003C;
+    /* Edgerunner Color Palette */
+    --edgerunner-pink: #FF0090; /* Main pink from Lucy's hair */
+    --edgerunner-blue: #00B4FF; /* David's jacket blue */
+    --edgerunner-purple: #C500FF; /* Cyberware glow */
+    --edgerunner-orange: #FF5E00; /* Maine's colors */
+    --edgerunner-yellow: #FFD600; /* Warning accents */
+    --edgerunner-red: #FF003C; /* Blood/danger */
+    --edgerunner-green: #00FFA3; /* Matrix/hacking */
     
-    /* Holographic Backgrounds */
-    --deep-space: linear-gradient(135deg, #0A0A12 0%, #12121A 100%);
-    --city-night: linear-gradient(135deg, #12121A 0%, #1E1E2A 100%);
-    --elevated-black: linear-gradient(145deg, #1E1E2A 0%, #2A2A3A 100%);
-    --metal-panel: linear-gradient(145deg, #2A2A3A 0%, #3A3A4A 100%);
+    /* Dark backgrounds with neon bleed */
+    --deep-city: linear-gradient(145deg, #050508 0%, #0F0F18 100%);
+    --neon-alley: linear-gradient(135deg, #0F0F18 0%, #1A1A25 100%);
+    --metal-panel: linear-gradient(145deg, #1A1A25 0%, #252535 100%);
+    --cyberware-bg: linear-gradient(145deg, #252535 0%, #303045 100%);
     
-    /* UI Elements */
-    --primary-bg: var(--city-night);
-    --secondary-bg: var(--elevated-black);
-    --accent-color: var(--neon-blue);
-    --text-primary: rgba(255,255,255,0.95);
-    --text-secondary: rgba(255,255,255,0.6);
-    --border-color: rgba(0, 240, 255, 0.2);
-    --success-color: var(--neon-green);
-    --warning-color: var(--neon-yellow);
-    --danger-color: var(--neon-pink);
+    /* UI Elements - More contrast */
+    --primary-bg: var(--deep-city);
+    --secondary-bg: var(--metal-panel);
+    --accent-color: var(--edgerunner-pink); /* Dominant pink */
+    --text-primary: rgba(255,255,255,0.98);
+    --text-secondary: rgba(255,255,255,0.7);
+    --border-color: rgba(255, 0, 144, 0.3);
+    --success-color: var(--edgerunner-green);
+    --warning-color: var(--edgerunner-yellow);
+    --danger-color: var(--edgerunner-red);
     
-    /* Advanced Glow Effects */
-    --soft-glow: 0 0 10px rgba(0, 240, 255, 0.3);
-    --medium-glow: 0 0 15px rgba(0, 240, 255, 0.5), 0 0 30px rgba(0, 240, 255, 0.2);
-    --strong-glow: 0 0 20px rgba(0, 240, 255, 0.7), 0 0 40px rgba(0, 240, 255, 0.3);
-    --text-glow: 0 0 8px currentColor;
+    /* Aggressive Glow Effects */
+    --soft-glow: 0 0 10px rgba(255, 0, 144, 0.4);
+    --medium-glow: 0 0 15px rgba(255, 0, 144, 0.6), 0 0 30px rgba(255, 0, 144, 0.3);
+    --strong-glow: 0 0 25px rgba(255, 0, 144, 0.8), 0 0 50px rgba(255, 0, 144, 0.4);
+    --text-glow: 0 0 10px currentColor;
     
-    /* Cyberpunk Animations */
-    --transition-quick: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+    /* Edgerunner Animations - More dynamic */
+    --transition-quick: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.6, 0.32, 1.6);
     
-    /* Holographic Grid */
+    /* Harsh Grid */
     --grid-line: linear-gradient(
         to bottom,
-        transparent 95%,
-        rgba(0, 240, 255, 0.03) 100%
+        transparent 97%,
+        rgba(255, 0, 144, 0.1) 100%
     );
-    --grid-size: 20px 20px;
+    --grid-size: 25px 25px;
 }
 
 /* =============== */
 /* GLOBAL OVERRIDES */ 
 /* =============== */
 body {
-    background: var(--deep-space);
+    background: var(--deep-city);
     color: var(--text-primary);
-    font-family: 'Rajdhani', 'Inter', 'Courier New', monospace;
-    line-height: 1.6;
+    font-family: 'Orbitron', 'Rajdhani', sans-serif;
+    line-height: 1.5;
     position: relative;
     overflow-x: hidden;
+    letter-spacing: 0.5px;
 }
 
-/* Holographic Grid Background */
+/* Edgerunner Grid - More visible */
 body::before {
     content: '';
     position: fixed;
@@ -71,9 +72,9 @@ body::before {
     bottom: 0;
     background-image: var(--grid-line), var(--grid-line);
     background-size: var(--grid-size);
-    background-position: 0 0, 10px 10px;
+    background-position: 0 0, 12px 12px;
     z-index: -1;
-    opacity: 0.5;
+    opacity: 0.7;
     pointer-events: none;
 }
 
@@ -88,12 +89,13 @@ body::before {
     overflow: hidden;
     position: relative;
     transition: var(--transition-smooth);
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(3px);
+    border-top: 3px solid var(--accent-color);
 }
 
 .m-portlet:hover {
     box-shadow: var(--strong-glow);
-    transform: translateY(-2px);
+    transform: translateY(-3px);
 }
 
 .m-portlet::before {
@@ -102,16 +104,17 @@ body::before {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 3px;
     background: linear-gradient(90deg, 
-        var(--neon-pink), 
-        var(--neon-purple), 
-        var(--neon-blue));
+        var(--edgerunner-red), 
+        var(--edgerunner-pink), 
+        var(--edgerunner-purple));
     z-index: 10;
-    animation: rainbow-border 8s linear infinite;
-    background-size: 400% 400%;
+    animation: rainbow-border 5s linear infinite;
+    background-size: 300% 300%;
 }
 
+/* Cyberware circuit pattern overlay */
 .m-portlet::after {
     content: '';
     position: absolute;
@@ -119,11 +122,9 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(
-        135deg,
-        rgba(0, 240, 255, 0.03) 0%,
-        rgba(157, 0, 255, 0.03) 100%
-    );
+    background: 
+        linear-gradient(90deg, rgba(255,0,144,0.03) 0%, transparent 50%, rgba(0,180,255,0.03) 100%),
+        url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M0 50h20v20h60v-20h20" fill="none" stroke="rgba(255,0,144,0.05)" stroke-width="1"/></svg>');
     pointer-events: none;
     z-index: -1;
 }
@@ -138,35 +139,37 @@ body::before {
 /* PORTLET HEAD */ 
 /* ============ */
 .m-portlet__head {
-    padding: 1.5rem 2rem;
-    background: var(--primary-bg);
+    padding: 1.25rem 2rem;
+    background: linear-gradient(to right, #1A1A25 0%, #252535 100%);
     border-bottom: 1px solid var(--border-color);
     position: relative;
 }
 
 .m-portlet__head-title {
     color: var(--accent-color);
-    font-size: 1.75rem;
-    font-weight: 700;
-    letter-spacing: 1px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    letter-spacing: 2px;
     text-transform: uppercase;
     margin: 0;
-    text-shadow: var(--text-glow);
+    text-shadow: 0 0 15px var(--accent-color);
     position: relative;
     display: inline-block;
+    font-family: 'Orbitron', sans-serif;
 }
 
 .m-portlet__head-title::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: -8px;
     left: 0;
     width: 100%;
-    height: 2px;
+    height: 3px;
     background: var(--accent-color);
     transform: scaleX(0);
     transform-origin: left;
     transition: var(--transition-smooth);
+    box-shadow: 0 0 10px var(--accent-color);
 }
 
 .m-portlet__head:hover .m-portlet__head-title::after {
@@ -178,20 +181,21 @@ body::before {
 /* ============== */
 .modern-btn {
     position: relative;
-    padding: 0.75rem 1.5rem;
+    padding: 0.8rem 1.75rem;
     background: transparent;
     color: var(--text-primary);
-    border: 1px solid var(--accent-color);
+    border: 2px solid var(--accent-color);
     border-radius: 0;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-weight: 700;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition-smooth);
     overflow: hidden;
     z-index: 1;
-    text-shadow: 0 0 5px rgba(0, 240, 255, 0.3);
+    text-shadow: 0 0 8px var(--accent-color);
+    font-family: 'Orbitron', sans-serif;
 }
 
 .modern-btn::before {
@@ -203,7 +207,7 @@ body::before {
     height: 100%;
     background: linear-gradient(90deg,
         transparent,
-        rgba(0, 240, 255, 0.1),
+        rgba(255,0,144,0.2),
         transparent);
     transition: var(--transition-smooth);
     z-index: -1;
@@ -218,7 +222,7 @@ body::before {
     height: 200%;
     background: radial-gradient(
         circle,
-        rgba(0, 240, 255, 0.1) 0%,
+        rgba(255,0,144,0.2) 0%,
         transparent 70%
     );
     transform: scale(0);
@@ -227,10 +231,10 @@ body::before {
 }
 
 .modern-btn:hover {
-    color: var(--deep-space);
+    color: black;
     background: var(--accent-color);
-    box-shadow: var(--medium-glow);
-    transform: translateY(-2px);
+    box-shadow: 0 0 20px var(--accent-color), 0 0 40px rgba(255,0,144,0.3);
+    transform: translateY(-3px);
 }
 
 .modern-btn:hover::before {
@@ -248,16 +252,17 @@ body::before {
 
 .modern-btn.active {
     background: var(--accent-color);
-    color: var(--deep-space);
-    font-weight: 700;
-    box-shadow: var(--medium-glow);
-    animation: btn-pulse 2s infinite;
+    color: black;
+    font-weight: 900;
+    box-shadow: 0 0 25px var(--accent-color);
+    animation: btn-pulse 1.5s infinite;
+    border: 2px solid white;
 }
 
 @keyframes btn-pulse {
-    0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
-    70% { box-shadow: 0 0 0 10px rgba(0, 240, 255, 0); }
-    100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+    0% { box-shadow: 0 0 0 0 rgba(255, 0, 144, 0.8); }
+    70% { box-shadow: 0 0 0 15px rgba(255, 0, 144, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 0, 144, 0); }
 }
 
 /* ============= */
@@ -266,8 +271,9 @@ body::before {
 #course-data-table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--secondary-bg);
+    background: var(--cyberware-bg);
     position: relative;
+    border: 1px solid rgba(255,0,144,0.2);
 }
 
 #course-data-table::before {
@@ -280,40 +286,42 @@ body::before {
     background: linear-gradient(
         to right,
         transparent 95%,
-        rgba(0, 240, 255, 0.03) 100%
+        rgba(255, 0, 144, 0.05) 100%
     );
     pointer-events: none;
 }
 
 #course-data-table thead th {
-    padding: 1rem 1.5rem;
-    background: linear-gradient(to bottom, #1E1E2A 0%, #2A2A3A 100%);
+    padding: 1.25rem 1.75rem;
+    background: linear-gradient(to bottom, #1A1A25 0%, #252535 100%);
     color: var(--accent-color);
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-size: 0.8rem;
-    border-bottom: 2px solid var(--accent-color);
+    letter-spacing: 1px;
+    font-size: 0.85rem;
+    border-bottom: 3px solid var(--accent-color);
     position: sticky;
     top: 0;
-    text-shadow: var(--text-glow);
+    text-shadow: 0 0 8px var(--accent-color);
     backdrop-filter: blur(5px);
+    font-family: 'Orbitron', sans-serif;
 }
 
 #course-data-table tbody tr {
-    border-bottom: 1px solid rgba(0, 240, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 0, 144, 0.15);
     transition: var(--transition-quick);
 }
 
 #course-data-table tbody tr:hover {
-    background: rgba(0, 240, 255, 0.05);
-    transform: translateX(5px);
+    background: rgba(255, 0, 144, 0.1);
+    transform: translateX(8px);
 }
 
 #course-data-table td {
-    padding: 1rem 1.5rem;
-    font-size: 0.95rem;
+    padding: 1.25rem 1.75rem;
+    font-size: 1rem;
     position: relative;
+    font-weight: 500;
 }
 
 #course-data-table td::before {
@@ -322,75 +330,77 @@ body::before {
     left: 0;
     top: 10%;
     height: 80%;
-    width: 2px;
+    width: 3px;
     background: var(--accent-color);
     opacity: 0;
     transition: var(--transition-quick);
 }
 
 #course-data-table tr:hover td::before {
-    opacity: 0.5;
+    opacity: 0.7;
 }
 
-/* Grade Colors with Enhanced Glow */
+/* Edgerunner Grade Colors */
 .grade-Aplus { 
-    color: var(--neon-green); 
-    text-shadow: 0 0 10px rgba(0, 255, 157, 0.5);
-    animation: text-flicker 3s infinite alternate;
+    color: var(--edgerunner-green); 
+    text-shadow: 0 0 15px rgba(0, 255, 163, 0.7);
+    animation: text-flicker 2s infinite alternate;
+    font-weight: 700;
 }
 .grade-A { 
-    color: var(--neon-green); 
-    text-shadow: var(--text-glow);
+    color: var(--edgerunner-green); 
+    text-shadow: 0 0 10px rgba(0, 255, 163, 0.5);
 }
 .grade-Aminus { 
-    color: var(--neon-green); 
-    opacity: 0.8;
-    text-shadow: 0 0 5px rgba(0, 255, 157, 0.3);
+    color: var(--edgerunner-green); 
+    opacity: 0.9;
+    text-shadow: 0 0 5px rgba(0, 255, 163, 0.3);
 }
 .grade-Bplus { 
-    color: var(--neon-blue); 
-    text-shadow: var(--text-glow);
+    color: var(--edgerunner-blue); 
+    text-shadow: 0 0 10px rgba(0, 180, 255, 0.5);
 }
 .grade-B { 
-    color: var(--neon-blue); 
+    color: var(--edgerunner-blue); 
     opacity: 0.9;
 }
 .grade-Bminus { 
-    color: var(--neon-blue); 
+    color: var(--edgerunner-blue); 
     opacity: 0.7;
 }
 .grade-Cplus { 
-    color: var(--neon-yellow); 
-    text-shadow: var(--text-glow);
+    color: var(--edgerunner-yellow); 
+    text-shadow: 0 0 10px rgba(255, 214, 0, 0.5);
 }
 .grade-C { 
-    color: var(--neon-yellow); 
+    color: var(--edgerunner-yellow); 
     opacity: 0.8;
 }
 .grade-Cminus { 
-    color: var(--neon-yellow); 
+    color: var(--edgerunner-yellow); 
     opacity: 0.6;
 }
 .grade-Dplus { 
-    color: var(--neon-pink); 
-    text-shadow: 0 0 5px rgba(255, 45, 120, 0.3);
+    color: var(--edgerunner-orange); 
+    text-shadow: 0 0 10px rgba(255, 94, 0, 0.5);
 }
 .grade-D { 
-    color: var(--neon-pink); 
+    color: var(--edgerunner-orange); 
     opacity: 0.8;
 }
 .grade-F { 
-    color: var(--danger-color); 
-    font-weight: 700;
-    text-shadow: 0 0 10px rgba(255, 0, 60, 0.5);
+    color: var(--edgerunner-red); 
+    font-weight: 900;
+    text-shadow: 0 0 15px rgba(255, 0, 60, 0.7);
     position: relative;
+    animation: danger-pulse 1s infinite alternate;
 }
 
 .grade-F::after {
     content: '⚠';
     position: absolute;
-    right: -20px;
-    animation: warning-pulse 1.5s infinite;
+    right: -25px;
+    animation: warning-pulse 1s infinite;
 }
 
 @keyframes text-flicker {
@@ -398,21 +408,27 @@ body::before {
         opacity: 1;
     }
     20%, 22%, 24%, 55% {
-        opacity: 0.8;
+        opacity: 0.7;
     }
 }
 
 @keyframes warning-pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.3); }
-    100% { transform: scale(1); }
+    0% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.5); opacity: 0.7; }
+    100% { transform: scale(1); opacity: 1; }
 }
 
-/* SGPA Row */
+@keyframes danger-pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* SGPA Row - Edgerunner Style */
 .sgpa-row {
     background: linear-gradient(90deg, 
-        rgba(157, 0, 255, 0.15) 0%, 
-        rgba(0, 240, 255, 0.15) 100%) !important;
+        rgba(197, 0, 255, 0.2) 0%, 
+        rgba(255, 0, 144, 0.2) 100%) !important;
     position: relative;
 }
 
@@ -422,19 +438,21 @@ body::before {
     left: 0;
     right: 0;
     bottom: 0;
-    height: 1px;
+    height: 2px;
     background: linear-gradient(90deg, 
         transparent 0%,
-        var(--neon-purple) 20%,
-        var(--neon-blue) 80%,
+        var(--edgerunner-purple) 20%,
+        var(--edgerunner-pink) 80%,
         transparent 100%);
+    box-shadow: 0 0 10px var(--edgerunner-pink);
 }
 
 .sgpa-row td {
-    font-weight: 700 !important;
-    font-size: 1rem !important;
-    color: var(--accent-color) !important;
-    text-shadow: var(--text-glow);
+    font-weight: 900 !important;
+    font-size: 1.1rem !important;
+    color: white !important;
+    text-shadow: 0 0 10px var(--edgerunner-pink);
+    letter-spacing: 1px;
 }
 
 /* ================== */
@@ -443,9 +461,9 @@ body::before {
 /* Button Container */
 .toggle-container {
     display: flex;
-    gap: 1rem;
-    padding: 1rem 2rem;
-    background: var(--primary-bg);
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(to right, #1A1A25 0%, #252535 100%);
     border-bottom: 1px solid var(--border-color);
     flex-wrap: wrap;
     position: relative;
@@ -462,19 +480,20 @@ body::before {
         transparent 0%,
         var(--accent-color) 50%,
         transparent 100%);
+    box-shadow: 0 0 10px var(--accent-color);
 }
 
-/* Semester Selector */
+/* Semester Selector - Edgerunner Style */
 .semester-selector {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.75rem;
     margin-right: auto;
 }
 
 .semester-btn {
-    min-width: 2.5rem;
-    padding: 0.5rem;
-    background: var(--metal-panel);
+    min-width: 3rem;
+    padding: 0.75rem;
+    background: var(--cyberware-bg);
     color: var(--text-primary);
     border: none;
     border-radius: 0;
@@ -482,6 +501,10 @@ body::before {
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-family: 'Orbitron', sans-serif;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
 }
 
 .semester-btn::before {
@@ -491,31 +514,32 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    border: 1px solid var(--accent-color);
+    border: 2px solid var(--accent-color);
     opacity: 0;
     transition: var(--transition-smooth);
 }
 
 .semester-btn:hover:not(:disabled) {
     background: var(--accent-color);
-    color: var(--deep-space);
-    transform: translateY(-3px);
-    box-shadow: var(--soft-glow);
+    color: black;
+    transform: translateY(-5px);
+    box-shadow: 0 0 20px var(--accent-color);
 }
 
 .semester-btn:hover:not(:disabled)::before {
     opacity: 1;
-    transform: scale(0.9);
+    transform: scale(0.95);
 }
 
 .semester-btn:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(-2px);
 }
 
 .semester-btn:disabled {
     opacity: 0.3;
     cursor: not-allowed;
     position: relative;
+    background: #1A1A25;
 }
 
 .semester-btn:disabled::after {
@@ -525,20 +549,21 @@ body::before {
     left: 50%;
     transform: translate(-50%, -50%);
     color: var(--danger-color);
-    font-size: 1.2rem;
-    text-shadow: 0 0 5px var(--danger-color);
+    font-size: 1.5rem;
+    text-shadow: 0 0 10px var(--danger-color);
 }
 
 /* ================= */
 /* MODAL ENHANCEMENTS */
 /* ================= */
 .stats-modal {
-    background: var(--primary-bg);
-    border: 1px solid var(--border-color);
-    box-shadow: var(--strong-glow);
+    background: var(--deep-city);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 0 30px var(--accent-color);
     color: var(--text-primary);
     position: relative;
     overflow: hidden;
+    font-family: 'Orbitron', sans-serif;
 }
 
 .stats-modal::before {
@@ -550,42 +575,45 @@ body::before {
     height: 100%;
     background: linear-gradient(
         180deg,
-        rgba(0, 240, 255, 0.05) 0%,
+        rgba(255, 0, 144, 0.1) 0%,
         transparent 50%,
-        rgba(157, 0, 255, 0.05) 100%
+        rgba(0, 180, 255, 0.1) 100%
     );
     pointer-events: none;
 }
 
 .stats-modal h3 {
     color: var(--accent-color);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.75rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     position: relative;
+    font-weight: 900;
+    text-shadow: 0 0 10px var(--accent-color);
 }
 
 .stats-modal h3::after {
     content: '';
     position: absolute;
-    bottom: -1px;
+    bottom: -2px;
     left: 0;
     width: 30%;
-    height: 2px;
+    height: 3px;
     background: var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-color);
 }
 
-/* Chart Containers */
+/* Chart Containers - Edgerunner Style */
 .chart-container {
-    background: var(--elevated-black);
-    border: 1px solid var(--border-color);
+    background: var(--cyberware-bg);
+    border: 2px solid var(--border-color);
     border-radius: 0;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
+    padding: 2rem;
+    margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
-    box-shadow: inset 0 0 20px rgba(0, 240, 255, 0.1);
+    box-shadow: inset 0 0 30px rgba(255, 0, 144, 0.2);
 }
 
 .chart-container::before {
@@ -594,21 +622,21 @@ body::before {
     top: 0;
     left: 0;
     right: 0;
-    height: 2px;
+    height: 3px;
     background: var(--accent-color);
-    box-shadow: 0 0 10px var(--accent-color);
+    box-shadow: 0 0 15px var(--accent-color);
 }
 
 .chart-container::after {
     content: '';
     position: absolute;
-    top: 2px;
+    top: 3px;
     left: 0;
     right: 0;
     bottom: 0;
     background: linear-gradient(
         180deg,
-        rgba(0, 240, 255, 0.03) 0%,
+        rgba(255, 0, 144, 0.1) 0%,
         transparent 10%
     );
     pointer-events: none;
@@ -619,13 +647,17 @@ body::before {
 /* =============== */
 @media (max-width: 768px) {
     .m-portlet__head {
-        padding: 1rem;
+        padding: 1rem 1.5rem;
+    }
+    
+    .m-portlet__head-title {
+        font-size: 1.5rem;
     }
     
     .toggle-container {
         flex-direction: column;
-        gap: 0.75rem;
-        padding: 1rem;
+        gap: 1rem;
+        padding: 1.25rem;
     }
     
     .semester-selector {
@@ -636,19 +668,20 @@ body::before {
     
     #course-data-table th,
     #course-data-table td {
-        padding: 0.75rem;
-        font-size: 0.85rem;
+        padding: 1rem;
+        font-size: 0.9rem;
     }
     
     .modern-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.75rem;
+        padding: 0.75rem 1.25rem;
+        font-size: 0.8rem;
     }
 }
 
 /* ============= */
 /* ANIMATIONS */
 /* ============= */
+/* More aggressive scanlines */
 @keyframes scanline {
     0% { transform: translateY(-100%); }
     100% { transform: translateY(100%); }
@@ -669,15 +702,15 @@ body::before {
     background: linear-gradient(
         to bottom,
         transparent 0%,
-        rgba(0, 240, 255, 0.05) 50%,
+        rgba(255, 0, 144, 0.1) 50%,
         transparent 100%
     );
-    animation: scanline 6s linear infinite;
+    animation: scanline 4s linear infinite;
     z-index: 1;
     pointer-events: none;
 }
 
-/* Binary Rain Effect */
+/* Binary Rain Effect - More visible */
 .binary-rain {
     position: fixed;
     top: 0;
@@ -687,16 +720,17 @@ body::before {
     background: transparent;
     z-index: -1;
     pointer-events: none;
-    opacity: 0.1;
+    opacity: 0.15;
 }
 
 .binary-digit {
     position: absolute;
-    color: var(--neon-green);
-    font-family: monospace;
-    font-size: 14px;
+    color: var(--edgerunner-green);
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: bold;
     animation: binary-fall linear infinite;
-    text-shadow: 0 0 5px var(--neon-green);
+    text-shadow: 0 0 8px var(--edgerunner-green);
 }
 
 @keyframes binary-fall {
@@ -707,58 +741,75 @@ body::before {
 /* UTILITY CLASSES */
 /* =============== */
 .text-glow {
-    text-shadow: var(--text-glow);
+    text-shadow: 0 0 10px currentColor;
 }
 
 .box-glow {
-    box-shadow: var(--medium-glow);
+    box-shadow: 0 0 20px var(--accent-color);
 }
 
 .hover-glow:hover {
-    box-shadow: var(--strong-glow);
+    box-shadow: 0 0 30px var(--accent-color);
 }
 
 .neon-text {
-    animation: neon-flicker 1.5s infinite alternate;
+    animation: neon-flicker 1s infinite alternate;
 }
 
 @keyframes neon-flicker {
     0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
         opacity: 1;
-        text-shadow: 0 0 10px currentColor;
+        text-shadow: 0 0 15px currentColor;
     }
     20%, 22%, 24%, 55% {
-        opacity: 0.8;
+        opacity: 0.7;
         text-shadow: 0 0 5px currentColor;
     }
 }
 
-/* Data Matrix Effect */
-.data-matrix {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="1" height="1" x="%{Math.floor(Math.random()*100)}" y="%{Math.floor(Math.random()*100)}" fill="rgba(0,240,255,0.1)"/></svg>');
-    z-index: -1;
-    opacity: 0.05;
-    pointer-events: none;
-}
-
-/* Cyberpunk Loading Bar */
+/* Cyberpunk Loading Bar - Edgerunner Style */
 .loading-bar {
-    height: 3px;
-    background: linear-gradient(90deg, var(--neon-pink), var(--neon-blue));
+    height: 4px;
+    background: linear-gradient(90deg, var(--edgerunner-red), var(--edgerunner-pink), var(--edgerunner-blue));
     position: fixed;
     top: 0;
     left: 0;
-    animation: loading-progress 2s ease-in-out infinite;
+    animation: loading-progress 1.5s ease-in-out infinite;
     z-index: 9999;
+    box-shadow: 0 0 10px var(--edgerunner-pink);
 }
 
 @keyframes loading-progress {
     0% { width: 0%; left: 0; }
     50% { width: 100%; left: 0; }
     100% { width: 0%; left: 100%; }
+}
+
+/* Edgerunner Chrome Overlay Effect */
+.chrome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(rgba(255,0,144,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,0,144,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.3;
+}
+
+/* Cyberware Circuit Pattern */
+.circuit-pattern {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        url('data:image/svg+xml;utf8,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><path d="M0 50h20v20h60v-20h20" fill="none" stroke="rgba(255,0,144,0.1)" stroke-width="1"/></svg>');
+    pointer-events: none;
+    z-index: -1;
 }
