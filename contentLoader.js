@@ -24,6 +24,7 @@
     const script = document.createElement('script');
     script.textContent = content;
     (document.head || document.documentElement).appendChild(script);
+    return script;
   }
 
   function injectStyles(content) {
@@ -32,68 +33,86 @@
     document.head.appendChild(style);
   }
 
-  function displayActiveUsers(count) {
+  function showActiveUsers(count) {
+    console.log('[FlexRizz] Attempting to show active users:', count);
     const portletBody = document.querySelector('.portlet-body');
-    if (!portletBody) return;
+    if (!portletBody) {
+      console.warn('[FlexRizz] Could not find .portlet-body element');
+      return;
+    }
+
+    // Remove existing row if present
+    const existingRow = document.querySelector('.flexrizz-active-users-row');
+    if (existingRow) existingRow.remove();
 
     const activeUsersRow = document.createElement('div');
     activeUsersRow.className = 'flexrizz-active-users-row';
     activeUsersRow.innerHTML = `
-        <div style="padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #ddd; font-family: 'Inter', sans-serif;">
-            <strong>Active Users:</strong> ${count} users currently using FlexRizz extension
-        </div>
+      <div style="padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #ddd; 
+                  font-family: 'Inter', sans-serif; font-size: 14px;">
+        <strong>Active Users:</strong> ${count} ${count === 1 ? 'user' : 'users'} currently using FlexRizz
+      </div>
     `;
     
     portletBody.parentNode.insertBefore(activeUsersRow, portletBody);
+    console.log('[FlexRizz] Active users display added');
   }
 
   try {
-    // Load CSS first
+    // 1. Load CSS first
     const cssContent = await loadRemoteResource(`${GITHUB_BASE}styles.css${CACHE_BUSTER}`);
     injectStyles(cssContent);
 
-    // Load utils.js
+    // 2. Load and wait for utils.js
     const utilsContent = await loadRemoteResource(`${GITHUB_BASE}utils.js${CACHE_BUSTER}`);
-    injectScript(utilsContent);
+    const utilsScript = injectScript(utilsContent);
+    
+    await new Promise((resolve) => {
+      utilsScript.onload = resolve;
+      utilsScript.onerror = resolve; // Continue even if utils fails
+    });
 
-    // Load inject.js
+    // 3. Initialize tracking (if utils loaded successfully)
+    if (window.FlexRizz?.utils) {
+      window.FlexRizz.utils.trackUserActivity();
+      const activeUsers = window.FlexRizz.utils.getActiveUsers();
+      showActiveUsers(activeUsers);
+    } else {
+      console.warn('[FlexRizz] Utils not available, showing fallback');
+      showActiveUsers('N/A (fallback)');
+    }
+
+    // 4. Load inject.js (non-blocking)
     const injectContent = await loadRemoteResource(`${GITHUB_BASE}inject.js${CACHE_BUSTER}`);
     injectScript(injectContent);
 
-    // Initialize active users tracking
-    await new Promise(resolve => {
-      const checkInitialized = setInterval(() => {
-        if (window.FlexRizz?.utils) {
-          clearInterval(checkInitialized);
-          window.FlexRizz.utils.trackUserActivity();
-          const activeUsers = window.FlexRizz.utils.getActiveUsers();
-          displayActiveUsers(activeUsers);
-          resolve();
-        }
-      }, 100);
-    });
-
   } catch (error) {
-    console.error('FlexRizz failed to load remote resources:', error);
+    console.error('[FlexRizz] Loading failed:', error);
     
-    // Minimal fallback
+    // Fallback UI
+    showActiveUsers('N/A (error)');
     injectScript(`
-      console.log('FlexRizz minimal version loaded');
+      console.log('[FlexRizz] Minimal version loaded');
       if (!window.gradeUtils) {
         window.gradeUtils = {
           calculateAbsoluteGrade: (p) => p >= 90 ? 'A+' : 'F'
         };
       }
-      
-      // Minimal active users display
-      setTimeout(() => {
-        const portletBody = document.querySelector('.portlet-body');
-        if (portletBody) {
-          const row = document.createElement('div');
-          row.innerHTML = '<div style="padding:10px;background:#f8f9fa;border-bottom:1px solid #ddd;">Active Users: Data unavailable</div>';
-          portletBody.parentNode.insertBefore(row, portletBody);
-        }
-      }, 1000);
     `);
   }
+
+  // Periodic check in case DOM loads slowly
+  const domCheckInterval = setInterval(() => {
+    const portletBody = document.querySelector('.portlet-body');
+    if (portletBody) {
+      const existingRow = document.querySelector('.flexrizz-active-users-row');
+      if (!existingRow) {
+        const count = window.FlexRizz?.utils?.getActiveUsers?.() || 'N/A';
+        showActiveUsers(count);
+      }
+    }
+  }, 1000);
+
+  // Stop checking after 10 seconds
+  setTimeout(() => clearInterval(domCheckInterval), 10000);
 })();
