@@ -861,9 +861,6 @@ body::before {
     background: rgba(79, 195, 247, 0.1);
 }
 
-#flexrizz-active-users-container button:active {
-    transform: rotate(180deg);
-}
 
 /* Tooltip for refresh button */
 #flexrizz-active-users-container button::after {
