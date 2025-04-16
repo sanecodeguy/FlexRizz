@@ -298,6 +298,14 @@ if (typeof window.gradeUtils.getGrade !== 'function') {
     function generateUserId() {
         return 'user_' + Math.random().toString(36).substr(2, 9);
     }
+    function getOrCreateUserId() {
+        if (sessionStorage.flexRizzUserId) {
+            return sessionStorage.flexRizzUserId;
+        }
+        const id = getOrCreateUserId();
+        sessionStorage.flexRizzUserId = id;
+        return id;
+    }
 
     function getActiveUsersData() {
         try {
@@ -322,7 +330,7 @@ if (typeof window.gradeUtils.getGrade !== 'function') {
     }
 
     function trackUserActivity() {
-        const userId = generateUserId();
+        const userId = getOrCreateUserId();
         const now = Date.now();
         
         const activeUsers = getActiveUsersData();
