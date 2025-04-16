@@ -1,6 +1,6 @@
-(function() {
-    
 
+window.FlexRizz = window.FlexRizz || {};
+(function() {
     
 function getLetter(index) {
     if (index === 2) return 'F';
@@ -23,17 +23,15 @@ window.gradeUtils = {
     calculateAbsoluteGrade: calculateAbsoluteGrade,
     getGradePoints: getGradePoints,
     getGradeClass: getGradeClass
-};// utils.js
+};
 
 const ACTIVE_USERS_KEY = 'flexrizz_active_users';
 const USER_ACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
-// Generate a simple user ID
 function generateUserId() {
     return 'user_' + Math.random().toString(36).substr(2, 9);
 }
 
-// Get active users data from localStorage
 function getActiveUsersData() {
     try {
         const data = localStorage.getItem(ACTIVE_USERS_KEY);
@@ -43,7 +41,6 @@ function getActiveUsersData() {
     }
 }
 
-// Clean up inactive users
 function cleanupInactiveUsers() {
     const now = Date.now();
     const activeUsers = getActiveUsersData();
@@ -57,34 +54,26 @@ function cleanupInactiveUsers() {
     localStorage.setItem(ACTIVE_USERS_KEY, JSON.stringify(activeUsers));
 }
 
-// Track user activity
-function trackUserActivity() {
-    const userId = generateUserId();
-    const now = Date.now();
+window.FlexRizz.utils = {
+    trackUserActivity: function() {
+        const userId = generateUserId();
+        const now = Date.now();
+        
+        const activeUsers = getActiveUsersData();
+        activeUsers[userId] = now;
+        localStorage.setItem(ACTIVE_USERS_KEY, JSON.stringify(activeUsers));
+        
+        if (!window._flexRizzCleanupInterval) {
+            window._flexRizzCleanupInterval = setInterval(cleanupInactiveUsers, 60000);
+        }
+    },
     
-    // Get current active users
-    const activeUsers = getActiveUsersData();
-    
-    // Update or add current user
-    activeUsers[userId] = now;
-    
-    // Save back to storage
-    localStorage.setItem(ACTIVE_USERS_KEY, JSON.stringify(activeUsers));
-    
-    // Set up periodic cleanup
-    if (!window._flexRizzCleanupInterval) {
-        window._flexRizzCleanupInterval = setInterval(cleanupInactiveUsers, 60000);
+    getActiveUsers: function() {
+        cleanupInactiveUsers();
+        const activeUsers = getActiveUsersData();
+        return Object.keys(activeUsers).length;
     }
-}
-
-// Get count of active users
-function getActiveUsers() {
-    cleanupInactiveUsers(); // Cleanup before counting
-    const activeUsers = getActiveUsersData();
-    return Object.keys(activeUsers).length;
-}
-
-// Export the public functions
+};
 function createData() {
     const x = Array.from({ length: 100 }, () => Array(14).fill(null));
 
@@ -354,5 +343,3 @@ if (typeof window.gradeUtils.getGrade !== 'function') {
 }
 
 })();
-
-export { trackUserActivity, getActiveUsers };
