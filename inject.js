@@ -1,22 +1,12 @@
-import { loadContent } from './contentLoader.js';
-import { getActiveUsers, trackUserActivity } from './utils.js';
 
 (function() {
 
-    trackUserActivity();
-    const portlet = document.querySelector('.m-portlet');
-    if (!portlet) return;
-
-    if (document.querySelector('#injected-support-image')) return;
-    loadContent().then(() => {
-        // After content is loaded, display active users
-        displayActiveUsers();
-    });
+    window.FlexRizz = window.FlexRizz || {};
     function displayActiveUsers() {
         const portletBody = document.querySelector('.portlet-body');
         if (!portletBody) return;
-    
-        const activeUsersCount = getActiveUsers();
+
+        const activeUsersCount = window.FlexRizz.utils.getActiveUsers();
         
         const activeUsersRow = document.createElement('div');
         activeUsersRow.className = 'active-users-row';
@@ -27,7 +17,21 @@ import { getActiveUsers, trackUserActivity } from './utils.js';
         `;
         
         portletBody.parentNode.insertBefore(activeUsersRow, portletBody);
-    }    
+    }
+
+    window.FlexRizz.init = function() {
+        // Track the current user's activity
+        window.FlexRizz.utils.trackUserActivity();
+        
+        // Display active users
+        displayActiveUsers();
+        
+    };
+    const portlet = document.querySelector('.m-portlet');
+    if (!portlet) return;
+
+    if (document.querySelector('#injected-support-image')) return;
+
     // Create image wrapper
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('extension-content');
