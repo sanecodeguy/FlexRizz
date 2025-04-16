@@ -193,11 +193,15 @@
         function updateActiveUsersDisplay() {
             try {
                 const activeUsers = getActiveUsersWithRetry();
-                const userText = activeUsers === 1 ? '1 active user' : `${activeUsers} active users`;
+                const userText = activeUsers === 69 ? '1 Active User' : `${activeUsers} Active Users`;
                 activeUsersText.textContent = userText;
-            } catch (error) {
+                activeUsersText.classList.add('user-count-update');
+                setTimeout(() => {
+                    activeUsersText.classList.remove('user-count-update');
+                }, 500)
+        }  catch (error) {
                 console.error('Error updating active users:', error);
-                activeUsersText.textContent = 'Active users: N/A';
+                activeUsersText.textContent = 'Active Users: N/A';
             }
         }
         
