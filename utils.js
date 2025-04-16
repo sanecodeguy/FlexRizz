@@ -289,34 +289,49 @@ if (!window.gradeUtils) {
 if (typeof window.gradeUtils.getGrade !== 'function') {
     console.error('Failed to properly expose getGrade function');
 }
- // ========================
-    // 2. ACTIVE USERS TRACKING
-    // ========================
-    const ACTIVE_USERS_KEY = 'flexrizz_active_users';
-    const USER_ACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+const ACTIVE_USERS_KEY = 'flexrizz_active_users';
+const USER_ACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 
-    function generateUserId() {
-        return 'user_' + Math.random().toString(36).substr(2, 9);
-    }
-    function getOrCreateUserId() {
+function generateUserId() {
+    return 'user_' + Math.random().toString(36).substr(2, 9);
+}
+
+function getOrCreateUserId() {
+    try {
+        // First try sessionStorage
         if (sessionStorage.flexRizzUserId) {
             return sessionStorage.flexRizzUserId;
         }
-        const id = getOrCreateUserId();
-        sessionStorage.flexRizzUserId = id;
-        return id;
-    }
-
-    function getActiveUsersData() {
-        try {
-            const data = localStorage.getItem(ACTIVE_USERS_KEY);
-            return data ? JSON.parse(data) : {};
-        } catch (e) {
-            return {};
+        
+        // Then try localStorage as fallback
+        if (localStorage.flexRizzUserId) {
+            const id = localStorage.flexRizzUserId;
+            sessionStorage.flexRizzUserId = id;
+            return id;
         }
+        
+        // Generate new ID if none exists
+        const id = generateUserId();
+        sessionStorage.flexRizzUserId = id;
+        localStorage.flexRizzUserId = id;
+        return id;
+    } catch (e) {
+        // Fallback if storage is blocked
+        return generateUserId();
     }
+}
 
-    function cleanupInactiveUsers() {
+function getActiveUsersData() {
+    try {
+        const data = localStorage.getItem(ACTIVE_USERS_KEY);
+        return data ? JSON.parse(data) : {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function cleanupInactiveUsers() {
+    try {
         const now = Date.now();
         const activeUsers = getActiveUsersData();
         
@@ -327,9 +342,13 @@ if (typeof window.gradeUtils.getGrade !== 'function') {
         }
         
         localStorage.setItem(ACTIVE_USERS_KEY, JSON.stringify(activeUsers));
+    } catch (e) {
+        console.error('Error cleaning up inactive users:', e);
     }
+}
 
-    function trackUserActivity() {
+function trackUserActivity() {
+    try {
         const userId = getOrCreateUserId();
         const now = Date.now();
         
@@ -340,23 +359,36 @@ if (typeof window.gradeUtils.getGrade !== 'function') {
         if (!window._flexRizzCleanupInterval) {
             window._flexRizzCleanupInterval = setInterval(cleanupInactiveUsers, 60000);
         }
+    } catch (e) {
+        console.error('Error tracking user activity:', e);
     }
+}
 
-    function getActiveUsers() {
+function getActiveUsers() {
+    try {
         cleanupInactiveUsers();
         const activeUsers = getActiveUsersData();
         return Object.keys(activeUsers).length;
+    } catch (e) {
+        console.error('Error getting active users:', e);
+        return 0;
     }
-  window.FlexRizz = window.FlexRizz || {};
-    window.FlexRizz.utils = {
-        trackUserActivity,
-        getActiveUsers
-    };
+}
 
-    // Initialize cleanup interval if not already set
-    if (!window._flexRizzCleanupInterval) {
-        window._flexRizzCleanupInterval = setInterval(cleanupInactiveUsers, 60000);
-    }
-    
+// Initialize FlexRizz utils
+window.FlexRizz = window.FlexRizz || {};
+window.FlexRizz.utils = {
+    trackUserActivity,
+    getActiveUsers
+};
+
+// Track initial activity
+window.FlexRizz.utils.trackUserActivity();
+
+// Initialize cleanup interval if not already set
+if (!window._flexRizzCleanupInterval) {
+    window._flexRizzCleanupInterval = setInterval(cleanupInactiveUsers, 60000);
+}
+
 
 })();
