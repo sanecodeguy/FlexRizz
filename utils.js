@@ -326,13 +326,11 @@ function getActiveUsersData() {
         const data = localStorage.getItem(ACTIVE_USERS_KEY);
         let activeUsers = data ? JSON.parse(data) : {};
         
-        // Only generate random users if none exist (first load)
         if (Object.keys(activeUsers).length <3) {
-            // Generate 3-8 random users (you can adjust these numbers)
-            const randomUserCount = Math.floor(Math.random() * 6) + 3; 
+            
+            const randomUserCount = Math.floor(Math.random() * 4) + 8; 
             const now = Date.now();
             
-            // Generate random users with random activity times (within last 5 mins)
             for (let i = 0; i < randomUserCount; i++) {
                 const randomTimeOffset = Math.floor(Math.random() * 5 * 60 * 1000);
                 activeUsers[`simulated_user_${i}`] = now - randomTimeOffset;
