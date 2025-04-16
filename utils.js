@@ -1,5 +1,4 @@
 
-window.FlexRizz = window.FlexRizz || {};
 (function() {
     
 function getLetter(index) {
@@ -341,5 +340,10 @@ if (!window.gradeUtils) {
 if (typeof window.gradeUtils.getGrade !== 'function') {
     console.error('Failed to properly expose getGrade function');
 }
-
+window.FlexRizz = window.FlexRizz || {};
+window.FlexRizz.utils = {
+    trackUserActivity,
+    getActiveUsers,
+};
 })();
+
