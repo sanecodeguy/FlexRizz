@@ -1469,7 +1469,7 @@ statsButton.addEventListener('click', () => {
                 background: var(--border-color); z-index: -1;"></div>
         `;
 
-        chartSection.appendChild(barChartContainer);
+        // chartSection.appendChild(barChartContainer);
         statsContent.appendChild(chartSection);
 
         // Assessment breakdown
