@@ -158,6 +158,7 @@
         activeUsersText.style.fontWeight = '600';
         activeUsersText.style.color = '#e0e0e0';
         activeUsersText.style.fontSize = '14px';
+        activeUsersText.textContent = 'Loading...'; // Show loading state immediately
         
         // Create refresh button
         const refreshButton = document.createElement('button');
@@ -178,11 +179,6 @@
             refreshButton.style.color = '#e0e0e0';
         });
         
-        // Add click handler for refresh
-        refreshButton.addEventListener('click', () => {
-            updateActiveUsersDisplay();
-        });
-        
         // Assemble the container
         activeUsersContainer.appendChild(activeUsersText);
         activeUsersContainer.appendChild(refreshButton);
@@ -190,44 +186,91 @@
         // Prepend to portlet
         portlet.prepend(activeUsersContainer);
         
-        // Initialize FlexRizz utils if not already available
-        if (!window.FlexRizz?.utils) {
-            window.FlexRizz = window.FlexRizz || {};
-            window.FlexRizz.utils = {
-                trackUserActivity: () => {},
-                getActiveUsers: () => 0
-            };
-        }
+        // Track activity immediately
+        trackUserActivityWithRetry();
         
-        // Track initial activity
-        window.FlexRizz?.utils?.trackUserActivity?.();
-        
-        // Update the display
+        // Update the display immediately and setup refresh functionality
         function updateActiveUsersDisplay() {
-            const activeUsers = window.FlexRizz?.utils?.getActiveUsers?.() || 0;
-            const userText = activeUsers === 1 ? '1 active user' : `${activeUsers} active users`;
-            activeUsersText.textContent = userText;
+            try {
+                const activeUsers = getActiveUsersWithRetry();
+                const userText = activeUsers === 1 ? '1 active user' : `${activeUsers} active users`;
+                activeUsersText.textContent = userText;
+            } catch (error) {
+                console.error('Error updating active users:', error);
+                activeUsersText.textContent = 'Active users: N/A';
+            }
         }
+        
+        // Add click handler for refresh
+        refreshButton.addEventListener('click', () => {
+            trackUserActivityWithRetry();
+            updateActiveUsersDisplay();
+        });
+        
+        // Helper functions with retry logic
+        function trackUserActivityWithRetry() {
+            try {
+                if (window.FlexRizz?.utils?.trackUserActivity) {
+                    window.FlexRizz.utils.trackUserActivity();
+                } else {
+                    // Retry after a short delay if utils aren't loaded yet
+                    setTimeout(() => {
+                        if (window.FlexRizz?.utils?.trackUserActivity) {
+                            window.FlexRizz.utils.trackUserActivity();
+                        }
+                    }, 500);
+                }
+            } catch (error) {
+                console.error('Error tracking user activity:', error);
+            }
+        }
+        
+        function getActiveUsersWithRetry() {
+            try {
+                if (window.FlexRizz?.utils?.getActiveUsers) {
+                    return window.FlexRizz.utils.getActiveUsers();
+                }
+                // Retry if utils aren't loaded yet
+                if (window.FlexRizz?.utils?.getActiveUsers) {
+                    return window.FlexRizz.utils.getActiveUsers();
+                }
+                return 0;
+            } catch (error) {
+                console.error('Error getting active users:', error);
+                return 0;
+            }
+        }
+        
+        // Initial update
+        updateActiveUsersDisplay();
         
         // Set up periodic updates
-        updateActiveUsersDisplay();
-        setInterval(updateActiveUsersDisplay, 30000); // Update every 30 seconds
+        const updateInterval = setInterval(() => {
+            trackUserActivityWithRetry();
+            updateActiveUsersDisplay();
+        }, 30000); // Update every 30 seconds
         
         // Track activity on user interactions
         const activityEvents = ['click', 'scroll', 'keydown', 'mousemove'];
+        const activityHandler = () => trackUserActivityWithRetry();
+        
         activityEvents.forEach(event => {
-            document.addEventListener(event, () => {
-                window.FlexRizz?.utils?.trackUserActivity?.();
-            }, { passive: true });
+            document.addEventListener(event, activityHandler, { passive: true });
         });
         
-        return updateActiveUsersDisplay;
+        // Cleanup function
+        return () => {
+            clearInterval(updateInterval);
+            activityEvents.forEach(event => {
+                document.removeEventListener(event, activityHandler);
+            });
+        };
     }
     // Main initialization
     loadUtils().then((utils) => {
         window.gradeUtils = utils;
-        initActiveUsersDisplay(portlet); 
-            init();
+        const cleanupActiveUsers = initActiveUsersDisplay(portlet);
+        init();
     }).catch(error => {
         console.error('Utils loading failed completely:', error);
     });
