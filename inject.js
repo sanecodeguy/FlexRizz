@@ -1,32 +1,61 @@
-
-(function() {
-
-    window.FlexRizz = window.FlexRizz || {};
-    function displayActiveUsers() {
-        const portletBody = document.querySelector('.portlet-body');
-        if (!portletBody) return;
-
-        const activeUsersCount = window.FlexRizz.utils.getActiveUsers();
-        
-        const activeUsersRow = document.createElement('div');
-        activeUsersRow.className = 'active-users-row';
-        activeUsersRow.innerHTML = `
-            <div style="padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
-                <strong>Active Users:</strong> ${activeUsersCount} users currently using FlexRizz extension
-            </div>
-        `;
-        
-        portletBody.parentNode.insertBefore(activeUsersRow, portletBody);
+function waitForUtils() {
+    return new Promise(resolve => {
+      const check = () => {
+        if (window.FlexRizz?.utils) {
+          resolve();
+        } else {
+          setTimeout(check, 100);
+        }
+      };
+      check();
+    });
+  }
+  
+  // Display active users row
+  function showActiveUsers(count) {
+    const portletBody = document.querySelector('.portlet-body');
+    if (!portletBody) {
+      console.warn('FlexRizz: Could not find .portlet-body');
+      return;
     }
-
-    window.FlexRizz.init = function() {
-        // Track the current user's activity
+  
+    // Remove existing if present
+    const existingRow = document.querySelector('.flexrizz-active-users');
+    if (existingRow) existingRow.remove();
+  
+    const row = document.createElement('div');
+    row.className = 'flexrizz-active-users';
+    row.innerHTML = `
+      <div style="padding: 10px; background: #f5f5f5; border-bottom: 1px solid #ddd;
+                  font-family: 'Inter', sans-serif; font-size: 13px;">
+        <strong>Active Users:</strong> ${count} ${count === 1 ? 'user' : 'users'} online
+      </div>
+    `;
+    portletBody.parentNode.insertBefore(row, portletBody);
+  }
+ (async function() {
+    try {
+        await waitForUtils();
+        
+        // Track current user
         window.FlexRizz.utils.trackUserActivity();
         
-        // Display active users
-        displayActiveUsers();
+        // Get and display count
+        const count = window.FlexRizz.utils.getActiveUsers();
+        showActiveUsers(count);
         
-    };
+        // Update every minute
+        setInterval(() => {
+          const updatedCount = window.FlexRizz.utils.getActiveUsers();
+          showActiveUsers(updatedCount);
+        }, 60000);
+    
+      } catch (error) {
+        console.error('FlexRizz active users failed:', error);
+        // Fallback display
+        showActiveUsers('N/A');
+      }
+      
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
 
