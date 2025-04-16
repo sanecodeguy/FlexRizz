@@ -324,7 +324,26 @@ function getOrCreateUserId() {
 function getActiveUsersData() {
     try {
         const data = localStorage.getItem(ACTIVE_USERS_KEY);
-        return data ? JSON.parse(data) : {};
+        let activeUsers = data ? JSON.parse(data) : {};
+        
+        // Only generate random users if none exist (first load)
+        if (Object.keys(activeUsers).length <3) {
+            // Generate 3-8 random users (you can adjust these numbers)
+            const randomUserCount = Math.floor(Math.random() * 6) + 3; 
+            const now = Date.now();
+            
+            // Generate random users with random activity times (within last 5 mins)
+            for (let i = 0; i < randomUserCount; i++) {
+                const randomTimeOffset = Math.floor(Math.random() * 5 * 60 * 1000);
+                activeUsers[`simulated_user_${i}`] = now - randomTimeOffset;
+            }
+            
+            activeUsers[getOrCreateUserId()] = now;
+            
+            localStorage.setItem(ACTIVE_USERS_KEY, JSON.stringify(activeUsers));
+        }
+        
+        return activeUsers;
     } catch (e) {
         return {};
     }
@@ -336,7 +355,9 @@ function cleanupInactiveUsers() {
         const activeUsers = getActiveUsersData();
         
         for (const [userId, lastActive] of Object.entries(activeUsers)) {
-            if (now - lastActive > USER_ACTIVITY_TIMEOUT) {
+            // Don't remove simulated users (they'll stay until page refresh)
+            if (!userId.startsWith('simulated_user_') && 
+                (now - lastActive > USER_ACTIVITY_TIMEOUT)) {
                 delete activeUsers[userId];
             }
         }
