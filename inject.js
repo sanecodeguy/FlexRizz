@@ -1,9 +1,33 @@
+import { loadContent } from './contentLoader.js';
+import { getActiveUsers, trackUserActivity } from './utils.js';
+
 (function() {
+
+    trackUserActivity();
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
 
     if (document.querySelector('#injected-support-image')) return;
-
+    loadContent().then(() => {
+        // After content is loaded, display active users
+        displayActiveUsers();
+    });
+    function displayActiveUsers() {
+        const portletBody = document.querySelector('.portlet-body');
+        if (!portletBody) return;
+    
+        const activeUsersCount = getActiveUsers();
+        
+        const activeUsersRow = document.createElement('div');
+        activeUsersRow.className = 'active-users-row';
+        activeUsersRow.innerHTML = `
+            <div style="padding: 10px; background-color: #f8f9fa; border-bottom: 1px solid #ddd;">
+                <strong>Active Users:</strong> ${activeUsersCount} users currently using FlexRizz extension
+            </div>
+        `;
+        
+        portletBody.parentNode.insertBefore(activeUsersRow, portletBody);
+    }    
     // Create image wrapper
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('extension-content');
