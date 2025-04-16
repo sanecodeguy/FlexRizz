@@ -1,56 +1,70 @@
 /* ==================== */
-/* CLEAN iOS-STYLE THEME */
+/* REFINED iOS-STYLE THEME */
 /* ==================== */
 :root {
-    /* Modern iOS Color Palette */
-    --system-blue: #007AFF;
-    --system-green: #34C759;
-    --system-indigo: #5856D6;
-    --system-orange: #FF9500;
-    --system-pink: #FF2D55;
-    --system-purple: #AF52DE;
-    --system-red: #FF3B30;
-    --system-teal: #5AC8FA;
-    --system-yellow: #FFCC00;
+    /* Enhanced Color Palette */
+    --system-blue: #0A84FF;       /* More vibrant blue */
+    --system-green: #30D158;      /* Brighter green */
+    --system-indigo: #5E5CE6;     /* More vivid indigo */
+    --system-orange: #FF9F0A;     /* Warmer orange */
+    --system-pink: #FF375F;       /* Deeper pink */
+    --system-purple: #BF5AF2;     /* More saturated purple */
+    --system-red: #FF453A;        /* Crisper red */
+    --system-teal: #64D2FF;       /* Lighter teal */
+    --system-yellow: #FFD60A;     /* Vibrant yellow */
     
-    /* Neutral Backgrounds */
+    /* Refined Neutral Palette */
     --system-background: #FFFFFF;
-    --secondary-background: #F2F2F7;
-    --tertiary-background: #E5E5EA;
+    --secondary-background: #F8F8FA;  /* Slightly warmer light gray */
+    --tertiary-background: #EFEFF4;   /* Softer gray */
+    --quaternary-background: #E5E5EA; /* For subtle contrasts */
     
-    /* Text Colors */
-    --label-primary: #000000;
-    --label-secondary: rgba(0, 0, 0, 0.6);
-    --label-tertiary: rgba(0, 0, 0, 0.4);
-    --label-quaternary: rgba(0, 0, 0, 0.2);
+    /* Optimized Text Colors */
+    --label-primary: #1C1C1E;       /* Darker for better readability */
+    --label-secondary: #636366;     /* Better contrast ratio */
+    --label-tertiary: #AEAEB2;      /* For disabled/placeholder */
+    --label-quaternary: #D1D1D6;    /* Very subtle text */
     
-    /* Borders & Dividers */
-    --separator-opaque: #C6C6C8;
-    --separator-nonopaque: rgba(0, 0, 0, 0.1);
+    /* Enhanced Borders & Dividers */
+    --separator-opaque: #D8D8DC;    /* Softer border color */
+    --separator-nonopaque: rgba(0, 0, 0, 0.08);  /* More subtle */
     
-    /* System Colors */
+    /* Semantic Colors */
     --accent-color: var(--system-blue);
     --success-color: var(--system-green);
     --warning-color: var(--system-orange);
     --danger-color: var(--system-red);
     
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    /* Improved Shadows */
+    --shadow-sm: 0 1px 1px rgba(0, 0, 0, 0.04), 
+                 0 2px 2px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.05),
+                 0 4px 8px rgba(0, 0, 0, 0.05);
     
-    /* Transitions */
-    --transition-quick: all 0.2s ease;
+    /* Smoother Transitions */
+    --transition-quick: all 0.18s cubic-bezier(0.25, 0.1, 0.25, 1);
+    --transition-smooth: all 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    
+    /* Consistent Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
 }
 
 /* =============== */
 /* GLOBAL OVERRIDES */ 
 /* =============== */
 body {
-    background: var(--system-background);
+    background: var(--secondary-background);
     color: var(--label-primary);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 
+                 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    padding: 0;
+    margin: 0;
 }
 
 /* ============= */
@@ -58,19 +72,22 @@ body {
 /* ============= */
 .m-portlet {
     background: var(--system-background);
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: var(--shadow-sm);
     overflow: hidden;
-    margin-bottom: 16px;
+    margin-bottom: var(--spacing-md);
+    border: 0.5px solid var(--separator-opaque);
 }
 
 /* ============ */
 /* PORTLET HEAD */ 
 /* ============ */
 .m-portlet__head {
-    padding: 16px 20px;
+    padding: var(--spacing-md) var(--spacing-lg);
     background: var(--system-background);
-    border-bottom: 1px solid var(--separator-nonopaque);
+    border-bottom: 0.5px solid var(--separator-nonopaque);
+    display: flex;
+    align-items: center;
 }
 
 .m-portlet__head-title {
@@ -78,32 +95,44 @@ body {
     font-size: 20px;
     font-weight: 600;
     margin: 0;
+    letter-spacing: -0.2px; /* Slightly tighter for headings */
 }
 
 /* ============== */
 /* BUTTON STYLES */
 /* ============== */
 .modern-btn {
-    padding: 8px 16px;
+    padding: var(--spacing-sm) var(--spacing-md);
     background: var(--system-background);
     color: var(--accent-color);
-    border: 1px solid var(--separator-opaque);
-    border-radius: 8px;
+    border: 0.5px solid var(--separator-opaque);
+    border-radius: 10px; /* Slightly more rounded */
     font-weight: 500;
-    font-size: 14px;
+    font-size: 15px;
     cursor: pointer;
     transition: var(--transition-quick);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
 }
 
 .modern-btn:hover {
-    background: rgba(0, 122, 255, 0.1);
+    background: rgba(10, 132, 255, 0.06);
     border-color: var(--accent-color);
+    transform: translateY(-0.5px); /* Subtle lift effect */
+}
+
+.modern-btn:active {
+    transform: translateY(0);
+    background: rgba(10, 132, 255, 0.12);
 }
 
 .modern-btn.active {
     background: var(--accent-color);
     color: white;
     border-color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(10, 132, 255, 0.2);
 }
 
 /* Status Indicators */
@@ -113,14 +142,17 @@ body {
     height: 8px;
     border-radius: 50%;
     margin-left: 6px;
+    vertical-align: middle;
 }
 
 .status-on {
     background: var(--success-color);
+    box-shadow: 0 0 0 2px rgba(48, 209, 88, 0.2);
 }
 
 .status-off {
     background: var(--danger-color);
+    box-shadow: 0 0 0 2px rgba(255, 69, 58, 0.2);
 }
 
 /* ============= */
@@ -133,18 +165,20 @@ body {
 }
 
 #course-data-table thead th {
-    padding: 12px 16px;
+    padding: var(--spacing-sm) var(--spacing-md);
     background: var(--secondary-background);
-    color: var(--label-primary);
+    color: var(--label-secondary);
     font-weight: 500;
     font-size: 14px;
     text-align: left;
     position: sticky;
     top: 0;
+    backdrop-filter: blur(8px);
+    border-bottom: 0.5px solid var(--separator-nonopaque);
 }
 
 #course-data-table tbody tr {
-    border-bottom: 1px solid var(--separator-nonopaque);
+    border-bottom: 0.5px solid var(--separator-nonopaque);
 }
 
 #course-data-table tbody tr:last-child {
@@ -152,25 +186,26 @@ body {
 }
 
 #course-data-table tbody tr:hover {
-    background: rgba(0, 122, 255, 0.03);
+    background: rgba(10, 132, 255, 0.03);
 }
 
 #course-data-table td {
-    padding: 12px 16px;
+    padding: var(--spacing-md);
     font-size: 15px;
+    color: var(--label-primary);
 }
 
-/* Grade Colors */
+/* Enhanced Grade Colors */
 .grade-Aplus { color: var(--system-green); font-weight: 500; }
 .grade-A { color: var(--system-green); }
-.grade-Aminus { color: var(--system-green); opacity: 0.9; }
-.grade-Bplus { color: #2E9E4F; }
-.grade-B { color: #2E9E4F; opacity: 0.9; }
-.grade-Bminus { color: #2E9E4F; opacity: 0.8; }
+.grade-Aminus { color: #28BA5D; } /* Slightly darker */
+.grade-Bplus { color: #4CD964; } /* Brighter green */
+.grade-B { color: #34C759; }
+.grade-Bminus { color: #30D158; opacity: 0.9; }
 .grade-Cplus { color: var(--system-orange); }
-.grade-C { color: var(--system-orange); opacity: 0.9; }
-.grade-Cminus { color: var(--system-orange); opacity: 0.8; }
-.grade-Dplus { color: var(--system-red); }
+.grade-C { color: #FF9500; } /* Standard orange */
+.grade-Cminus { color: #FF9F0A; opacity: 0.9; }
+.grade-Dplus { color: #FF7043; } /* Softer red-orange */
 .grade-D { color: var(--system-red); opacity: 0.9; }
 .grade-F { color: var(--system-red); font-weight: 500; }
 
@@ -182,6 +217,7 @@ body {
 
 .sgpa-row td {
     font-weight: 500 !important;
+    color: var(--label-primary);
 }
 
 /* ================== */
@@ -190,40 +226,48 @@ body {
 /* Button Container */
 .toggle-container {
     display: flex;
-    gap: 12px;
-    padding: 16px;
-    background: var(--secondary-background);
-    border-bottom: 1px solid var(--separator-nonopaque);
+    gap: var(--spacing-sm);
+    padding: var(--spacing-md);
+    background: var(--system-background);
+    border-bottom: 0.5px solid var(--separator-nonopaque);
     flex-wrap: wrap;
 }
 
 /* Semester Selector */
 .semester-selector {
     display: flex;
-    gap: 8px;
+    gap: var(--spacing-sm);
     margin-right: auto;
+    flex-wrap: wrap;
 }
 
 .semester-btn {
     min-width: 40px;
-    padding: 8px;
+    padding: var(--spacing-sm);
     background: var(--system-background);
     color: var(--label-primary);
-    border: 1px solid var(--separator-opaque);
-    border-radius: 8px;
+    border: 0.5px solid var(--separator-opaque);
+    border-radius: 10px;
     transition: var(--transition-quick);
     cursor: pointer;
     font-size: 14px;
+    text-align: center;
 }
 
 .semester-btn:hover:not(:disabled) {
-    background: rgba(0, 122, 255, 0.1);
+    background: rgba(10, 132, 255, 0.06);
     border-color: var(--accent-color);
     color: var(--accent-color);
 }
 
+.semester-btn.active {
+    background: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+}
+
 .semester-btn:disabled {
-    opacity: 0.5;
+    color: var(--label-tertiary);
     cursor: not-allowed;
 }
 
@@ -232,18 +276,20 @@ body {
 /* ================= */
 .stats-modal {
     background: var(--system-background);
-    border-radius: 12px;
+    border-radius: 14px;
     box-shadow: var(--shadow-md);
     color: var(--label-primary);
-    padding: 20px;
-    max-width: 90vw;
+    padding: var(--spacing-lg);
+    max-width: min(90vw, 600px);
+    border: 0.5px solid var(--separator-opaque);
 }
 
 .stats-modal h3 {
     color: var(--label-primary);
-    border-bottom: 1px solid var(--separator-nonopaque);
-    padding-bottom: 12px;
+    border-bottom: 0.5px solid var(--separator-nonopaque);
+    padding-bottom: var(--spacing-sm);
     margin-top: 0;
+    margin-bottom: var(--spacing-md);
     font-size: 18px;
     font-weight: 600;
 }
@@ -251,24 +297,30 @@ body {
 /* Chart Containers */
 .chart-container {
     background: var(--system-background);
-    border-radius: 8px;
-    padding: 16px;
-    margin-bottom: 16px;
+    border-radius: 12px;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
     box-shadow: var(--shadow-sm);
+    border: 0.5px solid var(--separator-opaque);
 }
 
 /* =============== */
 /* RESPONSIVE DESIGN */
 /* =============== */
 @media (max-width: 768px) {
+    :root {
+        --spacing-md: 12px;
+        --spacing-lg: 18px;
+    }
+    
     .m-portlet__head {
-        padding: 12px 16px;
+        padding: var(--spacing-md);
     }
     
     .toggle-container {
         flex-direction: column;
-        gap: 8px;
-        padding: 12px;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
     }
     
     .semester-selector {
@@ -296,4 +348,54 @@ body {
 
 .font-semibold {
     font-weight: 600;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.shadow-sm {
+    box-shadow: var(--shadow-sm);
+}
+
+.rounded-lg {
+    border-radius: 12px;
+}
+
+.p-4 {
+    padding: var(--spacing-md);
+}
+
+.mb-4 {
+    margin-bottom: var(--spacing-md);
+}
+
+/* =============== */
+/* MICRO-INTERACTIONS */
+/* =============== */
+/* Subtle hover effects */
+.hover-scale {
+    transition: transform var(--transition-quick);
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* Focus states */
+button:focus-visible, 
+a:focus-visible,
+input:focus-visible {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Loading state */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
