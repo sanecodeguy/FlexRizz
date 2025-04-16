@@ -813,3 +813,99 @@ body::before {
     pointer-events: none;
     z-index: -1;
 }
+/* Active Users Display Container */
+#flexrizz-active-users-container {
+    background: #1a1f24;
+    border-bottom: 1px solid #2d343a;
+    padding: 12px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Rajdhani', sans-serif;
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 5px;
+}
+
+/* Active Users Text */
+#flexrizz-active-users-text {
+    color: #e0e0e0;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Active Users Counter */
+#flexrizz-active-users-text::after {
+    content: " 👥";
+}
+
+/* Refresh Button */
+#flexrizz-active-users-container button {
+    background: transparent;
+    border: none;
+    color: #e0e0e0;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#flexrizz-active-users-container button:hover {
+    color: #4fc3f7;
+    background: rgba(79, 195, 247, 0.1);
+    transform: rotate(90deg);
+}
+
+#flexrizz-active-users-container button:active {
+    transform: rotate(180deg);
+}
+
+/* Tooltip for refresh button */
+#flexrizz-active-users-container button::after {
+    content: attr(title);
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #2d343a;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    z-index: 100;
+}
+
+#flexrizz-active-users-container button:hover::after {
+    opacity: 1;
+}
+
+/* Animation for user count updates */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.user-count-update {
+    animation: pulse 0.5s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #flexrizz-active-users-container {
+        padding: 8px 10px;
+    }
+    #flexrizz-active-users-text {
+        font-size: 13px;
+    }
+}
