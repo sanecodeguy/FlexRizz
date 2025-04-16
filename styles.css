@@ -859,7 +859,6 @@ body::before {
 #flexrizz-active-users-container button:hover {
     color: #4fc3f7;
     background: rgba(79, 195, 247, 0.1);
-    transform: rotate(90deg);
 }
 
 #flexrizz-active-users-container button:active {
