@@ -1,61 +1,7 @@
-function waitForUtils() {
-    return new Promise(resolve => {
-      const check = () => {
-        if (window.FlexRizz?.utils) {
-          resolve();
-        } else {
-          setTimeout(check, 100);
-        }
-      };
-      check();
-    });
-  }
-  
-  // Display active users row
-  function showActiveUsers(count) {
-    const portletBody = document.querySelector('.portlet-body');
-    if (!portletBody) {
-      console.warn('FlexRizz: Could not find .portlet-body');
-      return;
-    }
-  
-    // Remove existing if present
-    const existingRow = document.querySelector('.flexrizz-active-users');
-    if (existingRow) existingRow.remove();
-  
-    const row = document.createElement('div');
-    row.className = 'flexrizz-active-users';
-    row.innerHTML = `
-      <div style="padding: 10px; background: #f5f5f5; border-bottom: 1px solid #ddd;
-                  font-family: 'Inter', sans-serif; font-size: 13px;">
-        <strong>Active Users:</strong> ${count} ${count === 1 ? 'user' : 'users'} online
-      </div>
-    `;
-    portletBody.parentNode.insertBefore(row, portletBody);
-  }
- (async function() {
-    try {
-        await waitForUtils();
-        
-        // Track current user
-        window.FlexRizz.utils.trackUserActivity();
-        
-        // Get and display count
-        const count = window.FlexRizz.utils.getActiveUsers();
-        showActiveUsers(count);
-        
-        // Update every minute
-        setInterval(() => {
-          const updatedCount = window.FlexRizz.utils.getActiveUsers();
-          showActiveUsers(updatedCount);
-        }, 60000);
-    
-      } catch (error) {
-        console.error('FlexRizz active users failed:', error);
-        // Fallback display
-        showActiveUsers('N/A');
-      }
-      
+
+(function() {
+
+
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
 
@@ -194,11 +140,94 @@ function waitForUtils() {
             document.head.appendChild(script);
         });
     }
-
+    function initActiveUsersDisplay(portlet) {
+        // Create active users display container
+        const activeUsersContainer = document.createElement('div');
+        activeUsersContainer.id = 'flexrizz-active-users-container';
+        activeUsersContainer.style.padding = '10px';
+        activeUsersContainer.style.background = '#1a1f24';
+        activeUsersContainer.style.borderBottom = '1px solid #2d343a';
+        activeUsersContainer.style.display = 'flex';
+        activeUsersContainer.style.justifyContent = 'space-between';
+        activeUsersContainer.style.alignItems = 'center';
+        
+        // Create active users text element
+        const activeUsersText = document.createElement('span');
+        activeUsersText.id = 'flexrizz-active-users-text';
+        activeUsersText.style.fontFamily = "'Rajdhani', sans-serif";
+        activeUsersText.style.fontWeight = '600';
+        activeUsersText.style.color = '#e0e0e0';
+        activeUsersText.style.fontSize = '14px';
+        
+        // Create refresh button
+        const refreshButton = document.createElement('button');
+        refreshButton.innerHTML = '⟳';
+        refreshButton.style.background = 'transparent';
+        refreshButton.style.border = 'none';
+        refreshButton.style.color = '#e0e0e0';
+        refreshButton.style.cursor = 'pointer';
+        refreshButton.style.fontSize = '14px';
+        refreshButton.style.padding = '0 5px';
+        refreshButton.title = 'Refresh active users count';
+        
+        // Add hover effect to refresh button
+        refreshButton.addEventListener('mouseover', () => {
+            refreshButton.style.color = '#4fc3f7';
+        });
+        refreshButton.addEventListener('mouseout', () => {
+            refreshButton.style.color = '#e0e0e0';
+        });
+        
+        // Add click handler for refresh
+        refreshButton.addEventListener('click', () => {
+            updateActiveUsersDisplay();
+        });
+        
+        // Assemble the container
+        activeUsersContainer.appendChild(activeUsersText);
+        activeUsersContainer.appendChild(refreshButton);
+        
+        // Prepend to portlet
+        portlet.prepend(activeUsersContainer);
+        
+        // Initialize FlexRizz utils if not already available
+        if (!window.FlexRizz?.utils) {
+            window.FlexRizz = window.FlexRizz || {};
+            window.FlexRizz.utils = {
+                trackUserActivity: () => {},
+                getActiveUsers: () => 0
+            };
+        }
+        
+        // Track initial activity
+        window.FlexRizz?.utils?.trackUserActivity?.();
+        
+        // Update the display
+        function updateActiveUsersDisplay() {
+            const activeUsers = window.FlexRizz?.utils?.getActiveUsers?.() || 0;
+            const userText = activeUsers === 1 ? '1 active user' : `${activeUsers} active users`;
+            activeUsersText.textContent = userText;
+        }
+        
+        // Set up periodic updates
+        updateActiveUsersDisplay();
+        setInterval(updateActiveUsersDisplay, 30000); // Update every 30 seconds
+        
+        // Track activity on user interactions
+        const activityEvents = ['click', 'scroll', 'keydown', 'mousemove'];
+        activityEvents.forEach(event => {
+            document.addEventListener(event, () => {
+                window.FlexRizz?.utils?.trackUserActivity?.();
+            }, { passive: true });
+        });
+        
+        return updateActiveUsersDisplay;
+    }
     // Main initialization
     loadUtils().then((utils) => {
         window.gradeUtils = utils;
-        init();
+        initActiveUsersDisplay(portlet); 
+            init();
     }).catch(error => {
         console.error('Utils loading failed completely:', error);
     });

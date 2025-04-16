@@ -289,5 +289,66 @@ if (!window.gradeUtils) {
 if (typeof window.gradeUtils.getGrade !== 'function') {
     console.error('Failed to properly expose getGrade function');
 }
+ // ========================
+    // 2. ACTIVE USERS TRACKING
+    // ========================
+    const ACTIVE_USERS_KEY = 'flexrizz_active_users';
+    const USER_ACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+
+    function generateUserId() {
+        return 'user_' + Math.random().toString(36).substr(2, 9);
+    }
+
+    function getActiveUsersData() {
+        try {
+            const data = localStorage.getItem(ACTIVE_USERS_KEY);
+            return data ? JSON.parse(data) : {};
+        } catch (e) {
+            return {};
+        }
+    }
+
+    function cleanupInactiveUsers() {
+        const now = Date.now();
+        const activeUsers = getActiveUsersData();
+        
+        for (const [userId, lastActive] of Object.entries(activeUsers)) {
+            if (now - lastActive > USER_ACTIVITY_TIMEOUT) {
+                delete activeUsers[userId];
+            }
+        }
+        
+        localStorage.setItem(ACTIVE_USERS_KEY, JSON.stringify(activeUsers));
+    }
+
+    function trackUserActivity() {
+        const userId = generateUserId();
+        const now = Date.now();
+        
+        const activeUsers = getActiveUsersData();
+        activeUsers[userId] = now;
+        localStorage.setItem(ACTIVE_USERS_KEY, JSON.stringify(activeUsers));
+        
+        if (!window._flexRizzCleanupInterval) {
+            window._flexRizzCleanupInterval = setInterval(cleanupInactiveUsers, 60000);
+        }
+    }
+
+    function getActiveUsers() {
+        cleanupInactiveUsers();
+        const activeUsers = getActiveUsersData();
+        return Object.keys(activeUsers).length;
+    }
+  window.FlexRizz = window.FlexRizz || {};
+    window.FlexRizz.utils = {
+        trackUserActivity,
+        getActiveUsers
+    };
+
+    // Initialize cleanup interval if not already set
+    if (!window._flexRizzCleanupInterval) {
+        window._flexRizzCleanupInterval = setInterval(cleanupInactiveUsers, 60000);
+    }
+    
 
 })();
