@@ -581,7 +581,7 @@ editMarksButton.addEventListener('click', () => {
     });
 
     // Update button state
-    editMarksButton.innerHTML = editModeActive ? 'Save Changes' : 'Edit Marks';
+    editMarksButton.innerHTML = editModeActive ? 'Exit Edit' : 'Edit Marks';
     editMarksStatus.className = `status-indicator ${editModeActive ? 'status-on' : 'status-off'}`;
     
     // If exiting edit mode, recreate table to ensure consistency
