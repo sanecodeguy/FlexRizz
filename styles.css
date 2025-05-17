@@ -1,35 +1,51 @@
 /* ==================== */
-/* CLEAN PROFESSIONAL THEME */
+/* CLEAN PROFESSIONAL THEME - ENHANCED */
 /* ==================== */
 :root {
-    /* Color Palette */
+    /* Color Palette - Enhanced Contrast */
     --primary-color: #3498db;
+    --primary-hover: #2980b9;
     --secondary-color: #2c3e50;
+    --secondary-hover: #1a252f;
     --accent-color: #2980b9;
     --success-color: #27ae60;
+    --success-hover: #219653;
     --warning-color: #f39c12;
     --danger-color: #e74c3c;
+    --danger-hover: #c0392b;
     
-    /* Backgrounds */
+    /* Backgrounds - Subtle Gradients */
     --primary-bg: #f8f9fa;
     --secondary-bg: #ffffff;
-    --sidebar-bg: #2c3e50;
+    --sidebar-bg: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     
-    /* Text */
-    --text-primary: #333333;
-    --text-secondary: #7f8c8d;
+    /* Text - Improved Readability */
+    --text-primary: #2d3436;
+    --text-secondary: #636e72;
     --text-light: #ffffff;
+    --text-muted: #95a5a6;
     
-    /* Borders */
-    --border-color: #e0e0e0;
+    /* Borders - Refined */
+    --border-color: #dfe6e9;
+    --border-radius: 6px;
     
-    /* Shadows */
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
+    /* Shadows - More Depth */
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
+    --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
+    --shadow-lg: 0 15px 30px rgba(0,0,0,0.1);
+    --shadow-inset: inset 0 1px 2px rgba(0,0,0,0.05);
     
-    /* Transitions */
-    --transition: all 0.2s ease;
+    /* Transitions - Smoother */
+    --transition-fast: all 0.15s ease-in-out;
+    --transition: all 0.25s ease-in-out;
+    --transition-slow: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* Spacing System */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
 }
 
 /* =============== */
@@ -38,187 +54,311 @@
 body {
     background: var(--primary-bg);
     color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 
+                 Ubuntu, Cantarell, 'Open Sans', sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 /* ============= */
-/* PORTLET FRAME */
+/* PORTLET FRAME - Enhanced */
 /* ============= */
 .m-portlet {
     background: var(--secondary-bg);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--border-radius);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
     transition: var(--transition);
+    margin-bottom: var(--space-lg);
 }
 
 .m-portlet:hover {
     box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
 }
 
 /* ============ */
-/* PORTLET HEAD */ 
+/* PORTLET HEAD - Refined */ 
 /* ============ */
 .m-portlet__head {
-    padding: 1.25rem 2rem;
+    padding: var(--space-lg) var(--space-xl);
     background: var(--secondary-bg);
     border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .m-portlet__head-title {
     color: var(--secondary-color);
-    font-size: 1.5rem;
+    font-size: 1.375rem;
     font-weight: 600;
     margin: 0;
+    letter-spacing: -0.02em;
+    position: relative;
+}
+
+.m-portlet__head-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 40px;
+    height: 3px;
+    background: var(--primary-color);
+    border-radius: 3px;
 }
 
 /* ============== */
-/* BUTTON STYLES */
+/* BUTTON STYLES - Enhanced */
 /* ============== */
 .modern-btn {
-    padding: 0.8rem 1.75rem;
+    padding: 0.75rem 1.75rem;
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 4px;
-    font-weight: 600;
+    border-radius: var(--border-radius);
+    font-weight: 500;
     cursor: pointer;
     transition: var(--transition);
+    letter-spacing: 0.02em;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
 .modern-btn:hover {
-    background: var(--accent-color);
+    background: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-md);
 }
 
 .modern-btn:active {
     transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.modern-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
 }
 
 .modern-btn.active {
     background: var(--secondary-color);
-    font-weight: 600;
+    font-weight: 500;
+}
+
+/* Button Variants */
+.modern-btn-success {
+    background: var(--success-color);
+}
+
+.modern-btn-success:hover {
+    background: var(--success-hover);
+}
+
+.modern-btn-danger {
+    background: var(--danger-color);
+}
+
+.modern-btn-danger:hover {
+    background: var(--danger-hover);
 }
 
 /* ============= */
-/* TABLE STYLES */
+/* TABLE STYLES - Enhanced */
 /* ============= */
 #course-data-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     background: var(--secondary-bg);
+    font-size: 0.9375rem;
 }
 
 #course-data-table thead th {
-    padding: 1rem 1.5rem;
+    padding: var(--space-md) var(--space-lg);
     background: var(--secondary-bg);
     color: var(--secondary-color);
     font-weight: 600;
     text-align: left;
     border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 #course-data-table tbody tr {
+    transition: var(--transition-fast);
+}
+
+#course-data-table tbody tr:not(:last-child) {
     border-bottom: 1px solid var(--border-color);
-    transition: var(--transition);
 }
 
 #course-data-table tbody tr:hover {
-    background: rgba(0,0,0,0.02);
+    background: rgba(52, 152, 219, 0.03);
 }
 
 #course-data-table td {
-    padding: 1rem 1.5rem;
+    padding: var(--space-md) var(--space-lg);
+    position: relative;
 }
 
-/* Grade Colors */
+/* Add subtle hover effect on cells */
+#course-data-table td:hover::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(52, 152, 219, 0.05);
+    pointer-events: none;
+}
+
+/* Grade Colors - Enhanced */
 .grade-Aplus { color: var(--success-color); font-weight: 600; }
-.grade-A { color: var(--success-color); }
+.grade-A { color: var(--success-color); font-weight: 500; }
 .grade-Aminus { color: var(--success-color); opacity: 0.9; }
-.grade-Bplus { color: #3498db; }
+.grade-Bplus { color: #3498db; font-weight: 500; }
 .grade-B { color: #3498db; opacity: 0.9; }
 .grade-Bminus { color: #3498db; opacity: 0.7; }
-.grade-Cplus { color: var(--warning-color); }
+.grade-Cplus { color: var(--warning-color); font-weight: 500; }
 .grade-C { color: var(--warning-color); opacity: 0.8; }
 .grade-Cminus { color: var(--warning-color); opacity: 0.6; }
 .grade-Dplus { color: #e67e22; }
 .grade-D { color: #e67e22; opacity: 0.8; }
 .grade-F { color: var(--danger-color); font-weight: 600; }
 
-/* SGPA Row */
+/* SGPA Row - Enhanced */
 .sgpa-row {
-    background: rgba(52, 152, 219, 0.1) !important;
+    background: rgba(52, 152, 219, 0.08) !important;
     font-weight: 600 !important;
 }
 
+.sgpa-row td {
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
 /* ================== */
-/* INTERACTIVE ELEMENTS */ 
+/* INTERACTIVE ELEMENTS - Enhanced */ 
 /* ================== */
 /* Button Container */
 .toggle-container {
     display: flex;
-    gap: 1rem;
-    padding: 1.5rem 2rem;
+    gap: var(--space-md);
+    padding: var(--space-lg) var(--space-xl);
     background: var(--secondary-bg);
     border-bottom: 1px solid var(--border-color);
     flex-wrap: wrap;
+    align-items: center;
 }
 
-/* Semester Selector */
+/* Semester Selector - Enhanced */
 .semester-selector {
     display: flex;
-    gap: 0.5rem;
+    gap: var(--space-xs);
     margin-right: auto;
+    flex-wrap: wrap;
 }
 
 .semester-btn {
-    min-width: 3rem;
-    padding: 0.75rem;
+    min-width: 3.25rem;
+    padding: 0.65rem 0.75rem;
     background: var(--secondary-bg);
     color: var(--text-primary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
-    transition: var(--transition);
+    border-radius: var(--border-radius);
+    transition: var(--transition-fast);
     cursor: pointer;
     font-weight: 500;
+    text-align: center;
 }
 
 .semester-btn:hover:not(:disabled) {
     background: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.semester-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+    font-weight: 500;
 }
 
 .semester-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+    background: var(--primary-bg);
 }
 
 /* =============== */
-/* RESPONSIVE DESIGN */
+/* RESPONSIVE DESIGN - Enhanced */
 /* =============== */
-@media (max-width: 768px) {
-    .m-portlet__head {
-        padding: 1rem 1.5rem;
+@media (max-width: 992px) {
+    :root {
+        --space-md: 0.875rem;
+        --space-lg: 1.25rem;
+        --space-xl: 1.75rem;
     }
     
-    .m-portlet__head-title {
-        font-size: 1.25rem;
+    .m-portlet__head {
+        padding: var(--space-md) var(--space-lg);
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-sm);
+    }
+    
+    .m-portlet__head-title::after {
+        bottom: -6px;
     }
     
     .toggle-container {
-        padding: 1rem;
+        padding: var(--space-md);
+        gap: var(--space-sm);
     }
     
     #course-data-table th,
     #course-data-table td {
-        padding: 0.75rem;
+        padding: var(--space-sm) var(--space-md);
+        font-size: 0.875rem;
     }
     
     .modern-btn {
-        padding: 0.75rem 1.25rem;
+        padding: 0.65rem 1.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .semester-btn {
+        min-width: 2.75rem;
+        padding: 0.5rem 0.65rem;
+        font-size: 0.8125rem;
+    }
+}
+
+@media (max-width: 576px) {
+    #course-data-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .semester-selector {
+        margin-right: 0;
+        margin-bottom: var(--space-sm);
+        width: 100%;
     }
 }
