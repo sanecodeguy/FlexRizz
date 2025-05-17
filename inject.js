@@ -503,12 +503,94 @@
             const roundingStatus = document.createElement('span');
             roundingStatus.className = `status-indicator ${shouldRoundUp ? 'status-on' : 'status-off'}`;
             roundingButton.appendChild(roundingStatus);
+           
+             // In the createToggleButtons function, replace the export button with:
+const editMarksButton = document.createElement('button');
+editMarksButton.id = 'edit-marks-button';
+editMarksButton.className = 'modern-btn';
+editMarksButton.innerHTML = 'Edit Marks';
+const editMarksStatus = document.createElement('span');
+editMarksStatus.className = 'status-indicator status-off';
+editMarksButton.appendChild(editMarksStatus);
+
+let editModeActive = false;
+
+editMarksButton.addEventListener('click', () => {
+    editModeActive = !editModeActive;
+    const table = portlet.querySelector('#course-data-table');
+    
+    if (!table) return;
+
+    const rows = table.querySelectorAll('tbody tr:not(.sgpa-row)');
+    rows.forEach(row => {
+        const obtainedCell = row.querySelector('td:nth-child(4)');
+        const gradeCell = row.querySelector('td:nth-child(6)');
+        const totalMarks = parseFloat(row.querySelector('td:nth-child(5)').textContent);
+        
+        if (editModeActive) {
+            // Enter edit mode
+            const originalValue = obtainedCell.textContent;
+            obtainedCell.classList.add('editable-cell');
             
-            // Export Button
-            const exportButton = document.createElement('button');
-            exportButton.id = 'export-button';
-            exportButton.className = 'modern-btn';
-            exportButton.innerHTML = 'Export Data';
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.step = '0.01';
+            input.min = 0;
+            input.max = totalMarks;
+            input.value = originalValue;
+            
+            obtainedCell.textContent = '';
+            obtainedCell.appendChild(input);
+
+            // Update grade when input changes
+            input.addEventListener('input', () => {
+                const newValue = parseFloat(input.value) || 0;
+                const courseName = row.querySelector('td:first-child').textContent;
+                const courseEntry = Object.entries(courses).find(([_, course]) => course.name === courseName);
+                
+                if (courseEntry) {
+                    const [code, courseData] = courseEntry;
+                    let grade = "I";
+                    
+                    if (courseData.grading === "Absolute") {
+                        const percentage = (newValue / totalMarks) * 100;
+                        grade = window.gradeUtils.calculateAbsoluteGrade(percentage);
+                    } else if (courseData.grading === "Relative") {
+                        const classAverage = parseFloat(row.querySelector('td:nth-child(3)').textContent);
+                        const percentage = (newValue / totalMarks) * 100;
+                        const mca = (classAverage / totalMarks) * 100;
+                        grade = window.gradeUtils.getGrade(mca, percentage)[0];
+                    }
+                    
+                    const gradeClass = window.gradeUtils.getGradeClass(grade);
+                    gradeCell.className = gradeClass;
+                    gradeCell.textContent = grade;
+                    
+                    // Update SGPA
+                    updateSGPA();
+                }
+            });
+        } else {
+            // Exit edit mode
+            const input = obtainedCell.querySelector('input');
+            if (input) {
+                obtainedCell.textContent = parseFloat(input.value).toFixed(2);
+                obtainedCell.classList.remove('editable-cell');
+            }
+        }
+    });
+
+    // Update button state
+    editMarksButton.innerHTML = editModeActive ? 'Save Changes' : 'Edit Marks';
+    editMarksStatus.className = `status-indicator ${editModeActive ? 'status-on' : 'status-off'}`;
+    
+    // If exiting edit mode, recreate table to ensure consistency
+    if (!editModeActive) {
+        createTable();
+    }
+});
+
+
             
             // Custom Grades Button
             const customGradesButton = document.createElement('button');
@@ -621,31 +703,7 @@
                 }
             });
             
-            exportButton.addEventListener('click', async () => {
-                try {
-                    await loadHtml2Pdf();
-                    exportButton.disabled = true;
-                    exportButton.textContent = 'Exporting...';
-                    
-                    const element = portlet.querySelector('#course-data-table');
-                    if (element) {
-                        const opt = {
-                            margin: 10,
-                            filename: `grades_semester_${currentSemester}.pdf`,
-                            image: { type: 'jpeg', quality: 0.98 },
-                            html2canvas: { scale: 2 },
-                            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-                        };
-                        
-                        await html2pdf().from(element).set(opt).save();
-                    }
-                } catch (error) {
-                    console.error('Export failed:', error);
-                } finally {
-                    exportButton.disabled = false;
-                    exportButton.textContent = 'Export Data';
-                }
-            });
+
             
             customGradesButton.addEventListener('click', () => {
                 if (customGradesActive) {
@@ -830,22 +888,20 @@
 
             // Initialize buttons state
             decreaseBtn.disabled = (currentSemester <= 1);
-            increaseBtn.disabled = (currentSemester >= 8); // Assuming max semester is 8
+            increaseBtn.disabled = (currentSemester >= 8); 
 
             // Add all buttons to container
             container.appendChild(semesterContainer);
             container.appendChild(transcriptButton);
             container.appendChild(roundingButton);
-            container.appendChild(exportButton);
+            container.appendChild(editMarksButton);
             container.appendChild(customGradesButton);
 
             const portletBody = portlet.querySelector('.m-portlet__body');
             if (portletBody) {
                 portlet.insertBefore(container, portletBody);
             }
-            // Add this after the other button creation code in the createToggleButtons function
 
-// Show Stats Button
 const statsButton = document.createElement('button');
 statsButton.id = 'show-stats-button';
 statsButton.className = 'modern-btn';
