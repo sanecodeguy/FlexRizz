@@ -1,200 +1,224 @@
 /* ==================== */
-/* PREMIUM MINIMAL THEME */
-/* ELEGANT & REFINED DESIGN */
+/* CLEAN PROFESSIONAL THEME */
 /* ==================== */
 :root {
-    /* Refined Color Palette */
-    --primary-color: #4A6FA5;       /* Deep sophisticated blue */
-    --primary-hover: #3A5A8F;       /* Darker blue for hover */
-    --secondary-color: #2B3A4D;     /* Dark navy for backgrounds */
-    --accent-color: #A67C52;        /* Muted bronze accent (less flashy than gold) */
-    --accent-hover: #8C6B4A;        /* Slightly darker bronze */
-    --success-color: #4CAF50;       /* Emerald green */
-    --warning-color: #FFA000;       /* Amber warning (muted) */
-    --danger-color: #D32F2F;        /* Rich red (muted) */
+    /* Color Palette */
+    --primary-color: #3498db;
+    --secondary-color: #2c3e50;
+    --accent-color: #2980b9;
+    --success-color: #27ae60;
+    --warning-color: #f39c12;
+    --danger-color: #e74c3c;
     
-    /* Neutral Tones */
-    --dark-bg: #1E2833;             /* Deep navy background */
-    --medium-bg: #2B3A4D;           /* Slightly lighter navy */
-    --light-bg: #F5F7FA;            /* Off-white for contrast */
-    --card-bg: #243140;             /* Card background */
+    /* Backgrounds */
+    --primary-bg: #f8f9fa;
+    --secondary-bg: #ffffff;
+    --sidebar-bg: #2c3e50;
     
-    /* Text colors */
-    --text-primary: #E0E6ED;        /* Soft white */
-    --text-secondary: #B8C2CC;      /* Light gray */
-    --text-dark: #2B3A4D;           /* Dark text */
+    /* Text */
+    --text-primary: #333333;
+    --text-secondary: #7f8c8d;
+    --text-light: #ffffff;
     
     /* Borders */
-    --border-color: rgba(166, 124, 82, 0.2); /* Bronze-accented border (subtle) */
-    --border-radius: 4px;            /* Cleaner, less rounded */
+    --border-color: #e0e0e0;
     
-    /* Minimal Shadows */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 2px 6px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
     
-    /* Subtle Transitions */
-    --transition-fast: all 0.15s ease;
-    --transition-normal: all 0.25s ease;
-    --transition-slow: all 0.35s ease;
-    
-    /* Premium Typography */
-    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
-    --font-headings: 'Montserrat', var(--font-main);
+    /* Transitions */
+    --transition: all 0.2s ease;
 }
 
 /* =============== */
-/* GLOBAL STYLES */ 
+/* GLOBAL OVERRIDES */ 
 /* =============== */
 body {
-    background-color: var(--dark-bg);
+    background: var(--primary-bg);
     color: var(--text-primary);
-    font-family: var(--font-main);
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.5;
 }
 
 /* ============= */
 /* PORTLET FRAME */
 /* ============= */
 .m-portlet {
-    background: var(--card-bg);
+    background: var(--secondary-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    box-shadow: var(--shadow-md);
+    border-radius: 4px;
+    box-shadow: var(--shadow-sm);
     overflow: hidden;
-    transition: var(--transition-normal);
-    margin-bottom: 2rem;
+    transition: var(--transition);
 }
 
 .m-portlet:hover {
-    box-shadow: var(--shadow-lg);
-}
-
-/* Simplified border accent */
-.m-portlet::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent-color);
-    z-index: 1;
+    box-shadow: var(--shadow-md);
 }
 
 /* ============ */
 /* PORTLET HEAD */ 
 /* ============ */
 .m-portlet__head {
-    padding: 1.5rem 2rem;
-    background: var(--secondary-color);
+    padding: 1.25rem 2rem;
+    background: var(--secondary-bg);
     border-bottom: 1px solid var(--border-color);
 }
 
 .m-portlet__head-title {
-    color: var(--accent-color);
-    font-family: var(--font-headings);
+    color: var(--secondary-color);
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
-    letter-spacing: 0.5px;
 }
 
 /* ============== */
-/* REFINED BUTTONS */
+/* BUTTON STYLES */
 /* ============== */
 .modern-btn {
-    padding: 0.75rem 1.75rem;
-    background-color: var(--primary-color);
+    padding: 0.8rem 1.75rem;
+    background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: var(--border-radius);
-    font-weight: 500;
+    border-radius: 4px;
+    font-weight: 600;
     cursor: pointer;
-    transition: var(--transition-fast);
-    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
 }
 
 .modern-btn:hover {
-    background-color: var(--primary-hover);
-    box-shadow: var(--shadow-md);
+    background: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
 }
 
-/* Secondary button style */
-.modern-btn.secondary {
-    background-color: transparent;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
+.modern-btn:active {
+    transform: translateY(0);
 }
 
-/* Accent button style (muted) */
-.modern-btn.accent {
-    background-color: var(--accent-color);
-    color: white;
+.modern-btn.active {
+    background: var(--secondary-color);
+    font-weight: 600;
 }
 
 /* ============= */
-/* PREMIUM TABLE */
+/* TABLE STYLES */
 /* ============= */
 #course-data-table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--card-bg);
+    background: var(--secondary-bg);
 }
 
 #course-data-table thead th {
     padding: 1rem 1.5rem;
-    background: var(--secondary-color);
-    color: var(--accent-color);
+    background: var(--secondary-bg);
+    color: var(--secondary-color);
     font-weight: 600;
     text-align: left;
-    border-bottom: 1px solid var(--accent-color);
+    border-bottom: 2px solid var(--border-color);
 }
 
 #course-data-table tbody tr {
     border-bottom: 1px solid var(--border-color);
+    transition: var(--transition);
 }
 
 #course-data-table tbody tr:hover {
-    background-color: rgba(166, 124, 82, 0.05);
+    background: rgba(0,0,0,0.02);
 }
 
 #course-data-table td {
     padding: 1rem 1.5rem;
 }
 
-/* Simplified Grade Colors */
-.grade-Aplus, .grade-A, .grade-Aminus { color: var(--success-color); }
-.grade-Bplus, .grade-B, .grade-Bminus { color: #5D9CEC; } /* Sky blue */
-.grade-Cplus, .grade-C, .grade-Cminus { color: var(--warning-color); }
-.grade-Dplus, .grade-D { color: #FF7043; } /* Coral */
-.grade-F { color: var(--danger-color); }
+/* Grade Colors */
+.grade-Aplus { color: var(--success-color); font-weight: 600; }
+.grade-A { color: var(--success-color); }
+.grade-Aminus { color: var(--success-color); opacity: 0.9; }
+.grade-Bplus { color: #3498db; }
+.grade-B { color: #3498db; opacity: 0.9; }
+.grade-Bminus { color: #3498db; opacity: 0.7; }
+.grade-Cplus { color: var(--warning-color); }
+.grade-C { color: var(--warning-color); opacity: 0.8; }
+.grade-Cminus { color: var(--warning-color); opacity: 0.6; }
+.grade-Dplus { color: #e67e22; }
+.grade-D { color: #e67e22; opacity: 0.8; }
+.grade-F { color: var(--danger-color); font-weight: 600; }
 
-/* SGPA Row (simplified) */
+/* SGPA Row */
 .sgpa-row {
-    background: rgba(166, 124, 82, 0.1) !important;
-    border-top: 1px solid var(--accent-color);
-}
-
-.sgpa-row td {
+    background: rgba(52, 152, 219, 0.1) !important;
     font-weight: 600 !important;
-    color: var(--accent-color) !important;
 }
 
-/* ================= */
+/* ================== */
+/* INTERACTIVE ELEMENTS */ 
+/* ================== */
+/* Button Container */
+.toggle-container {
+    display: flex;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+    background: var(--secondary-bg);
+    border-bottom: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+/* Semester Selector */
+.semester-selector {
+    display: flex;
+    gap: 0.5rem;
+    margin-right: auto;
+}
+
+.semester-btn {
+    min-width: 3rem;
+    padding: 0.75rem;
+    background: var(--secondary-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: var(--transition);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.semester-btn:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.semester-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* =============== */
 /* RESPONSIVE DESIGN */
-/* ================= */
+/* =============== */
 @media (max-width: 768px) {
     .m-portlet__head {
-        padding: 1.25rem;
+        padding: 1rem 1.5rem;
+    }
+    
+    .m-portlet__head-title {
+        font-size: 1.25rem;
+    }
+    
+    .toggle-container {
+        padding: 1rem;
     }
     
     #course-data-table th,
     #course-data-table td {
         padding: 0.75rem;
+    }
+    
+    .modern-btn {
+        padding: 0.75rem 1.25rem;
     }
 }
