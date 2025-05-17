@@ -1,8 +1,8 @@
-/* ==================== */
-/* CLEAN PROFESSIONAL THEME - ENHANCED */
-/* ==================== */
+
+
+
 :root {
-    /* Color Palette - Enhanced Contrast */
+   
     --primary-color: #3498db;
     --primary-hover: #2980b9;
     --secondary-color: #2c3e50;
@@ -14,33 +14,33 @@
     --danger-color: #e74c3c;
     --danger-hover: #c0392b;
     
-    /* Backgrounds - Subtle Gradients */
+   
     --primary-bg: #f8f9fa;
     --secondary-bg: #ffffff;
     --sidebar-bg: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
     
-    /* Text - Improved Readability */
+   
     --text-primary: #2d3436;
     --text-secondary: #636e72;
     --text-light: #ffffff;
     --text-muted: #95a5a6;
     
-    /* Borders - Refined */
+   
     --border-color: #dfe6e9;
     --border-radius: 6px;
     
-    /* Shadows - More Depth */
+   
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
     --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
     --shadow-lg: 0 15px 30px rgba(0,0,0,0.1);
     --shadow-inset: inset 0 1px 2px rgba(0,0,0,0.05);
     
-    /* Transitions - Smoother */
+   
     --transition-fast: all 0.15s ease-in-out;
     --transition: all 0.25s ease-in-out;
     --transition-slow: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     
-    /* Spacing System */
+   
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
@@ -48,9 +48,9 @@
     --space-xl: 2rem;
 }
 
-/* =============== */
-/* GLOBAL OVERRIDES */ 
-/* =============== */
+
+ 
+
 body {
     background: var(--primary-bg);
     color: var(--text-primary);
@@ -61,9 +61,9 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* ============= */
-/* PORTLET FRAME - Enhanced */
-/* ============= */
+
+
+
 .m-portlet {
     background: var(--secondary-bg);
     border: 1px solid var(--border-color);
@@ -79,9 +79,9 @@ body {
     transform: translateY(-2px);
 }
 
-/* ============ */
-/* PORTLET HEAD - Refined */ 
-/* ============ */
+
+ 
+
 .m-portlet__head {
     padding: var(--space-lg) var(--space-xl);
     background: var(--secondary-bg);
@@ -111,9 +111,9 @@ body {
     border-radius: 3px;
 }
 
-/* ============== */
-/* BUTTON STYLES - Enhanced */
-/* ============== */
+
+
+
 .modern-btn {
     padding: 0.75rem 1.75rem;
     background: var(--primary-color);
@@ -150,7 +150,7 @@ body {
     font-weight: 500;
 }
 
-/* Button Variants */
+
 .modern-btn-success {
     background: var(--success-color);
 }
@@ -167,9 +167,9 @@ body {
     background: var(--danger-hover);
 }
 
-/* ============= */
-/* TABLE STYLES - Enhanced */
-/* ============= */
+
+
+
 #course-data-table {
     width: 100%;
     border-collapse: separate;
@@ -207,7 +207,7 @@ body {
     position: relative;
 }
 
-/* Add subtle hover effect on cells */
+
 #course-data-table td:hover::after {
     content: '';
     position: absolute;
@@ -219,7 +219,7 @@ body {
     pointer-events: none;
 }
 
-/* Grade Colors - Enhanced */
+
 .grade-Aplus { color: var(--success-color); font-weight: 600; }
 .grade-A { color: var(--success-color); font-weight: 500; }
 .grade-Aminus { color: var(--success-color); opacity: 0.9; }
@@ -233,7 +233,7 @@ body {
 .grade-D { color: #e67e22; opacity: 0.8; }
 .grade-F { color: var(--danger-color); font-weight: 600; }
 
-/* SGPA Row - Enhanced */
+
 .sgpa-row {
     background: rgba(52, 152, 219, 0.08) !important;
     font-weight: 600 !important;
@@ -244,10 +244,10 @@ body {
     border-bottom: 1px solid var(--border-color);
 }
 
-/* ================== */
-/* INTERACTIVE ELEMENTS - Enhanced */ 
-/* ================== */
-/* Button Container */
+
+ 
+
+
 .toggle-container {
     display: flex;
     gap: var(--space-md);
@@ -258,7 +258,7 @@ body {
     align-items: center;
 }
 
-/* Semester Selector - Enhanced */
+
 .semester-selector {
     display: flex;
     gap: var(--space-xs);
@@ -299,9 +299,9 @@ body {
     background: var(--primary-bg);
 }
 
-/* =============== */
-/* RESPONSIVE DESIGN - Enhanced */
-/* =============== */
+
+
+
 @media (max-width: 992px) {
     :root {
         --space-md: 0.875rem;
@@ -361,4 +361,25 @@ body {
         margin-bottom: var(--space-sm);
         width: 100%;
     }
+}
+
+.editable-cell {
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.editable-cell input {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid var(--primary-color);
+    border-radius: 4px;
+    background: var(--secondary-bg);
+    color: var(--text-primary);
+    text-align: center;
+    font: inherit;
+}
+
+.editable-cell:hover {
+    background: rgba(52, 152, 219, 0.05);
 }
