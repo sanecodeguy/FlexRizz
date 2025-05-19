@@ -1,19 +1,19 @@
-const api = typeof browser !== "undefined" ? browser : chrome;
+// background.js
+const extAPI = typeof browser !== 'undefined' ? browser : chrome;
 
-api.browserAction.onClicked.addListener(function (tab) {
-  if (tab.url.startsWith('https://flexstudent.nu.edu.pk/Student/StudentMarks')) {
-    api.tabs.executeScript(tab.id, { file: 'inject.js' });
+extAPI.runtime.onInstalled.addListener(() => {
+  console.log('FlexRizz extension installed');
+});
+
+// Firefox-compatible browser action handler
+extAPI.browserAction?.onClicked.addListener((tab) => {
+  if (tab.url.includes('flexstudent.nu.edu.pk/Student/StudentMarks')) {
+    extAPI.tabs.executeScript(tab.id, { file: 'contentLoader.js' });
   }
 });
 
-api.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  if (changeInfo.status === 'complete' && tab.url.startsWith('https://flexstudent.nu.edu.pk/Student/StudentMarks')) {
-    api.tabs.executeScript(tabId, { file: 'inject.js' });
-  }
-});
-
-api.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-  if (message === 'pageChange') {
-    api.tabs.executeScript(sender.tab.id, { file: 'inject.js' });
+extAPI.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete' && tab.url.includes('flexstudent.nu.edu.pk/Student/StudentMarks')) {
+    extAPI.tabs.executeScript(tabId, { file: 'contentLoader.js' });
   }
 });
