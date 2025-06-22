@@ -424,39 +424,63 @@
                 portlet.insertBefore(table, portletBody);
             }
         };
-function showToast(message, isSuccess = true) {
+function showToast(message, isSuccess = true) 
+{
     const toast = document.createElement('div');
-    toast.className = 'toast-notification';
+    toast.className = `toast-notification ${isSuccess ? 'toast-success' : 'toast-error'}`;
+    
+    // Position at bottom-left for better UX (avoids navbar conflicts)
     Object.assign(toast.style, {
         position: 'fixed',
-        top: '20px',
-        right: '20px',
-        padding: '12px 18px',
-        borderRadius: '4px',
-        background: isSuccess ? '#4CAF50' : '#F44336',
-        color: 'white',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        bottom: '24px',
+        left: '24px',
+        maxWidth: 'calc(100% - 48px)',
+        padding: '16px 24px',
+        borderRadius: 'var(--border-radius)',
+        color: 'var(--text-light)',
+        boxShadow: 'var(--shadow-lg)',
         zIndex: '10000',
         opacity: '0',
-        transform: 'translateY(-20px)',
-        transition: 'all 0.3s ease'
+        transform: 'translateX(-30px)',
+        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        pointerEvents: 'none'
     });
     
-    toast.textContent = message;
+    // Add icon
+    const icon = document.createElement('span');
+    icon.innerHTML = isSuccess ? '✓' : '✗';
+    icon.style.fontWeight = 'bold';
+    icon.style.fontSize = '1.2em';
+    toast.appendChild(icon);
+    
+    // Add message
+    const messageEl = document.createElement('span');
+    messageEl.textContent = message;
+    toast.appendChild(messageEl);
+    
     document.body.appendChild(toast);
     
+    // Animate in
     setTimeout(() => {
         toast.style.opacity = '1';
-        toast.style.transform = 'translateY(0)';
+        toast.style.transform = 'translateX(0)';
+        toast.style.pointerEvents = 'auto';
     }, 10);
     
+    // Auto-dismiss after delay
     setTimeout(() => {
         toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-30px)';
         setTimeout(() => {
             toast.remove();
-        }, 300);
-    }, 3000);
+        }, 400);
+    }, 4000);
 }
+  
+
         const createToggleButtons = () => {
             const existingContainer = portlet.querySelector('.toggle-container');
             if (existingContainer) return;
