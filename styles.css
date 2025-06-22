@@ -866,12 +866,12 @@ input:not(:checked) ~ .toggle-icons .moon-icon {
     }
 }
 
-/* Toggle Switch Styles */
+/* Fixed Toggle Switch Styles */
 .toggle-switch {
     position: relative;
     display: inline-block;
     width: 50px;
-    height: 26px;
+    height: 24px; /* Reduced height for better proportions */
 }
 
 .toggle-switch input {
@@ -890,35 +890,35 @@ input:not(:checked) ~ .toggle-icons .moon-icon {
     background-color: var(--border-color);
     transition: var(--transition-fast);
     border-radius: 34px;
-    border: 1px solid var(--border-color);
 }
 
 .toggle-label:before {
     position: absolute;
     content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
+    height: 20px; /* Slightly larger circle */
+    width: 20px;
+    left: 2px; /* Perfectly centered vertically */
+    top: 2px; /* Perfectly centered vertically */
     background-color: var(--primary-bg);
     transition: var(--transition-fast);
     border-radius: 50%;
     box-shadow: 0 1px 3px rgba(0,0,0,0.2);
 }
 
-input:checked + .toggle-label {
-    background-color: var(--success-color);
-    border-color: var(--success-hover);
+input:checked + .toggle-label:before {
+    transform: translateX(26px); /* Exact pixel movement */
+    background-color: var(--text-light);
 }
 
-input:checked + .toggle-label:before {
-    transform: translateX(24px);
-    background-color: var(--text-light);
+/* Active state background */
+input:checked + .toggle-label {
+    background-color: var(--success-color);
 }
 
 /* Focus state */
 input:focus-visible + .toggle-label {
-    box-shadow: 0 0 0 3px rgba(152, 151, 26, 0.3);
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
 }
 
 /* Disabled state */
@@ -927,43 +927,34 @@ input:disabled + .toggle-label {
     cursor: not-allowed;
 }
 
-/* Form group specific styling */
+/* Form group alignment */
 .form-group {
     display: flex;
     align-items: center;
-    margin-bottom: var(--space-md);
+    gap: 15px; /* Better spacing than margin-right */
+    margin-bottom: 1rem;
 }
 
 .form-group label {
-    margin-right: var(--space-md);
     color: var(--text-secondary);
     font-size: 0.95rem;
     font-weight: 500;
+    order: 1; /* Makes label appear first */
 }
 
-/* Dark mode adjustments */
+.toggle-switch {
+    order: 2; /* Makes toggle appear after label */
+}
+
+/* Pixel-perfect dark mode adjustments */
 [data-theme="dark"] .toggle-label {
     background-color: var(--dark-elevated);
-    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .toggle-label:before {
+    background-color: var(--primary-bg);
 }
 
 [data-theme="dark"] input:checked + .toggle-label {
     background-color: var(--success-hover);
-}
-
-/* Responsive adjustments */
-@media (max-width: 576px) {
-    .toggle-switch {
-        width: 42px;
-        height: 22px;
-    }
-    
-    .toggle-label:before {
-        height: 16px;
-        width: 16px;
-    }
-    
-    input:checked + .toggle-label:before {
-        transform: translateX(18px);
-    }
 }
