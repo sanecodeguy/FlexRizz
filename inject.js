@@ -424,7 +424,39 @@
                 portlet.insertBefore(table, portletBody);
             }
         };
-
+function showToast(message, isSuccess = true) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    Object.assign(toast.style, {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        padding: '12px 18px',
+        borderRadius: '4px',
+        background: isSuccess ? '#4CAF50' : '#F44336',
+        color: 'white',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+        zIndex: '10000',
+        opacity: '0',
+        transform: 'translateY(-20px)',
+        transition: 'all 0.3s ease'
+    });
+    
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '1';
+        toast.style.transform = 'translateY(0)';
+    }, 10);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => {
+            toast.remove();
+        }, 300);
+    }, 3000);
+}
         const createToggleButtons = () => {
             const existingContainer = portlet.querySelector('.toggle-container');
             if (existingContainer) return;
@@ -484,6 +516,169 @@
             semesterContainer.appendChild(semesterDisplay);
             semesterContainer.appendChild(increaseBtn);
 
+const requestCourseButton = document.createElement('button');
+    requestCourseButton.id = 'request-course-button';
+    requestCourseButton.className = 'modern-btn';
+    requestCourseButton.innerHTML = 'Request Course Addition';
+    const requestStatus = document.createElement('span');
+    requestStatus.className = 'status-indicator status-off';
+    requestCourseButton.appendChild(requestStatus);
+
+    // Event handler for the button
+    requestCourseButton.addEventListener('click', () => {
+        // Create modal
+        const modal = document.createElement('div');
+        modal.className = 'request-course-modal';
+        Object.assign(modal.style, {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'var(--primary-bg)',
+            border: '1px solid var(--border-color)',
+            padding: '25px',
+            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+            zIndex: '1000',
+            width: 'min(90vw, 500px)',
+            color: 'var(--text-primary)',
+            fontFamily: "'Inter', sans-serif",
+            borderRadius: '8px'
+        });
+
+        modal.innerHTML = `
+            <div style="margin-bottom: 20px;">
+                <h3 style="margin: 0 0 10px 0; color: var(--accent-color);">Request Course Addition</h3>
+                <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
+                    Please provide course details below. All fields are required.
+                </p>
+            </div>
+            
+            <form id="course-request-form">
+                <div class="form-group">
+                    <label for="course-code">Course Code</label>
+                    <input type="text" id="course-code" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="course-title">Course Title</label>
+                    <input type="text" id="course-title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="grading-type">Grading Type</label>
+                    <select id="grading-type" required>
+                        <option value="">Select grading type</option>
+                        <option value="Absolute">Absolute</option>
+                        <option value="Relative">Relative</option>
+
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="department">Department/Degree</label>
+                    <select id="department" required>
+                        <option value="">Select department</option>
+                        <option value="Computer Science">Computer Science</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Software Engineering">Software Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Business Administration">Business Administration</option>
+                        <option value="AI">AI</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="credit-hours">Credit Hours</label>
+                    <input type="number" id="credit-hours" min="2" max="3" step="1" required>
+                </div>
+                
+                <div class="form-group" style="display: flex; align-items: center;">
+                    <label style="margin-right: 15px;">Includes Lab?</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="lab-included" hidden>
+                        <label for="lab-included" class="toggle-label"></label>
+                    </div>
+                </div>
+                
+                <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                    <button type="button" id="cancel-request" class="modern-btn" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);">
+                        Cancel
+                    </button>
+                    <button type="submit" class="modern-btn" style="background: var(--carbon);">
+                        Request Addition
+                    </button>
+                </div>
+            </form>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Create backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop';
+        Object.assign(backdrop.style, {
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: 'rgba(0, 0, 0, 0.7)',
+            zIndex: '999',
+            backdropFilter: 'blur(3px)'
+        });
+        document.body.appendChild(backdrop);
+
+        // Form submission handler
+        const form = modal.querySelector('#course-request-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const requestData = {
+                courseCode: document.getElementById('course-code').value.trim(),
+                courseTitle: document.getElementById('course-title').value.trim(),
+                gradingType: document.getElementById('grading-type').value,
+                department: document.getElementById('department').value,
+                creditHours: parseFloat(document.getElementById('credit-hours').value),
+                hasLab: document.getElementById('lab-included').checked
+            };
+            
+            // Validate all fields
+            if (!requestData.courseCode || 
+                !requestData.courseTitle || 
+                !requestData.gradingType || 
+                !requestData.department || 
+                isNaN(requestData.creditHours)) {
+                showToast('Please fill all required fields', false);
+                return;
+            }
+            
+            // Log the request to console
+            console.log('Course Addition Request:', requestData);
+            
+            // Show success notification
+            showToast('Request sent successfully');
+            
+            // Close modal
+            modal.remove();
+            backdrop.remove();
+        });
+
+        // Cancel button handler
+        modal.querySelector('#cancel-request').addEventListener('click', () => {
+            modal.remove();
+            backdrop.remove();
+        });
+
+        // Close when clicking backdrop
+        backdrop.addEventListener('click', () => {
+            modal.remove();
+            backdrop.remove();
+        });
+    });
+
+    // Add the new button to the container
+    container.appendChild(requestCourseButton);
             // Transcript Button
             const transcriptButton = document.createElement('button');
             transcriptButton.id = 'show-transcript-button';
