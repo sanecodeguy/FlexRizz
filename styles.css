@@ -456,86 +456,106 @@
             color: var(--text-muted);
             font-size: 0.875rem;
         }
-/* Button styling with Gruvbox colors */
-.transcript-btn {
+/* Button Styling */
+#show-transcript-button {
     background: var(--primary-color) !important;
     color: var(--text-light) !important;
 }
 
-.transcript-btn:hover {
+#show-transcript-button:hover {
     background: var(--primary-hover) !important;
 }
 
-.rounding-btn {
+#toggle-rounding-button {
     background: var(--secondary-color) !important;
     color: var(--text-light) !important;
 }
 
-.rounding-btn:hover {
+#toggle-rounding-button:hover {
     background: var(--secondary-hover) !important;
 }
 
-.edit-marks-btn {
+#edit-marks-button {
     background: var(--accent-color) !important;
     color: var(--text-light) !important;
 }
 
-.edit-marks-btn:hover {
+#edit-marks-button:hover {
     background: var(--accent-hover) !important;
 }
 
-.custom-grades-btn {
+#custom-grades-button {
     background: var(--warning-color) !important;
     color: var(--text-primary) !important;
 }
 
-.custom-grades-btn:hover {
+#custom-grades-button:hover {
     background: var(--warning-hover) !important;
     color: var(--text-light) !important;
 }
 
-.stats-btn {
+#show-stats-button {
     background: var(--success-color) !important;
     color: var(--text-light) !important;
 }
 
-.stats-btn:hover {
+#show-stats-button:hover {
     background: var(--success-hover) !important;
 }
 
-.request-course-btn {
+#request-course-button {
     background: var(--accent-color) !important;
     color: var(--text-light) !important;
 }
 
-.request-course-btn:hover {
+#request-course-button:hover {
     background: var(--accent-hover) !important;
 }
 
-/* Modal styling */
+/* Request Course Modal Styling */
 .request-course-modal {
     background: var(--secondary-bg);
     border: 1px solid var(--border-color);
     box-shadow: var(--shadow-lg);
     color: var(--text-primary);
     border-radius: var(--border-radius);
+    padding: var(--space-lg);
+    max-width: 500px;
+    width: 90vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
 }
 
 .request-course-modal h3 {
     color: var(--accent-color);
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-md);
+}
+
+.request-course-modal .form-group {
+    margin-bottom: var(--space-md);
 }
 
 .request-course-modal label {
+    display: block;
+    margin-bottom: var(--space-xs);
     color: var(--text-secondary);
+    font-size: 0.9rem;
 }
 
 .request-course-modal input,
 .request-course-modal select {
+    width: 100%;
+    padding: var(--space-sm);
     background: var(--elevated-black);
     border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
     color: var(--text-primary);
+    font-family: inherit;
 }
 
 .request-course-modal input:focus,
@@ -545,7 +565,16 @@
     box-shadow: 0 0 0 2px rgba(69, 133, 136, 0.2);
 }
 
-/* Toggle switch styling */
+.request-course-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    margin-top: var(--space-lg);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Toggle Switch Styling */
 .toggle-switch {
     position: relative;
     display: inline-block;
@@ -560,8 +589,8 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: #bdae93;
-    transition: .4s;
+    background-color: var(--border-color);
+    transition: var(--transition-fast);
     border-radius: 24px;
 }
 
@@ -573,7 +602,7 @@
     left: 3px;
     bottom: 3px;
     background-color: var(--primary-bg);
-    transition: .4s;
+    transition: var(--transition-fast);
     border-radius: 50%;
 }
 
@@ -585,7 +614,33 @@ input:checked + .toggle-label:before {
     transform: translateX(26px);
 }
 
-/* Form buttons */
+/* Modal Backdrop */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    backdrop-filter: blur(3px);
+}
+
+/* Status Indicator */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 8px;
+    background: var(--danger-color);
+}
+
+.status-indicator.status-on {
+    background: var(--success-color);
+}
+
+/* Form Buttons */
 .cancel-btn {
     background: transparent !important;
     color: var(--text-primary) !important;
@@ -605,39 +660,17 @@ input:checked + .toggle-label:before {
     background: var(--primary-hover) !important;
 }
 
-/* Editable cells */
-.editable-cell {
-    background: rgba(215, 153, 33, 0.1) !important;
-    border: 1px solid var(--primary-color) !important;
-    border-radius: 4px;
-}
-
-.editable-cell input {
-    background: transparent;
-    border: none;
-    width: 100%;
-    text-align: center;
-    color: var(--text-primary);
-    font-weight: 500;
-    padding: 4px;
-}
-
-/* Status indicators */
-.status-indicator {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-left: 8px;
-    background: var(--danger-color);
-}
-
-.status-indicator.status-on {
-    background: var(--success-color);
-}
-
-/* Modal backdrop */
-.modal-backdrop {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(3px);
+/* Responsive Adjustments */
+@media (max-width: 576px) {
+    .request-course-modal {
+        padding: var(--space-md);
+    }
+    
+    .request-course-modal .form-actions {
+        flex-direction: column;
+    }
+    
+    .request-course-modal .form-actions button {
+        width: 100%;
+    }
 }
