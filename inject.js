@@ -22,16 +22,7 @@
     window.FlexRizz.init = function() {
         // Track the current user's activity
         window.FlexRizz.utils.trackUserActivity();
-        
-        // Display active users
-        displayActiveUsers();
-        
-    };
-    const portlet = document.querySelector('.m-portlet');
-    if (!portlet) return;
-
-    if (document.querySelector('#injected-support-image')) return;
-   // --- Add after you define `portlet` and `portletBody` (inside window.FlexRizz.init) ---
+        // --- Add after you define `portlet` and `portletBody` (inside window.FlexRizz.init) ---
 
 if (portlet && portletBody) {
     const requestCourseBtn = document.createElement('button');
@@ -174,6 +165,15 @@ if (typeof showToast !== 'function') {
         setTimeout(() => { toast.remove(); }, 2200);
     }
 }
+        // Display active users
+        displayActiveUsers();
+        
+    };
+    const portlet = document.querySelector('.m-portlet');
+    if (!portlet) return;
+
+    if (document.querySelector('#injected-support-image')) return;
+
     // Create image wrapper
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('extension-content');
