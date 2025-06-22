@@ -456,4 +456,188 @@
             color: var(--text-muted);
             font-size: 0.875rem;
         }
+/* Button styling with Gruvbox colors */
+.transcript-btn {
+    background: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
 
+.transcript-btn:hover {
+    background: var(--primary-hover) !important;
+}
+
+.rounding-btn {
+    background: var(--secondary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.rounding-btn:hover {
+    background: var(--secondary-hover) !important;
+}
+
+.edit-marks-btn {
+    background: var(--accent-color) !important;
+    color: var(--text-light) !important;
+}
+
+.edit-marks-btn:hover {
+    background: var(--accent-hover) !important;
+}
+
+.custom-grades-btn {
+    background: var(--warning-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.custom-grades-btn:hover {
+    background: var(--warning-hover) !important;
+    color: var(--text-light) !important;
+}
+
+.stats-btn {
+    background: var(--success-color) !important;
+    color: var(--text-light) !important;
+}
+
+.stats-btn:hover {
+    background: var(--success-hover) !important;
+}
+
+.request-course-btn {
+    background: var(--accent-color) !important;
+    color: var(--text-light) !important;
+}
+
+.request-course-btn:hover {
+    background: var(--accent-hover) !important;
+}
+
+/* Modal styling */
+.request-course-modal {
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    color: var(--text-primary);
+    border-radius: var(--border-radius);
+}
+
+.request-course-modal h3 {
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.request-course-modal label {
+    color: var(--text-secondary);
+}
+
+.request-course-modal input,
+.request-course-modal select {
+    background: var(--elevated-black);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.request-course-modal input:focus,
+.request-course-modal select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(69, 133, 136, 0.2);
+}
+
+/* Toggle switch styling */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #bdae93;
+    transition: .4s;
+    border-radius: 24px;
+}
+
+.toggle-label:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: var(--primary-bg);
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .toggle-label {
+    background-color: var(--accent-color);
+}
+
+input:checked + .toggle-label:before {
+    transform: translateX(26px);
+}
+
+/* Form buttons */
+.cancel-btn {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.cancel-btn:hover {
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+.submit-btn {
+    background: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.submit-btn:hover {
+    background: var(--primary-hover) !important;
+}
+
+/* Editable cells */
+.editable-cell {
+    background: rgba(215, 153, 33, 0.1) !important;
+    border: 1px solid var(--primary-color) !important;
+    border-radius: 4px;
+}
+
+.editable-cell input {
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: center;
+    color: var(--text-primary);
+    font-weight: 500;
+    padding: 4px;
+}
+
+/* Status indicators */
+.status-indicator {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-left: 8px;
+    background: var(--danger-color);
+}
+
+.status-indicator.status-on {
+    background: var(--success-color);
+}
+
+/* Modal backdrop */
+.modal-backdrop {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(3px);
+}
