@@ -31,7 +31,149 @@
     if (!portlet) return;
 
     if (document.querySelector('#injected-support-image')) return;
+   // --- Add after you define `portlet` and `portletBody` (inside window.FlexRizz.init) ---
 
+if (portlet && portletBody) {
+    const requestCourseBtn = document.createElement('button');
+    requestCourseBtn.className = 'modern-btn';
+    requestCourseBtn.innerText = 'Request Course Addition';
+    requestCourseBtn.style.marginBottom = '10px';
+    requestCourseBtn.style.marginRight = '10px';
+
+    requestCourseBtn.addEventListener('click', () => {
+        // Modal/backdrop
+        const backdrop = document.createElement('div');
+        backdrop.className = 'modal-backdrop';
+        Object.assign(backdrop.style, {
+            position: 'fixed',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: 'rgba(0,0,0,0.5)',
+            zIndex: '999'
+        });
+
+        const modal = document.createElement('div');
+        Object.assign(modal.style, {
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%,-50%)',
+            background: '#181f25',
+            color: '#fff',
+            padding: '30px 24px',
+            zIndex: '1000',
+            borderRadius: '12px',
+            minWidth: '320px',
+            boxShadow: '0 4px 32px rgba(0,0,0,0.18)'
+        });
+
+        modal.innerHTML = `
+            <h2 style="margin-bottom:16px; font-size: 1.3em;">Request Course Addition</h2>
+            <form id="course-request-form" autocomplete="off">
+                <label style="display:block;margin-bottom:6px;">Course Code
+                    <input name="code" required style="width:100%;margin-bottom:10px;padding:6px;border-radius:4px;border:1px solid #333;background:#232a33;color:#fff;"/>
+                </label>
+                <label style="display:block;margin-bottom:6px;">Course Title
+                    <input name="title" required style="width:100%;margin-bottom:10px;padding:6px;border-radius:4px;border:1px solid #333;background:#232a33;color:#fff;"/>
+                </label>
+                <label style="display:block;margin-bottom:6px;">Course Grading Type
+                    <select name="gradingType" required style="width:100%;margin-bottom:10px;padding:6px;border-radius:4px;border:1px solid #333;background:#232a33;color:#fff;">
+                        <option value="">Select</option>
+                        <option>Absolute</option>
+                        <option>Relative</option>
+                        <option>Letter</option>
+                        <option>Pass/Fail</option>
+                    </select>
+                </label>
+                <label style="display:block;margin-bottom:6px;">Department/Degree
+                    <input name="department" required style="width:100%;margin-bottom:10px;padding:6px;border-radius:4px;border:1px solid #333;background:#232a33;color:#fff;"/>
+                </label>
+                <label style="display:block;margin-bottom:6px;">Credit Hours
+                    <input type="number" min="0" step="0.5" name="credits" required style="width:100%;margin-bottom:10px;padding:6px;border-radius:4px;border:1px solid #333;background:#232a33;color:#fff;"/>
+                </label>
+                <label style="display:block;margin-bottom:16px;">Lab
+                    <select name="lab" required style="width:100%;margin-bottom:10px;padding:6px;border-radius:4px;border:1px solid #333;background:#232a33;color:#fff;">
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </label>
+                <div style="display:flex;gap:10px;justify-content:flex-end;">
+                    <button type="button" id="cancel-request-btn" class="modern-btn" style="background:#888;">Cancel</button>
+                    <button type="submit" class="modern-btn">Request</button>
+                </div>
+            </form>
+        `;
+
+        document.body.appendChild(backdrop);
+        document.body.appendChild(modal);
+
+        // Cancel handler
+        modal.querySelector('#cancel-request-btn').onclick = () => {
+            modal.remove();
+            backdrop.remove();
+        };
+
+        // Form submit handler
+        modal.querySelector('#course-request-form').onsubmit = (e) => {
+            e.preventDefault();
+            const form = e.target;
+            let valid = true;
+            Array.from(form.elements).forEach(el => {
+                if (el.hasAttribute('required') && !el.value) valid = false;
+            });
+            if (!valid) {
+                alert('Please fill all fields.');
+                return;
+            }
+            // Toast (non-destructive, doesn't save anywhere)
+            showToast('Request sent successfully!');
+            modal.remove();
+            backdrop.remove();
+        };
+
+        // Allow closing on backdrop click or Escape
+        backdrop.onclick = () => {
+            modal.remove();
+            backdrop.remove();
+        };
+        document.addEventListener('keydown', function escHandler(ev) {
+            if (ev.key === 'Escape') {
+                modal.remove();
+                backdrop.remove();
+                document.removeEventListener('keydown', escHandler);
+            }
+        });
+    });
+
+    portlet.insertBefore(requestCourseBtn, portletBody);
+}
+
+// Helper: Show toast notification (add once, if not defined)
+if (typeof showToast !== 'function') {
+    window.showToast = function(msg) {
+        const toast = document.createElement('div');
+        toast.innerText = msg;
+        Object.assign(toast.style, {
+            position: 'fixed',
+            bottom: '32px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#171f29',
+            color: '#fff',
+            padding: '14px 36px',
+            borderRadius: '8px',
+            fontWeight: 'bold',
+            zIndex: 2001,
+            fontSize: '1.05rem',
+            boxShadow: '0 3px 16px #0008'
+        });
+        document.body.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 2200);
+    }
+}
     // Create image wrapper
     const imageContainer = document.createElement('div');
     imageContainer.classList.add('extension-content');
