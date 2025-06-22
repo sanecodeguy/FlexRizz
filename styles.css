@@ -8,7 +8,14 @@
     --light-text-secondary: #665c54;
     --light-text-muted: #928374;
     --light-border-color: #bdae93;
+    --brown-light: #d5c4a1;
+    --brown: #bdae93;
+    --brown-dark: #a89984;
+    --brown-darker: #928374;
     
+    /* Button Colors */
+    --button-brown: var(--brown-dark);
+    --button-brown-hover: var(--brown-darker); 
     /* Dark Mode Variables */
     --dark-primary-bg: #282828;
     --dark-secondary-bg: #3c3836;
@@ -281,9 +288,32 @@ input:not(:checked) ~ .toggle-icons .moon-icon {
     border-radius: 3px;
     transition: var(--transition);
 }
-
+.modern-btn-brown {
+    background: var(--button-brown);
+    color: var(--text-primary);
+}
+.modern-btn-brown:hover {
+    background: var(--button-brown-hover);
+    color: var(--text-primary);
+}
 .m-portlet:hover .m-portlet__head-title::after {
     width: 65px;
+}
+.request-course-modal {
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-lg);
+    color: var(--text-primary);
+    border-radius: var(--border-radius);
+    padding: var(--space-xl);
+    max-width: 500px;
+    width: 90vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    animation: modalSlideIn 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .m-portlet__body {
@@ -707,5 +737,131 @@ input:not(:checked) ~ .toggle-icons .moon-icon {
     to { 
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.request-course-modal h3 {
+    color: var(--accent-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: var(--space-sm);
+    margin-bottom: var(--space-md);
+    font-size: 1.5rem;
+}
+
+.request-course-modal .form-group {
+    margin-bottom: var(--space-lg);
+}
+
+.request-course-modal label {
+    display: block;
+    margin-bottom: var(--space-sm);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.request-course-modal input,
+.request-course-modal select,
+.request-course-modal textarea {
+    width: 100%;
+    padding: var(--space-sm) var(--space-md);
+    background: var(--elevated-black);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    color: var(--text-primary);
+    font-family: inherit;
+    transition: var(--transition-fast);
+}
+
+.request-course-modal input:focus,
+.request-course-modal select:focus,
+.request-course-modal textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(69, 133, 136, 0.2);
+}
+
+.request-course-modal .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-md);
+    margin-top: var(--space-xl);
+    padding-top: var(--space-md);
+    border-top: 1px solid var(--border-color);
+}
+
+/* Enhanced Modal Buttons */
+.modal-cancel-btn {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1.5rem;
+}
+
+.modal-cancel-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.modal-submit-btn {
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: 0.75rem 1.75rem;
+}
+
+.modal-submit-btn:hover {
+    background: var(--primary-hover);
+}
+
+/* Status Indicator for Modal */
+.modal-status {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-top: var(--space-md);
+    font-size: 0.9rem;
+}
+
+.modal-status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--danger-color);
+}
+
+.modal-status-indicator.active {
+    background: var(--success-color);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* Responsive Modal Adjustments */
+@media (max-width: 576px) {
+    .request-course-modal {
+        padding: var(--space-lg);
+    }
+    
+    .request-course-modal .form-actions {
+        flex-direction: column;
+    }
+    
+    .request-course-modal .form-actions button {
+        width: 100%;
     }
 }
