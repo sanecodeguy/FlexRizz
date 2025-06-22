@@ -602,7 +602,7 @@ const requestCourseButton = document.createElement('button');
                 </div>
                 
                 <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-                    <button type="button" id="cancel-request" class="modern-btn" style="background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color);">
+                    <button type="button" id="cancel-request" class="modern-btn" style="background: transparent; color: var(--text-primary); border: 1px solid var(--border-color);">
                         Cancel
                     </button>
                     <button type="submit" class="modern-btn" style="background: var(--carbon);">
