@@ -958,3 +958,50 @@ input:disabled + .toggle-label {
 [data-theme="dark"] input:checked + .toggle-label {
     background-color: var(--success-hover);
 }
+
+
+.toast-notification {
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    border: 1px solid transparent;
+}
+
+.toast-success {
+    background: var(--success-color);
+    border-color: var(--success-hover);
+}
+
+.toast-error {
+    background: var(--danger-color);
+    border-color: var(--danger-hover);
+}
+
+/* Animation keyframes */
+@keyframes toastSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes toastSlideOut {
+    to {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+}
+
+/* Responsive positioning */
+@media (max-width: 768px) {
+    .toast-notification {
+        bottom: 16px !important;
+        left: 16px !important;
+        right: 16px !important;
+        max-width: calc(100% - 32px) !important;
+    }
+}
