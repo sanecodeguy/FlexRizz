@@ -46,7 +46,7 @@ supportImg.src = 'https://github-production-user-asset-6210df.s3.amazonaws.com/1
 supportImg.alt = 'Support us';
 supportImg.style.maxHeight = '80px';
   supportImg.style.height='auto';
-supportImg.style.width = '100%';
+supportImg.style.width = '80px'
 supportImg.style.background = 'transparent';
 supportImg.id = 'injected-support-image';
 
