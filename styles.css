@@ -1,46 +1,46 @@
 :root {
-    --primary-color: #7f5af0;
-    --primary-hover: #6246ea;
-    --secondary-color: #2cb67d;
-    --secondary-hover: #1dd07c;
-    --accent-color: #ff8911;
-    --success-color: #21d19f;
-    --success-hover: #16a786;
-    --warning-color: #ffb800;
-    --danger-color: #f43f5e;
-    --danger-hover: #be123c;
+    --primary-color: #D62828;
+    --primary-hover: #B51F1F;
+    --secondary-color: #F3A712;
+    --secondary-hover: #C47D0F;
+    --accent-color: #F0FFCE;
+    --success-color: #F3A712;
+    --success-hover: #FFD166;
+    --warning-color: #F3A712;
+    --danger-color: #D62828;
+    --danger-hover: #B51F1F;
 
-    --grade-aplus: #2cb67d;
-    --grade-a: #5de4c7;
-    --grade-aminus: #7fdfb6;
-    --grade-bplus: #7f5af0;
-    --grade-b: #6487ff;
-    --grade-bminus: #89a6fb;
-    --grade-cplus: #ffb800;
-    --grade-c: #ffd600;
-    --grade-cminus: #ffe066;
-    --grade-dplus: #ff8911;
-    --grade-d: #faae42;
-    --grade-f: #f43f5e;
+    --grade-aplus: #F0FFCE;
+    --grade-a: #F3A712;
+    --grade-aminus: #FFD166;
+    --grade-bplus: #F3A712;
+    --grade-b: #FFD166;
+    --grade-bminus: #F0FFCE;
+    --grade-cplus: #F3A712;
+    --grade-c: #FFD166;
+    --grade-cminus: #F0FFCE;
+    --grade-dplus: #552B11;
+    --grade-d: #552B11;
+    --grade-f: #D62828;
 
-    --primary-bg: #16161a;
-    --secondary-bg: #21212b;
-    --table-header-bg: #232333;
-    --table-row-bg: #191924;
-    --table-row-alt-bg: #232333;
-    --sidebar-bg: linear-gradient(135deg, #181825 0%, #232333 100%);
+    --primary-bg: #000001;
+    --secondary-bg: #552B11;
+    --table-header-bg: #552B11;
+    --table-row-bg: #000001;
+    --table-row-alt-bg: #1a0f07;
+    --sidebar-bg: linear-gradient(135deg, #552B11 0%, #000001 100%);
 
-    --text-primary: #fffffe;
-    --text-secondary: #a7a9be;
-    --text-light: #fffffe;
-    --text-muted: #72757e;
+    --text-primary: #F0FFCE;
+    --text-secondary: #FFD166;
+    --text-light: #F0FFCE;
+    --text-muted: #FFD166;
 
-    --border-color: #232333;
+    --border-color: #552B11;
     --border-radius: 14px;
 
-    --shadow-sm: 0 2px 8px rgba(22,22,26,0.13);
-    --shadow-md: 0 8px 32px rgba(22,22,26,0.18);
-    --shadow-lg: 0 16px 64px rgba(22,22,26,0.25);
+    --shadow-sm: 0 2px 8px rgba(85,43,17,0.14);
+    --shadow-md: 0 8px 32px rgba(214,40,40,0.15);
+    --shadow-lg: 0 16px 64px rgba(85,43,17,0.20);
 
     --transition-fast: all 0.14s cubic-bezier(.5,0,.2,1);
     --transition: all 0.22s cubic-bezier(.5,0,.2,1);
@@ -142,7 +142,7 @@ body {
 
 .modern-btn-success {
     background: var(--success-color);
-    color: #16161a;
+    color: #552B11;
 }
 
 .modern-btn-success:hover {
@@ -171,7 +171,7 @@ body {
 #course-data-table thead th {
     padding: var(--space-md) var(--space-lg);
     background: var(--table-header-bg);
-    color: var(--primary-color);
+    color: var(--accent-color);
     font-weight: 700;
     text-align: left;
     border-bottom: 2px solid var(--primary-color);
@@ -190,7 +190,7 @@ body {
 }
 
 #course-data-table tbody tr:hover {
-    background: rgba(127,90,240, 0.14);
+    background: rgba(243,167,18,0.13);
 }
 
 #course-data-table td {
@@ -206,7 +206,7 @@ body {
     position: absolute;
     left: 0; top: 0;
     width: 100%; height: 100%;
-    background: rgba(44,182,125,0.10);
+    background: rgba(240,255,206,0.07);
     pointer-events: none;
     border-radius: 4px;
 }
@@ -225,7 +225,7 @@ body {
 .grade-F { color: var(--grade-f); font-weight: 800; }
 
 .sgpa-row {
-    background: rgba(44,182,125,0.13) !important;
+    background: rgba(243,167,18,0.13) !important;
     font-weight: 700 !important;
 }
 
@@ -303,7 +303,7 @@ body {
 }
 
 .editable-cell:hover {
-    background: rgba(127,90,240,0.10);
+    background: rgba(240,255,206,0.10);
 }
 
 @media (max-width: 992px) {
