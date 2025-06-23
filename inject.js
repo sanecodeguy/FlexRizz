@@ -57,16 +57,27 @@ supportImg.style.verticalAlign = "middle";
 imageContainer.appendChild(supportImg);
 portlet.prepend(imageContainer);
 
+
+
+// Create the dark mode toggle button
 const toggleDarkBtn = document.createElement('button');
 toggleDarkBtn.textContent = 'Toggle Dark Mode';
 toggleDarkBtn.className = 'modern-btn';
 toggleDarkBtn.style.margin = '1rem';
 
-portlet.prepend(toggleDarkBtn);
+// Append it to the top of the page (or wherever you prefer)
+document.body.prepend(toggleDarkBtn);
 
+// Toggle the .dark-mode class on <body>
 toggleDarkBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
 });
+
+
+
+
+
+
     function getExtensionUrl(path) {
         if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
             return chrome.runtime.getURL(path);
