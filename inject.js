@@ -536,6 +536,7 @@ container.appendChild(toggleDarkBtn);
 
 toggleDarkBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
+  toggleDarkBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
 });
 
 
