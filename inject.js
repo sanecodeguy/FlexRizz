@@ -59,20 +59,6 @@ portlet.prepend(imageContainer);
 
 
 
-// Create the dark mode toggle button
-const toggleDarkBtn = document.createElement('button');
-toggleDarkBtn.textContent = 'Toggle Dark Mode';
-toggleDarkBtn.className = 'modern-btn';
-toggleDarkBtn.style.margin = '1rem';
-
-// Append it to the top of the page (or wherever you prefer)
-portlet.prepend(toggleDarkBtn);
-
-// Toggle the .dark-mode class on <body>
-toggleDarkBtn.addEventListener('click', () => {
-  portlet.body.classList.toggle('dark-mode');
-});
-
 
 
 
@@ -540,6 +526,19 @@ function showToast(message, isSuccess = true)
                 cursor: 'pointer',
                 minWidth: '30px'
             });
+
+const toggleDarkBtn = document.createElement('button');
+toggleDarkBtn.textContent = 'Toggle Dark Mode';
+toggleDarkBtn.className = 'modern-btn';
+toggleDarkBtn.style.margin = '1rem';
+
+container.appendChild(toggleDarkBtn);
+
+toggleDarkBtn.addEventListener('click', () => {
+  document.body.classList.toggle('dark-mode');
+});
+
+
 
             const semesterDisplay = document.createElement('span');
             semesterDisplay.className = 'semester-display';
