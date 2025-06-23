@@ -66,11 +66,11 @@ toggleDarkBtn.className = 'modern-btn';
 toggleDarkBtn.style.margin = '1rem';
 
 // Append it to the top of the page (or wherever you prefer)
-document.body.prepend(toggleDarkBtn);
+portlet.prepend(toggleDarkBtn);
 
 // Toggle the .dark-mode class on <body>
 toggleDarkBtn.addEventListener('click', () => {
-  document.body.classList.toggle('dark-mode');
+  portlet.body.classList.toggle('dark-mode');
 });
 
 
