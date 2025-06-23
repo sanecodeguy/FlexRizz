@@ -1,43 +1,47 @@
+
 :root {
-    /* Gruvbox Mixed Theme Colors */
+    /* Improved Gruvbox Color Scheme */
     /* Light Mode Variables */
-    --light-primary-bg: #fbf1c7;
-    --light-secondary-bg: #ebdbb2;
-    --light-elevated: #d5c4a1;
+    --light-primary-bg: #f9f5d7;
+    --light-secondary-bg: #f0e6c2;
+    --light-elevated: #e5dbb3;
     --light-text-primary: #3c3836;
-    --light-text-secondary: #665c54;
-    --light-text-muted: #928374;
+    --light-text-secondary: #5c534f;
+    --light-text-muted: #7c6f64;
     --light-border-color: #bdae93;
+    
+    /* Dark Mode Variables */
+    --dark-primary-bg: #1d2021;
+    --dark-secondary-bg: #282828;
+    --dark-elevated: #3c3836;
+    --dark-text-primary: #ebdbb2;
+    --dark-text-secondary: #d5c4a1;
+    --dark-text-muted: #928374;
+    --dark-border-color: #665c54;
+    
+    /* Enhanced Accent Colors */
+    --blue: #458588;
+    --blue-hover: #076678;
+    --green: #79740e;
+    --green-hover: #5a5a00;
+    --purple: #8f3f71;
+    --purple-hover: #6d2c56;
+    --red: #9d0006;
+    --red-hover: #7c0000;
+    --yellow: #b57614;
+    --yellow-hover: #945d0d;
+    --orange: #af3a03;
+    --orange-hover: #8f2b00;
+    
+    /* Neutral Browns */
     --brown-light: #d5c4a1;
     --brown: #bdae93;
     --brown-dark: #a89984;
-    --brown-darker: #928374;
+    --brown-darker: #7c6f64;
     
     /* Button Colors */
     --button-brown: var(--brown-dark);
-    --button-brown-hover: var(--brown-darker); 
-    /* Dark Mode Variables */
-    --dark-primary-bg: #282828;
-    --dark-secondary-bg: #3c3836;
-    --dark-elevated: #504945;
-    --dark-text-primary: #ebdbb2;
-    --dark-text-secondary: #d5c4a1;
-    --dark-text-muted: #a89984;
-    --dark-border-color: #665c54;
-    
-    /* Shared Accent Colors */
-    --blue: #458588;
-    --blue-hover: #076678;
-    --green: #98971a;
-    --green-hover: #79740e;
-    --purple: #b16286;
-    --purple-hover: #8f3f71;
-    --red: #cc241d;
-    --red-hover: #9d0006;
-    --yellow: #d79921;
-    --yellow-hover: #b57614;
-    --orange: #d65d0e;
-    --orange-hover: #af3a03;
+    --button-brown-hover: var(--brown-darker);
     
     /* Theme Switching Variables */
     --primary-bg: var(--light-primary-bg);
@@ -65,20 +69,20 @@
     
     /* UI Elements */
     --border-radius: 8px;
-    --card-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.08);
     
     /* Shadows */
-    --shadow-sm: 0 2px 4px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 8px rgba(0,0,0,0.12);
-    --shadow-lg: 0 15px 30px rgba(0,0,0,0.15);
+    --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.1);
     --shadow-inset: inset 0 1px 2px rgba(0,0,0,0.05);
     
-    /* Transitions */
-    --transition-fast: all 0.15s ease;
-    --transition: all 0.3s ease;
-    --transition-slow: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    /* Reduced Transitions */
+    --transition-fast: all 0.1s ease;
+    --transition: all 0.2s ease;
+    --transition-slow: all 0.3s ease;
     
-    /* Spacing */
+    /* Spacing (unchanged) */
     --space-xs: 0.25rem;
     --space-sm: 0.5rem;
     --space-md: 1rem;
@@ -97,17 +101,18 @@
     --text-muted: var(--dark-text-muted);
     --border-color: var(--dark-border-color);
     
-    --card-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    --card-shadow: 0 1px 3px rgba(0,0,0,0.2);
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.2);
-    --shadow-md: 0 4px 8px rgba(0,0,0,0.25);
-    --shadow-lg: 0 15px 30px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.2);
+    --shadow-lg: 0 10px 20px rgba(0,0,0,0.2);
 }
 
+/* Base Styles with Reduced Transitions */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    transition: background-color var(--transition-slow), color var(--transition-slow);
+    transition: background-color var(--transition), color var(--transition);
 }
 
 body {
@@ -122,125 +127,62 @@ body {
     min-height: 100vh;
 }
 
-/* Theme Toggle Switch */
-.theme-toggle {
-    position: fixed;
-    top: var(--space-md);
-    right: var(--space-md);
-    z-index: 100;
-}
-
-.toggle-switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 30px;
-}
-
-.toggle-switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-.toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: var(--secondary-bg);
-    border: 1px solid var(--border-color);
-    transition: var(--transition);
-    border-radius: 34px;
-}
-
-.toggle-slider:before {
-    position: absolute;
-    content: "";
-    height: 22px;
-    width: 22px;
-    left: 4px;
-    bottom: 3px;
-    background-color: var(--primary-color);
-    transition: var(--transition);
-    border-radius: 50%;
-}
-
-input:checked + .toggle-slider {
-    background-color: var(--secondary-bg);
-}
-
-input:checked + .toggle-slider:before {
-    transform: translateX(28px);
-    background-color: var(--warning-color);
-}
-
-.toggle-icons {
-    position: absolute;
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    padding: 0 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    pointer-events: none;
-}
-
-.toggle-icons svg {
-    width: 16px;
-    height: 16px;
-    fill: var(--text-muted);
-}
-
-input:checked ~ .toggle-icons .sun-icon {
-    opacity: 0.5;
-}
-
-input:not(:checked) ~ .toggle-icons .moon-icon {
-    opacity: 0.5;
-}
-
-/* Dashboard Components */
-.dashboard-header {
-    text-align: center;
-    margin-bottom: var(--space-xl);
-    padding: var(--space-xl);
-    background: var(--secondary-bg);
+/* Improved Button Styles */
+.modern-btn {
+    padding: 0.75rem 1.75rem;
+    background: var(--button-brown);
+    color: var(--text-primary);
+    border: none;
     border-radius: var(--border-radius);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.01em;
+    position: relative;
+    overflow: hidden;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
 }
 
-.dashboard-header h1 {
-    color: var(--primary-color);
-    font-size: 2.5rem;
-    margin-bottom: var(--space-sm);
-    letter-spacing: -0.02em;
-    font-weight: 800;
+.modern-btn:hover {
+    background: var(--button-brown-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
 }
 
-.dashboard-header p {
-    color: var(--text-secondary);
-    max-width: 700px;
-    margin: 0 auto;
-    font-size: 1.1rem;
+/* Table Improvements */
+#course-data-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--secondary-bg);
+    font-size: 0.9375rem;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
 }
 
-.container {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 var(--space-md);
+#course-data-table thead th {
+    padding: var(--space-md) var(--space-lg);
+    background: var(--primary-color);
+    color: var(--text-light);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-lg);
+#course-data-table tbody tr:hover {
+    background: rgba(69, 133, 136, 0.08);
 }
 
-/* Portlet Styles */
+/* Card Improvements */
 .m-portlet {
     background: var(--secondary-bg);
     border: 1px solid var(--border-color);
@@ -253,52 +195,59 @@ input:not(:checked) ~ .toggle-icons .moon-icon {
 
 .m-portlet:hover {
     box-shadow: var(--shadow-md);
-    transform: translateY(-3px);
+    transform: translateY(-2px);
 }
 
-.m-portlet__head {
-    padding: var(--space-lg) var(--space-xl);
+/* Stats Card Improvements */
+.stat-card {
     background: var(--secondary-bg);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: var(--space-md);
+    border-radius: var(--border-radius);
+    padding: var(--space-xl);
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
 }
 
-.m-portlet__head-title {
-    color: var(--primary-color);
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: -0.015em;
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Toggle Switch Improvements */
+.toggle-switch {
     position: relative;
     display: inline-block;
+    width: 50px;
+    height: 24px;
 }
 
-.m-portlet__head-title::after {
-    content: '';
+.toggle-label {
     position: absolute;
-    bottom: -8px;
+    cursor: pointer;
+    top: 0;
     left: 0;
-    width: 50px;
-    height: 3px;
-    background: var(--secondary-color);
-    border-radius: 3px;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
     transition: var(--transition);
+    border-radius: 34px;
 }
-.modern-btn-brown {
-    background: var(--button-brown);
-    color: var(--text-primary);
+
+.toggle-label:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    top: 2px;
+    background-color: var(--primary-bg);
+    transition: var(--transition);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
-.modern-btn-brown:hover {
-    background: var(--button-brown-hover);
-    color: var(--text-primary);
-}
-.m-portlet:hover .m-portlet__head-title::after {
-    width: 65px;
-}
+
+/* Modal Improvements */
 .request-course-modal {
     background: var(--secondary-bg);
     border: 1px solid var(--border-color);
@@ -313,7 +262,6 @@ input:not(:checked) ~ .toggle-icons .moon-icon {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    animation: modalSlideIn 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .m-portlet__body {
@@ -1005,4 +953,5 @@ input:disabled + .toggle-label {
         max-width: calc(100% - 32px) !important;
     }
 }
+
 
