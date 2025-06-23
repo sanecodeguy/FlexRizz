@@ -372,3 +372,27 @@ body {
 .editable-cell:hover {
     background: rgba(52, 152, 219, 0.05);
 }
+
+
+body.dark-mode #course-data-table {
+  background: #121212 !important;
+}
+
+body.dark-mode #course-data-table thead th,
+body.dark-mode #course-data-table td {
+  color: #f1f1f1 !important;
+  background-color: #121212 !important;
+  border-color: #2c2c2c !important;
+}
+
+body.dark-mode #course-data-table tbody tr:nth-child(even) {
+  background-color: #181818 !important;
+}
+
+body.dark-mode #course-data-table tbody tr:hover {
+  background-color: #1e1e1e !important;
+}
+
+body.dark-mode #course-data-table td:hover::after {
+  background: rgba(255, 255, 255, 0.04) !important;
+}
