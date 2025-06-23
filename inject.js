@@ -193,7 +193,7 @@ portlet.prepend(imageContainer);
             "MT1003": { name: "Calculus", grading: "Relative", credits: 3, semester: 1 },
             "SS1012": { name: "Functional English", grading: "Relative", credits: 2, semester: 1 },
             "SL1012": { name: "Functional English Lab", grading: "Relative", credits: 1, semester: 1 },
-            "SL1014": { name: "ICP", grading: "Relative", credits: 2, semester: 1 },
+            "SL1013": { name: "ICP", grading: "Relative", credits: 2, semester: 1 },
 
             "CL1004": { name: "OOP Lab", grading: "Absolute", credits: 1, semester: 2 },
             "CS1004": { name: "OOP", grading: "Absolute", credits: 3, semester: 2 },
