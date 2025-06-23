@@ -1,55 +1,44 @@
-
-
-
 :root {
-   
-    --primary-color: #3498db;
-    --primary-hover: #2980b9;
-    --secondary-color: #2c3e50;
-    --secondary-hover: #1a252f;
-    --accent-color: #2980b9;
-    --success-color: #27ae60;
-    --success-hover: #219653;
-    --warning-color: #f39c12;
-    --danger-color: #e74c3c;
-    --danger-hover: #c0392b;
-    
-   
-    --primary-bg: #f8f9fa;
-    --secondary-bg: #ffffff;
-    --sidebar-bg: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-    
-   
-    --text-primary: #2d3436;
-    --text-secondary: #636e72;
-    --text-light: #ffffff;
-    --text-muted: #95a5a6;
-    
-   
-    --border-color: #dfe6e9;
-    --border-radius: 6px;
-    
-   
-    --shadow-sm: 0 2px 4px rgba(0,0,0,0.05);
-    --shadow-md: 0 4px 8px rgba(0,0,0,0.08);
-    --shadow-lg: 0 15px 30px rgba(0,0,0,0.1);
-    --shadow-inset: inset 0 1px 2px rgba(0,0,0,0.05);
-    
-   
-    --transition-fast: all 0.15s ease-in-out;
-    --transition: all 0.25s ease-in-out;
-    --transition-slow: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    
-   
-    --space-xs: 0.25rem;
-    --space-sm: 0.5rem;
-    --space-md: 1rem;
-    --space-lg: 1.5rem;
-    --space-xl: 2rem;
+  --primary-color: #6366f1;          /* Electric Indigo */
+  --primary-hover: #4f46e5;
+  --secondary-color: #334155;        /* Cool dark slate */
+  --secondary-hover: #1e293b;
+  --accent-color: #f59e0b;           /* Amber gold */
+
+  --success-color: #10b981;          /* Soft green */
+  --success-hover: #059669;
+  --warning-color: #f59e0b;          /* Same as accent */
+  --danger-color: #ef4444;           /* Modern red */
+  --danger-hover: #dc2626;
+
+  --primary-bg: #f9fafb;             /* Light gray background */
+  --secondary-bg: #ffffff;           /* Clean white surfaces */
+  --sidebar-bg: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);  /* Soft gradient */
+
+  --text-primary: #1f2937;           /* Deep slate */
+  --text-secondary: #6b7280;         /* Muted gray */
+  --text-light: #ffffff;
+  --text-muted: #9ca3af;
+
+  --border-color: #e5e7eb;           /* Tailwind border neutral */
+  --border-radius: 8px;
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.12);
+  --shadow-inset: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+
+  --transition-fast: all 0.15s ease-in-out;
+  --transition: all 0.25s ease-in-out;
+  --transition-slow: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
 }
 
-
- 
 
 body {
     background: var(--primary-bg);
