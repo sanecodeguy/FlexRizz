@@ -33,22 +33,25 @@
     if (document.querySelector('#injected-support-image')) return;
 
     // Create image wrapper
-   const imageContainer = document.createElement('div');
-imageContainer.classList.add('extension-content');
-imageContainer.style.margin = '0px 0';
-imageContainer.style.textAlign = 'center';
-imageContainer.style.background = '#121719';
-imageContainer.style.padding = '0px';
-imageContainer.style.borderRadius = '0px';
+const imageContainer = document.createElement("div");
+imageContainer.classList.add("extension-content");
+imageContainer.style.margin = "0px 0";
+imageContainer.style.textAlign = "center";
+imageContainer.style.background = "#121719";
+imageContainer.style.padding = "0px";
+imageContainer.style.borderRadius = "0px";
 
-const supportImg = document.createElement('img');
-supportImg.src = 'https://github-production-user-asset-6210df.s3.amazonaws.com/122740137/457671991-38bd01dc-3f50-4264-81d2-5886489f584e.gif?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250622%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250622T184211Z&X-Amz-Expires=300&X-Amz-Signature=b182450ee715e72539315ff187d27a63b0b1d7486a587abe403a02f1c2f8b039&X-Amz-SignedHeaders=host';
-supportImg.alt = 'Support us';
-supportImg.style.maxHeight = '300px';
-  supportImg.style.height='auto';
-supportImg.style.width = '100%';
-supportImg.style.background = 'transparent';
-supportImg.id = 'injected-support-image';
+// Create the gif
+const supportImg = document.createElement("img");
+supportImg.src = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHpjYnA4ZmZ4ZzJ6cHVoZ3Q3M3U2bmZ4MXU3M2w3aWRnMG10ZXAwZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/J5zXBUKd9dbYgmcSwC/giphy.gif";
+supportImg.alt = "Support us";
+supportImg.id = "injected-support-image";
+supportImg.style.display = "inline-block";
+supportImg.style.width = "auto";
+supportImg.style.height = "auto";
+supportImg.style.background = "transparent";
+supportImg.style.margin = "0 auto";
+supportImg.style.verticalAlign = "middle";
 
 imageContainer.appendChild(supportImg);
 portlet.prepend(imageContainer);
