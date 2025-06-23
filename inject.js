@@ -528,8 +528,8 @@ function showToast(message, isSuccess = true)
             });
 
 const toggleDarkBtn = document.createElement('button');
-toggleDarkBtn.textContent = 'Toggle Dark Mode';
-toggleDarkBtn.className = 'modern-btn';
+toggleDarkBtn.textContent = '🌙';
+toggleDarkBtn.className = 'modern-btn dark-mode-toggle';
 toggleDarkBtn.style.margin = '1rem';
 
 container.appendChild(toggleDarkBtn);
