@@ -402,3 +402,29 @@ body.dark-mode #course-data-table td:hover::after {
   background: rgba(255, 255, 255, 0.04) !important;
 }
 
+.modern-btn.dark-mode-toggle {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 1.2rem;
+  line-height: 1;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-color);
+  color: white;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
+  border: none;
+}
+
+.modern-btn.dark-mode-toggle:hover {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.modern-btn.dark-mode-toggle:active {
+  transform: scale(0.96);
+  box-shadow: var(--shadow-sm);
+}
