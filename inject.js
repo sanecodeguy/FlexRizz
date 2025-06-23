@@ -37,7 +37,7 @@ const imageContainer = document.createElement("div");
 imageContainer.classList.add("extension-content");
 imageContainer.style.margin = "0px 0";
 imageContainer.style.textAlign = "center";
-imageContainer.style.background = "#121719";
+imageContainer.style.background = "transparent";
 imageContainer.style.padding = "0px";
 imageContainer.style.borderRadius = "0px";
 
