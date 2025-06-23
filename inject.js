@@ -39,6 +39,7 @@ imageContainer.style.margin = "0px 0";
 imageContainer.style.textAlign = "center";
 imageContainer.style.background = "#F2F3F8";
 imageContainer.style.padding = "0px";
+imageContainer.style.border = "1px solid #F2F3F8";
 imageContainer.style.borderRadius = "0px";
 
 // Create the gif
