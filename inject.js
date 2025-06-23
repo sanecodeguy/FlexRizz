@@ -43,7 +43,7 @@ imageContainer.style.borderRadius = "0px";
 
 // Create the gif
 const supportImg = document.createElement("img");
-supportImg.src = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExZHpjYnA4ZmZ4ZzJ6cHVoZ3Q3M3U2bmZ4MXU3M2w3aWRnMG10ZXAwZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/J5zXBUKd9dbYgmcSwC/giphy.gif";
+supportImg.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGQwZTN0bmZ6dnFlNm52ZjZrZXF1ajdqeHl6bTRzNXNheTF4ZTBicSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/SgGORf2HB9tNMnbmzu/giphy.gif";
 supportImg.alt = "Support us";
 supportImg.id = "injected-support-image";
 supportImg.style.display = "inline-block";
