@@ -66,6 +66,7 @@ portlet.prepend(toggleDarkBtn);
 
 toggleDarkBtn.addEventListener('click', () => {
   document.body.classList.toggle('dark-mode');
+});
     function getExtensionUrl(path) {
         if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL) {
             return chrome.runtime.getURL(path);
