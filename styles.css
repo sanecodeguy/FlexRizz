@@ -1,33 +1,20 @@
 :root {
-    --primary-color: #D62828;
-    --primary-hover: #B51F1F;
-    --secondary-color: #F3A712;
-    --secondary-hover: #C47D0F;
-    --accent-color: #F0FFCE;
-    --success-color: #F3A712;
-    --success-hover: #FFD166;
+    --primary-color: #F3A712;
+    --primary-hover: #FFD166;
+    --secondary-color: #F0FFCE;
+    --secondary-hover: #dbe59c;
+    --accent-color: #D62828;
+    --success-color: #F0FFCE;
+    --success-hover: #F3A712;
     --warning-color: #F3A712;
     --danger-color: #D62828;
     --danger-hover: #B51F1F;
 
-    --grade-aplus: #F0FFCE;
-    --grade-a: #F3A712;
-    --grade-aminus: #FFD166;
-    --grade-bplus: #F3A712;
-    --grade-b: #FFD166;
-    --grade-bminus: #F0FFCE;
-    --grade-cplus: #F3A712;
-    --grade-c: #FFD166;
-    --grade-cminus: #F0FFCE;
-    --grade-dplus: #552B11;
-    --grade-d: #552B11;
-    --grade-f: #D62828;
-
     --primary-bg: #000001;
-    --secondary-bg: #552B11;
-    --table-header-bg: #552B11;
+    --secondary-bg: #1a1a1a;
+    --table-header-bg: #161616;
     --table-row-bg: #000001;
-    --table-row-alt-bg: #1a0f07;
+    --table-row-alt-bg: #161616;
     --sidebar-bg: linear-gradient(135deg, #552B11 0%, #000001 100%);
 
     --text-primary: #F0FFCE;
@@ -35,12 +22,12 @@
     --text-light: #F0FFCE;
     --text-muted: #FFD166;
 
-    --border-color: #552B11;
+    --border-color: #232333;
     --border-radius: 14px;
 
-    --shadow-sm: 0 2px 8px rgba(85,43,17,0.14);
-    --shadow-md: 0 8px 32px rgba(214,40,40,0.15);
-    --shadow-lg: 0 16px 64px rgba(85,43,17,0.20);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.14);
+    --shadow-md: 0 8px 32px rgba(243,167,18,0.08);
+    --shadow-lg: 0 16px 64px rgba(214,40,40,0.12);
 
     --transition-fast: all 0.14s cubic-bezier(.5,0,.2,1);
     --transition: all 0.22s cubic-bezier(.5,0,.2,1);
@@ -87,7 +74,7 @@ body {
 }
 
 .m-portlet__head-title {
-    color: var(--primary-color);
+    color: var(--accent-color);
     font-size: 1.4rem;
     font-weight: 700;
     margin: 0;
@@ -110,21 +97,22 @@ body {
 .modern-btn {
     padding: 0.8rem 2rem;
     background: var(--primary-color);
-    color: var(--text-light);
+    color: #000001;
     border: none;
     border-radius: var(--border-radius);
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     transition: var(--transition);
     letter-spacing: 0.01em;
     box-shadow: var(--shadow-sm);
     display: inline-block;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.10);
 }
 
 .modern-btn:hover,
 .modern-btn:focus-visible {
     background: var(--primary-hover);
-    color: var(--text-light);
+    color: #000001;
     transform: translateY(-2px) scale(1.03);
     box-shadow: var(--shadow-md);
     outline: none;
@@ -136,13 +124,13 @@ body {
 }
 
 .modern-btn.active {
-    background: var(--secondary-color);
+    background: var(--accent-color);
     color: var(--text-light);
 }
 
 .modern-btn-success {
     background: var(--success-color);
-    color: #552B11;
+    color: #000001;
 }
 
 .modern-btn-success:hover {
@@ -151,6 +139,7 @@ body {
 
 .modern-btn-danger {
     background: var(--danger-color);
+    color: #fff;
 }
 
 .modern-btn-danger:hover {
@@ -161,7 +150,7 @@ body {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    background: var(--secondary-bg);
+    background: var(--primary-bg);
     font-size: 1rem;
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -171,10 +160,10 @@ body {
 #course-data-table thead th {
     padding: var(--space-md) var(--space-lg);
     background: var(--table-header-bg);
-    color: var(--accent-color);
-    font-weight: 700;
+    color: var(--primary-color);
+    font-weight: 800;
     text-align: left;
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--accent-color);
     position: sticky;
     top: 0;
     z-index: 10;
@@ -190,7 +179,7 @@ body {
 }
 
 #course-data-table tbody tr:hover {
-    background: rgba(243,167,18,0.13);
+    background: #111112;
 }
 
 #course-data-table td {
@@ -206,27 +195,27 @@ body {
     position: absolute;
     left: 0; top: 0;
     width: 100%; height: 100%;
-    background: rgba(240,255,206,0.07);
+    background: rgba(243,167,18,0.09);
     pointer-events: none;
     border-radius: 4px;
 }
 
-.grade-Aplus { color: var(--grade-aplus); font-weight: 800; }
-.grade-A { color: var(--grade-a); font-weight: 700; }
-.grade-Aminus { color: var(--grade-aminus); font-weight: 700; }
-.grade-Bplus { color: var(--grade-bplus); font-weight: 700; }
-.grade-B { color: var(--grade-b); font-weight: 700; }
-.grade-Bminus { color: var(--grade-bminus); font-weight: 700; }
-.grade-Cplus { color: var(--grade-cplus); font-weight: 700; }
-.grade-C { color: var(--grade-c); font-weight: 700; }
-.grade-Cminus { color: var(--grade-cminus); font-weight: 700; }
-.grade-Dplus { color: var(--grade-dplus); font-weight: 700; }
-.grade-D { color: var(--grade-d); font-weight: 700; }
-.grade-F { color: var(--grade-f); font-weight: 800; }
+.grade-Aplus { color: var(--secondary-color); font-weight: 800; }
+.grade-A { color: var(--primary-color); font-weight: 800; }
+.grade-Aminus { color: var(--primary-hover); font-weight: 700; }
+.grade-Bplus { color: var(--accent-color); font-weight: 700; }
+.grade-B { color: var(--warning-color); font-weight: 700; }
+.grade-Bminus { color: var(--warning-color); font-weight: 600; }
+.grade-Cplus { color: var(--danger-color); font-weight: 700; }
+.grade-C { color: var(--danger-color); font-weight: 600; }
+.grade-Cminus { color: var(--danger-hover); font-weight: 600; }
+.grade-Dplus { color: var(--danger-hover); font-weight: 600; }
+.grade-D { color: var(--danger-hover); font-weight: 600; }
+.grade-F { color: var(--danger-color); font-weight: 900; }
 
 .sgpa-row {
-    background: rgba(243,167,18,0.13) !important;
-    font-weight: 700 !important;
+    background: rgba(243,167,18,0.15) !important;
+    font-weight: 900 !important;
 }
 
 .sgpa-row td {
@@ -254,7 +243,7 @@ body {
 .semester-btn {
     min-width: 3.25rem;
     padding: 0.7rem 0.8rem;
-    background: var(--secondary-bg);
+    background: var(--primary-bg);
     color: var(--primary-color);
     border: 1.5px solid var(--primary-color);
     border-radius: var(--border-radius);
@@ -267,15 +256,15 @@ body {
 
 .semester-btn:hover:not(:disabled) {
     background: var(--primary-color);
-    color: var(--text-light);
+    color: #000001;
     border-color: var(--primary-color);
     transform: translateY(-1px);
 }
 
 .semester-btn.active {
-    background: var(--secondary-color);
-    color: var(--text-light);
-    border-color: var(--secondary-color);
+    background: var(--accent-color);
+    color: var(--primary-bg);
+    border-color: var(--accent-color);
     font-weight: 700;
 }
 
@@ -303,7 +292,7 @@ body {
 }
 
 .editable-cell:hover {
-    background: rgba(240,255,206,0.10);
+    background: rgba(243,167,18,0.08);
 }
 
 @media (max-width: 992px) {
