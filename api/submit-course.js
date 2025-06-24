@@ -1,11 +1,3 @@
-const { Octokit } = require('@octokit/rest');
-
-module.exports = async (req, res) => {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-❯ cat submit-course.js
 // api/submit-course.js
 const { Octokit } = require('@octokit/rest');
 
