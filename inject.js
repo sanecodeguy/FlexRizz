@@ -577,84 +577,8 @@ requestCourseButton.addEventListener('click', () => {
     showCourseRequestModal();
 });
 
-async function fetchActiveRequests() {
-    activeRequestsModal.style.display = 'block';
-    const requestsList = document.getElementById('activeRequestsList');
-    requestsList.innerHTML = '<p>Loading...</p>';
-    
-    try {
-        const requests = await fetchRequests();
-        const activeRequests = requests.filter(req => req.status === 'Pending');
-        
-        if (activeRequests.length === 0) {
-            requestsList.innerHTML = '<p>No active requests found.</p>';
-            return;
-        }
-        
-        requestsList.innerHTML = '';
-        activeRequests.forEach(request => {
-            const requestItem = document.createElement('div');
-            requestItem.className = 'request-item';
-            requestItem.innerHTML = `
-                <h3>${request.courseId} - ${request.courseName}</h3>
-                <p>Credit Hours: ${request.creditHours}</p>
-                <p>Grading Type: ${request.gradingType}</p>
-                <p>Lab Included: ${request.labIncluded ? 'Yes' : 'No'}</p>
-                <div class="request-meta">
-                    <span>Submitted: ${new Date(request.submittedAt).toLocaleString()}</span>
-                </div>
-            `;
-            requestsList.appendChild(requestItem);
-        });
-    } catch (error) {
-        requestsList.innerHTML = '<p>Error loading requests. Please try again.</p>';
-        console.error('Error fetching requests:', error);
-    }
-}
-
-// Show request history
-async function fetchRequestHistory() {
-    historyModal.style.display = 'block';
-    const historyList = document.getElementById('historyList');
-    historyList.innerHTML = '<p>Loading...</p>';
-    
-    try {
-        const requests = await fetchRequests();
-        const userRequests = requests.filter(req => req.userId === getUserId()); // Filter by current user
-        
-        if (userRequests.length === 0) {
-            historyList.innerHTML = '<p>No request history found.</p>';
-            return;
-        }
-        
-        historyList.innerHTML = '';
-        userRequests.forEach(request => {
-            const requestItem = document.createElement('div');
-            requestItem.className = 'request-item';
-            
-            let statusClass = '';
-            if (request.status === 'Approved') statusClass = 'status-approved';
-            if (request.status === 'Rejected') statusClass = 'status-rejected';
-            
-            requestItem.innerHTML = `
-                <h3>${request.courseId} - ${request.courseName}</h3>
-                <p>Credit Hours: ${request.creditHours}</p>
-                <p>Grading Type: ${request.gradingType}</p>
-                <p>Lab Included: ${request.labIncluded ? 'Yes' : 'No'}</p>
-                <div class="request-meta">
-                    <span>Submitted: ${new Date(request.submittedAt).toLocaleString()}</span>
-                    <span class="${statusClass}">Status: ${request.status}</span>
-                </div>
-                ${request.adminComment ? `<p><strong>Admin Comment:</strong> ${request.adminComment}</p>` : ''}
-            `;
-            historyList.appendChild(requestItem);
-        });
-    } catch (error) {
-        historyList.innerHTML = '<p>Error loading history. Please try again.</p>';
-        console.error('Error fetching history:', error);
-    }
-}
 container.appendChild(requestCourseButton);
+
 function showCourseRequestModal() {
     const modal = document.createElement('div');
     modal.className = 'modern-modal';
@@ -665,102 +589,67 @@ function showCourseRequestModal() {
         transform: translate(-50%, -50%);
         background: var(--primary-bg);
         border: 1px solid var(--border-color);
-        padding: 0;
+        padding: 25px;
         border-radius: 12px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         z-index: 10000;
-        width: min(90vw, 600px);
+        width: min(90vw, 450px);
         color: var(--text-primary);
         font-family: inherit;
-        max-height: 80vh;
-        display: flex;
-        flex-direction: column;
     `;
 
     modal.innerHTML = `
-        <div style="padding: 20px 25px; border-bottom: 1px solid var(--border-color);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0; color: var(--accent-color);">Course Requests</h3>
-                <button class="modal-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary);">&times;</button>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: var(--accent-color);">Request New Course</h3>
+            <button class="modal-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary);">&times;</button>
+        </div>
+        
+        <form id="courseRequestForm" style="display: grid; gap: 15px;">
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course ID</label>
+                <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
             </div>
             
-            <div class="tabs" style="margin-top: 15px;">
-                <button class="tab active" data-tab="request">Request New Course</button>
-                <button class="tab" data-tab="active">Active Requests</button>
-                <button class="tab" data-tab="history">Request History</button>
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course Name</label>
+                <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
             </div>
-        </div>
-        
-        <div class="tab-content active" data-tab-content="request" style="padding: 0 25px 25px; overflow-y: auto; flex-grow: 1;">
-            <form id="courseRequestForm" style="display: grid; gap: 15px; padding-top: 15px;">
-                <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course ID</label>
-                    <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-bg); color: inherit;">
-                </div>
-                
-                <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course Name</label>
-                    <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-bg); color: inherit;">
-                </div>
-                
-                <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Credit Hours</label>
-                    <div style="display: flex; gap: 15px;">
-                        <label style="display: flex; align-items: center; gap: 5px;">
-                            <input type="radio" name="credits" value="2" required> 2
-                        </label>
-                        <label style="display: flex; align-items: center; gap: 5px;">
-                            <input type="radio" name="credits" value="3"> 3
-                        </label>
-                    </div>
-                </div>
-                
-                <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Grading Type</label>
-                    <select required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-bg); color: inherit;">
-                        <option value="">Select...</option>
-                        <option value="Relative">Relative</option>
-                        <option value="Absolute">Absolute</option>
-                        <option value="Non Credit">Non Credit</option>
-                    </select>
-                </div>
-                
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <label style="font-size: 0.9rem;">Lab Included:</label>
-                    <label class="modern-switch">
-                        <input type="checkbox">
-                        <span class="slider"></span>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Credit Hours</label>
+                <div style="display: flex; gap: 15px;">
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="radio" name="credits" value="2" required> 2
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="radio" name="credits" value="3"> 3
                     </label>
                 </div>
-                
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="modal-cancel" style="padding: 8px 16px; border-radius: 6px; background: var(--danger-color); color: white; border: none; cursor: pointer;">Cancel</button>
-                    <button type="submit" style="padding: 8px 16px; border-radius: 6px; background: var(--success-color); color: white; border: none; cursor: pointer;">Submit Request</button>
-                </div>
-            </form>
-        </div>
-        
-        <div class="tab-content" data-tab-content="active" style="padding: 0 25px 25px; overflow-y: auto; flex-grow: 1;">
-            <div style="padding: 15px 0;">
-                <h4 style="margin-bottom: 15px;">Your Active Requests</h4>
-                <div id="activeRequestsList" style="display: grid; gap: 12px;">
-                    <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                        Loading active requests...
-                    </div>
-                </div>
             </div>
-        </div>
-        
-        <div class="tab-content" data-tab-content="history" style="padding: 0 25px 25px; overflow-y: auto; flex-grow: 1;">
-            <div style="padding: 15px 0;">
-                <h4 style="margin-bottom: 15px;">Request History</h4>
-                <div id="requestHistoryList" style="display: grid; gap: 12px;">
-                    <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                        Loading request history...
-                    </div>
-                </div>
+            
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Grading Type</label>
+                <select required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                    <option value="">Select...</option>
+                    <option value="Relative">Relative</option>
+                    <option value="Absolute">Absolute</option>
+                    <option value="Non Credit">Non Credit</option>
+                </select>
             </div>
-        </div>
+            
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label style="font-size: 0.9rem;">Lab Included:</label>
+                <label class="modern-switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                <button type="button" class="modal-cancel" style="padding: 8px 16px; border-radius: 6px; background: var(--danger-color); color: white; border: none; cursor: pointer;">Cancel</button>
+                <button type="submit" style="padding: 8px 16px; border-radius: 6px; background: var(--success-color); color: white; border: none; cursor: pointer;">Submit Request</button>
+            </div>
+        </form>
     `;
 
     const backdrop = document.createElement('div');
@@ -784,31 +673,6 @@ function showCourseRequestModal() {
         backdrop.remove();
     };
 
-    // Tab switching functionality
-    const tabs = modal.querySelectorAll('.tab');
-    const tabContents = modal.querySelectorAll('.tab-content');
-    
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            // Remove active class from all tabs and contents
-            tabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-            
-            // Add active class to clicked tab and corresponding content
-            tab.classList.add('active');
-            const tabName = tab.getAttribute('data-tab');
-            modal.querySelector(`.tab-content[data-tab-content="${tabName}"]`).classList.add('active');
-            
-            // Load data when switching to these tabs
-            if (tabName === 'active') {
-                loadActiveRequests();
-            } else if (tabName === 'history') {
-                loadRequestHistory();
-            }
-        });
-    });
-
-    // Close modal handlers
     modal.querySelector('.modal-close').addEventListener('click', closeModal);
     modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
     backdrop.addEventListener('click', closeModal);
@@ -832,145 +696,12 @@ function showCourseRequestModal() {
         try {
             await saveRequest(requestData); // You'll need to implement this
             showNotification('Request submitted successfully!', 'success');
-            
-            // Switch to active requests tab and refresh
-            tabs.forEach(t => t.classList.remove('active'));
-            tabContents.forEach(c => c.classList.remove('active'));
-            modal.querySelector('.tab[data-tab="active"]').classList.add('active');
-            modal.querySelector('.tab-content[data-tab-content="active"]').classList.add('active');
-            loadActiveRequests();
-            
+            closeModal();
         } catch (error) {
             showNotification('Failed to submit request', 'error');
             console.error('Error submitting request:', error);
         }
     });
-
-    // Functions to load requests data
-    async function loadActiveRequests() {
-        const activeRequestsList = modal.querySelector('#activeRequestsList');
-        activeRequestsList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary);">Loading active requests...</div>';
-        
-        try {
-            const requests = await fetchActiveRequests(); // Implement this function
-            if (requests.length === 0) {
-                activeRequestsList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary);">No active requests found.</div>';
-                return;
-            }
-            
-            activeRequestsList.innerHTML = '';
-            requests.forEach(request => {
-                const requestItem = document.createElement('div');
-                requestItem.style.cssText = `
-                    background: var(--elevated-bg);
-                    border-radius: 8px;
-                    padding: 15px;
-                    border-left: 4px solid ${getStatusColor(request.status)};
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                `;
-                
-                requestItem.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <strong>${request.courseId} - ${request.courseName}</strong>
-                        <span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; background: ${getStatusBackground(request.status)}; color: ${getStatusColor(request.status)};">
-                            ${request.status}
-                        </span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85rem; margin-bottom: 8px;">
-                        <div>
-                            <div style="color: var(--text-secondary); font-size: 0.75rem;">Credits</div>
-                            <div>${request.creditHours}</div>
-                        </div>
-                        <div>
-                            <div style="color: var(--text-secondary); font-size: 0.75rem;">Grading</div>
-                            <div>${request.gradingType}</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                        Submitted: ${new Date(request.submittedAt).toLocaleDateString()}
-                    </div>
-                `;
-                
-                activeRequestsList.appendChild(requestItem);
-            });
-        } catch (error) {
-            console.error('Error loading active requests:', error);
-            activeRequestsList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--danger-color);">Failed to load active requests.</div>';
-        }
-    }
-
-    async function loadRequestHistory() {
-        const requestHistoryList = modal.querySelector('#requestHistoryList');
-        requestHistoryList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary);">Loading request history...</div>';
-        
-        try {
-            const history = await fetchRequestHistory(); // Implement this function
-            if (history.length === 0) {
-                requestHistoryList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary);">No request history found.</div>';
-                return;
-            }
-            
-            requestHistoryList.innerHTML = '';
-            history.forEach(item => {
-                const historyItem = document.createElement('div');
-                historyItem.style.cssText = `
-                    background: var(--elevated-bg);
-                    border-radius: 8px;
-                    padding: 15px;
-                    border-left: 4px solid ${getStatusColor(item.status)};
-                    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-                `;
-                
-                historyItem.innerHTML = `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                        <strong>${item.courseId} - ${item.courseName}</strong>
-                        <span style="font-size: 0.8rem; padding: 2px 8px; border-radius: 10px; background: ${getStatusBackground(item.status)}; color: ${getStatusColor(item.status)};">
-                            ${item.status}
-                        </span>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.85rem; margin-bottom: 8px;">
-                        <div>
-                            <div style="color: var(--text-secondary); font-size: 0.75rem;">Credits</div>
-                            <div>${item.creditHours}</div>
-                        </div>
-                        <div>
-                            <div style="color: var(--text-secondary); font-size: 0.75rem;">Grading</div>
-                            <div>${item.gradingType}</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">
-                        Submitted: ${new Date(item.submittedAt).toLocaleDateString()}
-                    </div>
-                    ${item.processedAt ? `
-                    <div style="font-size: 0.8rem; color: var(--text-secondary);">
-                        Processed: ${new Date(item.processedAt).toLocaleDateString()}
-                    </div>
-                    ` : ''}
-                `;
-                
-                requestHistoryList.appendChild(historyItem);
-            });
-        } catch (error) {
-            console.error('Error loading request history:', error);
-            requestHistoryList.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--danger-color);">Failed to load request history.</div>';
-        }
-    }
-
-    function getStatusColor(status) {
-        switch(status) {
-            case 'Approved': return 'var(--success-color)';
-            case 'Rejected': return 'var(--danger-color)';
-            default: return 'var(--warning-color)';
-        }
-    }
-
-    function getStatusBackground(status) {
-        switch(status) {
-            case 'Approved': return 'rgba(76, 201, 240, 0.1)';
-            case 'Rejected': return 'rgba(247, 37, 133, 0.1)';
-            default: return 'rgba(248, 150, 30, 0.1)';
-        }
-    }
 }
 
 const style = document.createElement('style');
