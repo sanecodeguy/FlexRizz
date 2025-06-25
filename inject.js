@@ -558,7 +558,7 @@ container.appendChild(requestCourseButton);
 const BIN_ID = '685c28188561e97a502bb073'; 
 const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa'; 
 // Add this function to create the modal
-    function showCourseRequestModal() {
+function showCourseRequestModal() {
     const modal = document.createElement('div');
     modal.className = 'modern-modal';
     modal.style.cssText = `
@@ -570,21 +570,162 @@ const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa';
         border-radius: 12px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
         z-index: 10000;
-        width: min(90vw, 450px);
+        width: min(90vw, 500px);
         color: var(--text-primary);
         font-family: inherit;
+        animation: fadeIn 0.3s ease-out;
     `;
     modal.innerHTML = `
+        <style>
+            @keyframes fadeIn {
+                from { opacity: 0; transform: translate(-50%, -55%); }
+                to { opacity: 1; transform: translate(-50%, -50%); }
+            }
+            .modern-modal .tabs button {
+                position: relative;
+                padding: 8px 16px;
+                background: none;
+                border: none;
+                color: var(--text-secondary);
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                border-radius: 6px;
+            }
+            .modern-modal .tabs button:hover {
+                color: var(--accent-color);
+                background: rgba(var(--accent-rgb), 0.1);
+            }
+            .modern-modal .tabs button.active-tab {
+                color: var(--accent-color);
+            }
+            .modern-modal .tabs button.active-tab::after {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 16px;
+                right: 16px;
+                height: 2px;
+                background: var(--accent-color);
+                border-radius: 2px;
+            }
+            .modern-modal .request-item {
+                padding: 12px 15px;
+                border-radius: 8px;
+                margin-bottom: 8px;
+                background: var(--elevated-bg);
+                border: 1px solid var(--border-color);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .modern-modal .request-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                border-color: var(--accent-color);
+            }
+            .modern-modal .status-badge {
+                display: inline-block;
+                padding: 3px 8px;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                font-weight: 600;
+                margin-left: 8px;
+            }
+            .status-pending {
+                background-color: rgba(255, 193, 7, 0.2);
+                color: #ffc107;
+            }
+            .status-approved {
+                background-color: rgba(40, 167, 69, 0.2);
+                color: #28a745;
+            }
+            .status-rejected {
+                background-color: rgba(220, 53, 69, 0.2);
+                color: #dc3545;
+            }
+            .modern-modal .form-control {
+                transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            }
+            .modern-modal .form-control:focus {
+                border-color: var(--accent-color);
+                box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+                outline: none;
+            }
+            .modern-modal .btn {
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: 500;
+                transition: all 0.2s ease;
+                cursor: pointer;
+            }
+            .modern-modal .btn-primary {
+                background: var(--accent-color);
+                color: white;
+                border: none;
+            }
+            .modern-modal .btn-primary:hover {
+                background: var(--accent-dark);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(var(--accent-rgb), 0.2);
+            }
+            .modern-modal .btn-secondary {
+                background: var(--elevated-bg);
+                color: var(--text-primary);
+                border: 1px solid var(--border-color);
+            }
+            .modern-modal .btn-secondary:hover {
+                background: var(--elevated-bg-hover);
+                border-color: var(--accent-color);
+            }
+            .modern-modal .modern-switch {
+                position: relative;
+                display: inline-block;
+                width: 50px;
+                height: 24px;
+            }
+            .modern-modal .modern-switch input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
+            .modern-modal .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: var(--border-color);
+                transition: .4s;
+                border-radius: 24px;
+            }
+            .modern-modal .slider:before {
+                position: absolute;
+                content: "";
+                height: 16px;
+                width: 16px;
+                left: 4px;
+                bottom: 4px;
+                background-color: white;
+                transition: .4s;
+                border-radius: 50%;
+            }
+            .modern-modal input:checked + .slider {
+                background-color: var(--accent-color);
+            }
+            .modern-modal input:checked + .slider:before {
+                transform: translateX(26px);
+            }
+        </style>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 style="margin: 0; color: var(--accent-color);">Request New Course</h3>
-            <button class="modal-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary);">&times;</button>
+            <h3 style="margin: 0; color: var(--accent-color); font-weight: 600;">Request New Course</h3>
+            <button class="modal-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); transition: color 0.2s ease;">&times;</button>
         </div>
-        <div class="tabs" style="display: flex; gap: 15px; margin-bottom: 15px;">
+        <div class="tabs" style="display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">
             <button data-tab="form" class="active-tab">Form</button>
             <button data-tab="active">Active Requests</button>
-            <button data-tab="history">History</button>
+            <button data-tab="history">Request History</button>
         </div>
-        <div class="tab-content" id="tab-content"></div>
+        <div class="tab-content" id="tab-content" style="min-height: 300px;"></div>
         <div class="loading-overlay" style="
             display: none;
             position: absolute;
@@ -598,7 +739,10 @@ const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa';
             font-size: 1.2rem;
             z-index: 10001;
         ">
-            <div>Loading...</div>
+            <div style="display: flex; flex-direction: column; align-items: center;">
+                <div class="spinner" style="width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 1s ease-in-out infinite; margin-bottom: 10px;"></div>
+                <div>Loading...</div>
+            </div>
         </div>
     `;
 
@@ -609,6 +753,7 @@ const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa';
         background: rgba(0, 0, 0, 0.7);
         z-index: 9999;
         backdrop-filter: blur(3px);
+        animation: fadeIn 0.3s ease-out;
     `;
 
     document.body.appendChild(backdrop);
@@ -619,48 +764,60 @@ const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa';
 
     function createFormHTML() {
         return `
-            <form id="courseRequestForm" style="display: grid; gap: 15px;">
+            <form id="courseRequestForm" style="display: grid; gap: 20px;">
                 <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course ID</label>
-                    <input type="text" required name="courseId" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">Course ID</label>
+                    <input type="text" class="form-control" required name="courseId" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--elevated-bg); color: inherit;">
                 </div>
                 <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course Name</label>
-                    <input type="text" required name="courseName" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">Course Name</label>
+                    <input type="text" class="form-control" required name="courseName" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--elevated-bg); color: inherit;">
                 </div>
                 <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Credit Hours</label>
-                    <div style="display: flex; gap: 15px;">
-                        <label style="display: flex; align-items: center; gap: 5px;"><input type="radio" name="credits" value="2" required> 2</label>
-                        <label style="display: flex; align-items: center; gap: 5px;"><input type="radio" name="credits" value="3"> 3</label>
+                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">Credit Hours</label>
+                    <div style="display: flex; gap: 20px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="credits" value="2" required style="accent-color: var(--accent-color);">
+                            <span>2 Credits</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="credits" value="3" style="accent-color: var(--accent-color);">
+                            <span>3 Credits</span>
+                        </label>
                     </div>
                 </div>
                 <div>
-                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Grading Type</label>
-                    <select required name="gradingType" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
-                        <option value="">Select...</option>
-                        <option value="Relative">Relative</option>
-                        <option value="Absolute">Absolute</option>
+                    <label style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: var(--text-secondary);">Grading Type</label>
+                    <select required name="gradingType" class="form-control" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--elevated-bg); color: inherit; cursor: pointer;">
+                        <option value="">Select grading type...</option>
+                        <option value="Relative">Relative Grading</option>
+                        <option value="Absolute">Absolute Grading</option>
                         <option value="Non Credit">Non Credit</option>
                     </select>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <label style="font-size: 0.9rem;">Lab Included:</label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <label style="font-size: 0.9rem; color: var(--text-secondary);">Lab Included:</label>
                     <label class="modern-switch">
                         <input type="checkbox" name="labIncluded">
                         <span class="slider"></span>
                     </label>
                 </div>
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="modal-cancel" style="padding: 8px 16px; border-radius: 6px; background: var(--danger-color); color: white; border: none; cursor: pointer;">
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary modal-cancel">
                         Cancel
                     </button>
-                    <button type="submit" style="padding: 8px 16px; border-radius: 6px; background: var(--success-color); color: white; border: none; cursor: pointer;">
+                    <button type="submit" class="btn btn-primary">
                         Submit Request
                     </button>
                 </div>
             </form>
         `;
+    }
+
+    function formatStatusBadge(status) {
+        const statusClass = status.toLowerCase() === 'approved' ? 'approved' : 
+                          status.toLowerCase() === 'rejected' ? 'rejected' : 'pending';
+        return `<span class="status-badge status-${statusClass}">${status}</span>`;
     }
 
     async function renderTab(tab) {
@@ -679,7 +836,7 @@ const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa';
                     submittedAt: new Date().toISOString(),
                     userId: getUserId()
                 };
-                // 👉 Show loading
+                
                 loadingOverlay.style.display = 'flex';
                 try {
                     await saveRequest(requestData);
@@ -689,42 +846,106 @@ const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa';
                     showNotification('Failed to submit request', 'error');
                     console.error(error);
                 } finally {
-                    // 👉 Always hide loader
                     loadingOverlay.style.display = 'none';
                 }
             });
         } else if (tab === 'active') {
-            const requests = await fetchActiveRequests();
-            tabContent.innerHTML = requests.length ? `
-                <div style="max-height:300px; overflow-y:auto;">
-                    ${requests.map(r => `
-                        <div style="padding:10px; border-bottom:1px solid var(--border-color)">
-                            <div><strong>${r.courseId}</strong> - ${r.courseName}</div>
-                            <div style="font-size:0.9rem; opacity:0.8">Submitted: ${new Date(r.submittedAt).toLocaleString()}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            ` : '<div style="padding:10px">No active requests found.</div>';
+            loadingOverlay.style.display = 'flex';
+            try {
+                const requests = await fetchActiveRequests();
+                tabContent.innerHTML = requests.length ? `
+                    <div style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+                        ${requests.map(r => `
+                            <div class="request-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="font-weight: 500;">
+                                        <span style="color: var(--accent-color);">${r.courseId}</span> - ${r.courseName}
+                                    </div>
+                                    ${formatStatusBadge(r.status)}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">
+                                    Submitted: ${new Date(r.submittedAt).toLocaleString()}
+                                </div>
+                                ${r.adminComment ? `
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px; padding: 8px; background: rgba(var(--accent-rgb), 0.05); border-radius: 6px;">
+                                    <strong>Comment:</strong> ${r.adminComment}
+                                </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; color: var(--text-secondary);">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <div style="margin-top: 10px;">No active requests found</div>
+                    </div>`;
+            } catch (error) {
+                tabContent.innerHTML = `<div style="color: var(--danger-color); padding: 20px; text-align: center;">Failed to load active requests</div>`;
+                console.error(error);
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
         } else if (tab === 'history') {
-            const requests = await fetchRequestHistory();
-            tabContent.innerHTML = requests.length ? `
-                <div style="max-height:300px; overflow-y:auto;">
-                    ${requests.map(r => `
-                        <div style="padding:10px; border-bottom:1px solid var(--border-color)">
-                            <div><strong>${r.courseId}</strong> - ${r.courseName}</div>
-                            <div style="font-size:0.9rem; opacity:0.8">Status: ${r.status}${r.adminComment ? ' | ' + r.adminComment : ''}</div>
-                        </div>
-                    `).join('')}
-                </div>
-            ` : '<div style="padding:10px">No history found.</div>';
+            loadingOverlay.style.display = 'flex';
+            try {
+                const requests = await fetchRequestHistory();
+                tabContent.innerHTML = requests.length ? `
+                    <div style="max-height: 350px; overflow-y: auto; padding-right: 5px;">
+                        ${requests.map(r => `
+                            <div class="request-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div style="font-weight: 500;">
+                                        <span style="color: var(--accent-color);">${r.courseId}</span> - ${r.courseName}
+                                    </div>
+                                    ${formatStatusBadge(r.status)}
+                                </div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 8px;">
+                                    Submitted: ${new Date(r.submittedAt).toLocaleString()}
+                                </div>
+                                ${r.adminComment ? `
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 5px; padding: 8px; background: rgba(var(--accent-rgb), 0.05); border-radius: 6px;">
+                                    <strong>Comment:</strong> ${r.adminComment}
+                                </div>
+                                ` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : `<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 200px; color: var(--text-secondary);">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 3h18v18H3z"></path>
+                            <path d="M8 8h8v8H8z"></path>
+                        </svg>
+                        <div style="margin-top: 10px;">No request history found</div>
+                    </div>`;
+            } catch (error) {
+                tabContent.innerHTML = `<div style="color: var(--danger-color); padding: 20px; text-align: center;">Failed to load request history</div>`;
+                console.error(error);
+            } finally {
+                loadingOverlay.style.display = 'none';
+            }
         }
     }
 
     const closeModal = () => {
-        modal.remove();
-        backdrop.remove();
+        modal.style.animation = 'fadeIn 0.3s ease-out reverse';
+        backdrop.style.animation = 'fadeIn 0.3s ease-out reverse';
+        setTimeout(() => {
+            modal.remove();
+            backdrop.remove();
+        }, 250);
     };
+    
     modal.querySelector('.modal-close').addEventListener('click', closeModal);
+    modal.querySelector('.modal-close').addEventListener('mouseenter', (e) => {
+        e.target.style.color = 'var(--accent-color)';
+    });
+    modal.querySelector('.modal-close').addEventListener('mouseleave', (e) => {
+        e.target.style.color = 'var(--text-secondary)';
+    });
+    
     backdrop.addEventListener('click', closeModal);
 
     // Tab Buttons
@@ -740,7 +961,6 @@ const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa';
     // Initial Tab
     renderTab('form');
 }
-
 // Database functions
 async function fetchRequests() {
     const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
