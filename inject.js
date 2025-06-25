@@ -539,32 +539,7 @@ toggleDarkBtn.addEventListener('click', () => {
   toggleDarkBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
 });
 
-
-
-            const semesterDisplay = document.createElement('span');
-            semesterDisplay.className = 'semester-display';
-            Object.assign(semesterDisplay.style, {
-                minWidth: '30px',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: 'var(--accent-color)'
-            });
-            semesterDisplay.textContent = currentSemester;
-
-            const increaseBtn = document.createElement('button');
-            increaseBtn.innerHTML = '+';
-            increaseBtn.className = 'modern-btn semester-btn';
-            Object.assign(increaseBtn.style, {
-                padding: '5px 12px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                minWidth: '30px'
-            });
-
-            semesterContainer.appendChild(semesterLabel);
-            semesterContainer.appendChild(decreaseBtn);
-            semesterContainer.appendChild(semesterDisplay);
-            semesterContainer.appendChild(increaseBtn);
+// Add this right after your other button creations in createToggleButtons()
 const requestCourseButton = document.createElement('button');
 requestCourseButton.id = 'request-course-button';
 requestCourseButton.className = 'modern-btn';
@@ -573,12 +548,15 @@ const requestStatus = document.createElement('span');
 requestStatus.className = 'status-indicator status-off';
 requestCourseButton.appendChild(requestStatus);
 
+// Add click handler for the request button
 requestCourseButton.addEventListener('click', () => {
     showCourseRequestModal();
 });
 
+// Add this to your container (place it where you want it to appear)
 container.appendChild(requestCourseButton);
 
+// Add this function to create the modal
 function showCourseRequestModal() {
     const modal = document.createElement('div');
     modal.className = 'modern-modal';
@@ -652,6 +630,7 @@ function showCourseRequestModal() {
         </form>
     `;
 
+    // Add backdrop
     const backdrop = document.createElement('div');
     backdrop.className = 'modal-backdrop';
     backdrop.style.cssText = `
@@ -668,6 +647,7 @@ function showCourseRequestModal() {
     document.body.appendChild(backdrop);
     document.body.appendChild(modal);
 
+    // Close handlers
     const closeModal = () => {
         modal.remove();
         backdrop.remove();
@@ -703,7 +683,124 @@ function showCourseRequestModal() {
         }
     });
 }
+// Database functions
+async function fetchRequests() {
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+        headers: {
+            'X-Master-Key': API_KEY
+        }
+    });
+    
+    if (!response.ok) {
+        throw new Error('Failed to fetch requests');
+    }
+    
+    const data = await response.json();
+    return data.record.requests || [];
+}
 
+async function saveRequest(requestData) {
+    const requests = await fetchRequests().catch(() => []);
+    requests.push(requestData);
+    
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Master-Key': API_KEY
+        },
+        body: JSON.stringify({ requests })
+    });
+    
+    if (!response.ok) {
+        throw new Error('Failed to save request');
+    }
+}
+
+// User-specific request functions
+async function fetchActiveRequests() {
+    try {
+        const requests = await fetchRequests();
+        const userId = getUserId(); // Get current user ID
+        
+        return requests.filter(request => 
+            request.userId === userId && request.status === 'Pending'
+        );
+    } catch (error) {
+        console.error('Error fetching active requests:', error);
+        return [];
+    }
+}
+
+async function fetchRequestHistory() {
+    try {
+        const requests = await fetchRequests();
+        const userId = getUserId(); // Get current user ID
+        
+        return requests.filter(request => 
+            request.userId === userId && request.status !== 'Pending'
+        ).sort((a, b) => {
+            // Sort by processed date (newest first) or submitted date if not processed
+            const dateA = a.processedAt || a.submittedAt;
+            const dateB = b.processedAt || b.submittedAt;
+            return new Date(dateB) - new Date(dateA);
+        });
+    } catch (error) {
+        console.error('Error fetching request history:', error);
+        return [];
+    }
+}
+
+// Helper function to get/set user ID
+function getUserId() {
+    let userId = localStorage.getItem('courseRequestUserId');
+    if (!userId) {
+        // Generate a simple user ID if none exists
+        userId = 'user-' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('courseRequestUserId', userId);
+    }
+    return userId;
+}
+
+// Notification function
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 8px;
+        background: ${type === 'success' ? 'var(--success-color)' : 'var(--danger-color)'};
+        color: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 10001;
+        animation: slideIn 0.3s ease-out;
+    `;
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'fadeOut 0.3s ease-out';
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+    
+    // Add keyframes for animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+}
+// Add this CSS to your styles
 const style = document.createElement('style');
 style.textContent = `
 .modern-switch {
@@ -747,7 +844,32 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
-            // Transcript Button
+
+            const semesterDisplay = document.createElement('span');
+            semesterDisplay.className = 'semester-display';
+            Object.assign(semesterDisplay.style, {
+                minWidth: '30px',
+                textAlign: 'center',
+                fontWeight: 'bold',
+                color: 'var(--accent-color)'
+            });
+            semesterDisplay.textContent = currentSemester;
+
+            const increaseBtn = document.createElement('button');
+            increaseBtn.innerHTML = '+';
+            increaseBtn.className = 'modern-btn semester-btn';
+            Object.assign(increaseBtn.style, {
+                padding: '5px 12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                minWidth: '30px'
+            });
+
+            semesterContainer.appendChild(semesterLabel);
+            semesterContainer.appendChild(decreaseBtn);
+            semesterContainer.appendChild(semesterDisplay);
+            semesterContainer.appendChild(increaseBtn);
+
             const transcriptButton = document.createElement('button');
             transcriptButton.id = 'show-transcript-button';
             transcriptButton.className = 'modern-btn';
@@ -767,6 +889,7 @@ document.head.appendChild(style);
             roundingStatus.className = `status-indicator ${shouldRoundUp ? 'status-on' : 'status-off'}`;
             roundingButton.appendChild(roundingStatus);
            
+             // In the createToggleButtons function, replace the export button with:
 const editMarksButton = document.createElement('button');
 editMarksButton.id = 'edit-marks-button';
 editMarksButton.className = 'modern-btn';
@@ -804,6 +927,7 @@ editMarksButton.addEventListener('click', () => {
             obtainedCell.textContent = '';
             obtainedCell.appendChild(input);
 
+            // Update grade when input changes
             input.addEventListener('input', () => {
                 const newValue = parseFloat(input.value) || 0;
                 const courseName = row.querySelector('td:first-child').textContent;
@@ -845,6 +969,7 @@ editMarksButton.addEventListener('click', () => {
     editMarksButton.innerHTML = editModeActive ? 'Exit Edit' : 'Edit Marks';
     editMarksStatus.className = `status-indicator ${editModeActive ? 'status-on' : 'status-off'}`;
     
+    // If exiting edit mode, recreate table to ensure consistency
     if (!editModeActive) {
         createTable();
     }
