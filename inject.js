@@ -555,7 +555,8 @@ requestCourseButton.addEventListener('click', () => {
 
 // Add this to your container (place it where you want it to appear)
 container.appendChild(requestCourseButton);
-
+const BIN_ID = '685c28188561e97a502bb073'; 
+const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa'; 
 // Add this function to create the modal
 function showCourseRequestModal() {
     const modal = document.createElement('div');
