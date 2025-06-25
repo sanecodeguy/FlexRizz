@@ -558,14 +558,12 @@ container.appendChild(requestCourseButton);
 const BIN_ID = '685c28188561e97a502bb073'; 
 const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa'; 
 // Add this function to create the modal
-function showCourseRequestModal() {
+    function showCourseRequestModal() {
     const modal = document.createElement('div');
     modal.className = 'modern-modal';
     modal.style.cssText = `
         position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        top: 50%; left: 50%; transform: translate(-50%, -50%);
         background: var(--primary-bg);
         border: 1px solid var(--border-color);
         padding: 25px;
@@ -576,70 +574,38 @@ function showCourseRequestModal() {
         color: var(--text-primary);
         font-family: inherit;
     `;
-
     modal.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h3 style="margin: 0; color: var(--accent-color);">Request New Course</h3>
             <button class="modal-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary);">&times;</button>
         </div>
-        
-        <form id="courseRequestForm" style="display: grid; gap: 15px;">
-            <div>
-                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course ID</label>
-                <input type="text" required name="courseId" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
-            </div>
-            
-            <div>
-                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course Name</label>
-                <input type="text" required name="courseName" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
-            </div>
-            
-            <div>
-                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Credit Hours</label>
-                <div style="display: flex; gap: 15px;">
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="radio" name="credits" value="2" required> 2
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="radio" name="credits" value="3"> 3
-                    </label>
-                </div>
-            </div>
-            
-            <div>
-                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Grading Type</label>
-                <select required name="gradingType" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
-                    <option value="">Select...</option>
-                    <option value="Relative">Relative</option>
-                    <option value="Absolute">Absolute</option>
-                    <option value="Non Credit">Non Credit</option>
-                </select>
-            </div>
-            
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <label style="font-size: 0.9rem;">Lab Included:</label>
-                <label class="modern-switch">
-                    <input type="checkbox"  name="labIncluded">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                <button type="button" class="modal-cancel" style="padding: 8px 16px; border-radius: 6px; background: var(--danger-color); color: white; border: none; cursor: pointer;">Cancel</button>
-                <button type="submit" style="padding: 8px 16px; border-radius: 6px; background: var(--success-color); color: white; border: none; cursor: pointer;">Submit Request</button>
-            </div>
-        </form>
+        <div class="tabs" style="display: flex; gap: 15px; margin-bottom: 15px;">
+            <button data-tab="form" class="active-tab">Form</button>
+            <button data-tab="active">Active Requests</button>
+            <button data-tab="history">History</button>
+        </div>
+        <div class="tab-content" id="tab-content"></div>
+        <div class="loading-overlay" style="
+            display: none;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            border-radius: 12px;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 1.2rem;
+            z-index: 10001;
+        ">
+            <div>Loading...</div>
+        </div>
     `;
 
-    // Add backdrop
     const backdrop = document.createElement('div');
     backdrop.className = 'modal-backdrop';
     backdrop.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
         background: rgba(0, 0, 0, 0.7);
         z-index: 9999;
         backdrop-filter: blur(3px);
@@ -648,42 +614,133 @@ function showCourseRequestModal() {
     document.body.appendChild(backdrop);
     document.body.appendChild(modal);
 
-    // Close handlers
+    const tabContent = modal.querySelector('#tab-content');
+    const loadingOverlay = modal.querySelector('.loading-overlay');
+
+    function createFormHTML() {
+        return `
+            <form id="courseRequestForm" style="display: grid; gap: 15px;">
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course ID</label>
+                    <input type="text" required name="courseId" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course Name</label>
+                    <input type="text" required name="courseName" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Credit Hours</label>
+                    <div style="display: flex; gap: 15px;">
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="radio" name="credits" value="2" required> 2</label>
+                        <label style="display: flex; align-items: center; gap: 5px;"><input type="radio" name="credits" value="3"> 3</label>
+                    </div>
+                </div>
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Grading Type</label>
+                    <select required name="gradingType" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                        <option value="">Select...</option>
+                        <option value="Relative">Relative</option>
+                        <option value="Absolute">Absolute</option>
+                        <option value="Non Credit">Non Credit</option>
+                    </select>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <label style="font-size: 0.9rem;">Lab Included:</label>
+                    <label class="modern-switch">
+                        <input type="checkbox" name="labIncluded">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                    <button type="button" class="modal-cancel" style="padding: 8px 16px; border-radius: 6px; background: var(--danger-color); color: white; border: none; cursor: pointer;">
+                        Cancel
+                    </button>
+                    <button type="submit" style="padding: 8px 16px; border-radius: 6px; background: var(--success-color); color: white; border: none; cursor: pointer;">
+                        Submit Request
+                    </button>
+                </div>
+            </form>
+        `;
+    }
+
+    async function renderTab(tab) {
+        if (tab === 'form') {
+            tabContent.innerHTML = createFormHTML();
+            tabContent.querySelector('#courseRequestForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const requestData = {
+                    courseId: formData.get('courseId'),
+                    courseName: formData.get('courseName'),
+                    creditHours: formData.get('credits'),
+                    gradingType: formData.get('gradingType'),
+                    labIncluded: e.target.querySelector('input[name="labIncluded"]').checked,
+                    status: 'Pending',
+                    submittedAt: new Date().toISOString(),
+                    userId: getUserId()
+                };
+                // 👉 Show loading
+                loadingOverlay.style.display = 'flex';
+                try {
+                    await saveRequest(requestData);
+                    showNotification('Request submitted successfully!', 'success');
+                    closeModal();
+                } catch (error) {
+                    showNotification('Failed to submit request', 'error');
+                    console.error(error);
+                } finally {
+                    // 👉 Always hide loader
+                    loadingOverlay.style.display = 'none';
+                }
+            });
+        } else if (tab === 'active') {
+            const requests = await fetchActiveRequests();
+            tabContent.innerHTML = requests.length ? `
+                <div style="max-height:300px; overflow-y:auto;">
+                    ${requests.map(r => `
+                        <div style="padding:10px; border-bottom:1px solid var(--border-color)">
+                            <div><strong>${r.courseId}</strong> - ${r.courseName}</div>
+                            <div style="font-size:0.9rem; opacity:0.8">Submitted: ${new Date(r.submittedAt).toLocaleString()}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '<div style="padding:10px">No active requests found.</div>';
+        } else if (tab === 'history') {
+            const requests = await fetchRequestHistory();
+            tabContent.innerHTML = requests.length ? `
+                <div style="max-height:300px; overflow-y:auto;">
+                    ${requests.map(r => `
+                        <div style="padding:10px; border-bottom:1px solid var(--border-color)">
+                            <div><strong>${r.courseId}</strong> - ${r.courseName}</div>
+                            <div style="font-size:0.9rem; opacity:0.8">Status: ${r.status}${r.adminComment ? ' | ' + r.adminComment : ''}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '<div style="padding:10px">No history found.</div>';
+        }
+    }
+
     const closeModal = () => {
         modal.remove();
         backdrop.remove();
     };
-
     modal.querySelector('.modal-close').addEventListener('click', closeModal);
-    modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
     backdrop.addEventListener('click', closeModal);
 
-    // Form submission
-    modal.querySelector('form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const formData = new FormData(e.target);
-        
-        const requestData = {
-            courseId: formData.get('courseId'),
-            courseName: formData.get('courseName'),
-            creditHours: formData.get('credits'),
-            gradingType: formData.get('gradingType'),
-            labIncluded: e.target.querySelector('input[type="checkbox"]').checked,
-            status: 'Pending',
-            submittedAt: new Date().toISOString(),
-            userId: getUserId() // You'll need to implement this
-        };
-
-        try {
-            await saveRequest(requestData); // You'll need to implement this
-            showNotification('Request submitted successfully!', 'success');
-            closeModal();
-        } catch (error) {
-            showNotification('Failed to submit request', 'error');
-            console.error('Error submitting request:', error);
-        }
+    // Tab Buttons
+    modal.querySelectorAll('.tabs button').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const selectedTab = e.target.getAttribute('data-tab');
+            modal.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active-tab'));
+            e.target.classList.add('active-tab');
+            renderTab(selectedTab);
+        });
     });
+
+    // Initial Tab
+    renderTab('form');
 }
+
 // Database functions
 async function fetchRequests() {
     const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
