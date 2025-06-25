@@ -586,12 +586,12 @@ function showCourseRequestModal() {
         <form id="courseRequestForm" style="display: grid; gap: 15px;">
             <div>
                 <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course ID</label>
-                <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                <input type="text" required name="courseId" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
             </div>
             
             <div>
                 <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course Name</label>
-                <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                <input type="text" required name="courseName" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
             </div>
             
             <div>
@@ -608,7 +608,7 @@ function showCourseRequestModal() {
             
             <div>
                 <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Grading Type</label>
-                <select required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                <select required name="gradingType" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
                     <option value="">Select...</option>
                     <option value="Relative">Relative</option>
                     <option value="Absolute">Absolute</option>
@@ -619,7 +619,7 @@ function showCourseRequestModal() {
             <div style="display: flex; align-items: center; gap: 10px;">
                 <label style="font-size: 0.9rem;">Lab Included:</label>
                 <label class="modern-switch">
-                    <input type="checkbox">
+                    <input type="checkbox"  name="labIncluded">
                     <span class="slider"></span>
                 </label>
             </div>
