@@ -565,188 +565,188 @@ toggleDarkBtn.addEventListener('click', () => {
             semesterContainer.appendChild(decreaseBtn);
             semesterContainer.appendChild(semesterDisplay);
             semesterContainer.appendChild(increaseBtn);
-
 const requestCourseButton = document.createElement('button');
-    requestCourseButton.id = 'request-course-button';
-    requestCourseButton.className = 'modern-btn';
-    requestCourseButton.innerHTML = 'Request Course Addition';
-    const requestStatus = document.createElement('span');
-    requestStatus.className = 'status-indicator status-off';
-    requestCourseButton.appendChild(requestStatus);
-    
+requestCourseButton.id = 'request-course-button';
+requestCourseButton.className = 'modern-btn';
+requestCourseButton.innerHTML = 'Request Course Addition';
+const requestStatus = document.createElement('span');
+requestStatus.className = 'status-indicator status-off';
+requestCourseButton.appendChild(requestStatus);
 
 requestCourseButton.addEventListener('click', () => {
-    // Create modal
+    showCourseRequestModal();
+});
+
+container.appendChild(requestCourseButton);
+
+function showCourseRequestModal() {
     const modal = document.createElement('div');
-    modal.className = 'request-course-modal';
-    Object.assign(modal.style, {
-        position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        backgroundColor: 'var(--primary-bg)',
-        border: '1px solid var(--border-color)',
-        padding: '25px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
-        zIndex: '1000',
-        width: 'min(90vw, 500px)',
-        color: 'var(--text-primary)',
-        fontFamily: "'Inter', sans-serif",
-        borderRadius: '8px'
-    });
+    modal.className = 'modern-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--primary-bg);
+        border: 1px solid var(--border-color);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        width: min(90vw, 450px);
+        color: var(--text-primary);
+        font-family: inherit;
+    `;
 
     modal.innerHTML = `
-        <div style="margin-bottom: 20px;">
-            <h3 style="margin: 0 0 10px 0; color: var(--accent-color);">Request Course Addition</h3>
-            <p style="margin: 0; color: var(--text-secondary); font-size: 0.9rem;">
-                Please provide course details below. All fields are required.
-            </p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; color: var(--accent-color);">Request New Course</h3>
+            <button class="modal-close" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary);">&times;</button>
         </div>
         
-        <form id="course-request-form">
-            <div class="form-group">
-                <label for="course-code">Course Code</label>
-                <input type="text" id="course-code" required>
+        <form id="courseRequestForm" style="display: grid; gap: 15px;">
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course ID</label>
+                <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
             </div>
             
-            <div class="form-group">
-                <label for="course-title">Course Title</label>
-                <input type="text" id="course-title" required>
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Course Name</label>
+                <input type="text" required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
             </div>
             
-            <div class="form-group">
-                <label for="grading-type">Grading Type</label>
-                <select id="grading-type" required>
-                    <option value="">Select grading type</option>
-                    <option value="Absolute">Absolute</option>
-                    <option value="Relative">Relative</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="department">Department/Degree</label>
-                <select id="department" required>
-                    <option value="">Select department</option>
-                    <option value="Computer Science">Computer Science</option>
-                    <option value="Data Science">Data Science</option>
-                    <option value="Software Engineering">Software Engineering</option>
-                    <option value="Electrical Engineering">Electrical Engineering</option>
-                    <option value="Business Administration">Business Administration</option>
-                    <option value="AI">AI</option>
-                    <option value="Other">Other</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label for="credit-hours">Credit Hours</label>
-                <input type="number" id="credit-hours" min="2" max="3" step="1" required>
-            </div>
-            
-            <div class="form-group" style="display: flex; align-items: center;">
-                <label style="margin-right: 15px;">Includes Lab?</label>
-                <div class="toggle-switch">
-                    <input type="checkbox" id="lab-included" hidden>
-                    <label for="lab-included" class="toggle-label"></label>
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Credit Hours</label>
+                <div style="display: flex; gap: 15px;">
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="radio" name="credits" value="2" required> 2
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 5px;">
+                        <input type="radio" name="credits" value="3"> 3
+                    </label>
                 </div>
             </div>
             
-            <div class="form-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
-                <button type="button" id="cancel-request" class="modern-btn" style="background: transparent; color: var(--text-primary); border: 1px solid var(--border-color);">
-                    Cancel
-                </button>
-                <button type="submit" class="modern-btn" style="background: var(--carbon); color: var(--text-primary);border: 1px solid var(--border-color);">
-                    Submit Request
-                </button>
+            <div>
+                <label style="display: block; margin-bottom: 5px; font-size: 0.9rem;">Grading Type</label>
+                <select required style="width: 100%; padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--elevated-black); color: inherit;">
+                    <option value="">Select...</option>
+                    <option value="Relative">Relative</option>
+                    <option value="Absolute">Absolute</option>
+                    <option value="Non Credit">Non Credit</option>
+                </select>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label style="font-size: 0.9rem;">Lab Included:</label>
+                <label class="modern-switch">
+                    <input type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                <button type="button" class="modal-cancel" style="padding: 8px 16px; border-radius: 6px; background: var(--danger-color); color: white; border: none; cursor: pointer;">Cancel</button>
+                <button type="submit" style="padding: 8px 16px; border-radius: 6px; background: var(--success-color); color: white; border: none; cursor: pointer;">Submit Request</button>
             </div>
         </form>
     `;
 
-    document.body.appendChild(modal);
-
-    // Create backdrop
     const backdrop = document.createElement('div');
     backdrop.className = 'modal-backdrop';
-    Object.assign(backdrop.style, {
-        position: 'fixed',
-        top: '0',
-        left: '0',
-        right: '0',
-        bottom: '0',
-        background: 'rgba(0, 0, 0, 0.7)',
-        zIndex: '999',
-        backdropFilter: 'blur(3px)'
-    });
-    document.body.appendChild(backdrop);
+    backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 9999;
+        backdrop-filter: blur(3px);
+    `;
 
-    // Form submission handler
-    const form = modal.querySelector('#course-request-form');
-    form.addEventListener('submit', async (e) => {
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+
+    const closeModal = () => {
+        modal.remove();
+        backdrop.remove();
+    };
+
+    modal.querySelector('.modal-close').addEventListener('click', closeModal);
+    modal.querySelector('.modal-cancel').addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+
+    // Form submission
+    modal.querySelector('form').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const formData = new FormData(e.target);
         
         const requestData = {
-            courseCode: document.getElementById('course-code').value.trim(),
-            courseTitle: document.getElementById('course-title').value.trim(),
-            gradingType: document.getElementById('grading-type').value,
-            department: document.getElementById('department').value,
-            creditHours: parseFloat(document.getElementById('credit-hours').value),
-            hasLab: document.getElementById('lab-included').checked
+            courseId: formData.get('courseId'),
+            courseName: formData.get('courseName'),
+            creditHours: formData.get('credits'),
+            gradingType: formData.get('gradingType'),
+            labIncluded: e.target.querySelector('input[type="checkbox"]').checked,
+            status: 'Pending',
+            submittedAt: new Date().toISOString(),
+            userId: getUserId() // You'll need to implement this
         };
-        
-        // Validate all fields
-        if (!requestData.courseCode || 
-            !requestData.courseTitle || 
-            !requestData.gradingType || 
-            !requestData.department || 
-            isNaN(requestData.creditHours)) {
-            showToast('Please fill all required fields', false);
-            return;
-        }
-        
+
         try {
-            // Send to your Vercel API endpoint
-            const response = await fetch('/api/submit-course', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData)
-            });
-            
-            const result = await response.json();
-            
-            if (!response.ok) {
-                throw new Error(result.error || 'Request failed');
-            }
-            
-            showToast('Request submitted successfully!');
-            modal.remove();
-            backdrop.remove();
-            
-            // Optional: Open the GitHub issue link
-            if (result.issueUrl) {
-                window.open(result.issueUrl, '_blank');
-            }
+            await saveRequest(requestData); // You'll need to implement this
+            showNotification('Request submitted successfully!', 'success');
+            closeModal();
         } catch (error) {
-            console.error('Error:', error);
-            showToast(error.message || 'Failed to send request', false);
+            showNotification('Failed to submit request', 'error');
+            console.error('Error submitting request:', error);
         }
     });
+}
 
-    // Cancel button handler
-    modal.querySelector('#cancel-request').addEventListener('click', () => {
-        modal.remove();
-        backdrop.remove();
-    });
-
-    // Close when clicking backdrop
-    backdrop.addEventListener('click', () => {
-        modal.remove();
-        backdrop.remove();
-    });
-});
-
-
-      container.appendChild(requestCourseButton);
+const style = document.createElement('style');
+style.textContent = `
+.modern-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+.modern-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.modern-switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border-color);
+    transition: .4s;
+    border-radius: 24px;
+}
+.modern-switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+.modern-switch input:checked + .slider {
+    background-color: var(--success-color);
+}
+.modern-switch input:checked + .slider:before {
+    transform: translateX(26px);
+}
+`;
+document.head.appendChild(style);
             // Transcript Button
             const transcriptButton = document.createElement('button');
             transcriptButton.id = 'show-transcript-button';
@@ -767,7 +767,6 @@ requestCourseButton.addEventListener('click', () => {
             roundingStatus.className = `status-indicator ${shouldRoundUp ? 'status-on' : 'status-off'}`;
             roundingButton.appendChild(roundingStatus);
            
-             // In the createToggleButtons function, replace the export button with:
 const editMarksButton = document.createElement('button');
 editMarksButton.id = 'edit-marks-button';
 editMarksButton.className = 'modern-btn';
@@ -805,7 +804,6 @@ editMarksButton.addEventListener('click', () => {
             obtainedCell.textContent = '';
             obtainedCell.appendChild(input);
 
-            // Update grade when input changes
             input.addEventListener('input', () => {
                 const newValue = parseFloat(input.value) || 0;
                 const courseName = row.querySelector('td:first-child').textContent;
@@ -847,7 +845,6 @@ editMarksButton.addEventListener('click', () => {
     editMarksButton.innerHTML = editModeActive ? 'Exit Edit' : 'Edit Marks';
     editMarksStatus.className = `status-indicator ${editModeActive ? 'status-on' : 'status-off'}`;
     
-    // If exiting edit mode, recreate table to ensure consistency
     if (!editModeActive) {
         createTable();
     }
