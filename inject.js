@@ -1031,14 +1031,13 @@ async function fetchRequestHistory() {
 
 // Helper function to get/set user ID
 function getUserId() {
-    let userId = localStorage.getItem('courseRequestUserId');
-    if (!userId) {
-        // Generate a simple user ID if none exists
-        userId = 'user-' + Math.random().toString(36).substr(2, 9);
-        localStorage.setItem('courseRequestUserId', userId);
+    const userNameSpan = document.querySelector('.m-topbar__username .m-link');
+    if (userNameSpan) {
+        return userNameSpan.textContent.trim();
     }
-    return userId;
+    return 'unknown_user';
 }
+
 
 // Notification function
 function showNotification(message, type = 'success') {
