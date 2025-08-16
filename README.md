@@ -1,7 +1,7 @@
 ![logo](https://github.com/user-attachments/assets/54474935-a79b-4b68-9889-26cb0f9b58e3)
 
 
-**Updated Version with new UI and SGPA**
+**Lahore Campus Grading Scheme (relative + abs)**
 
 ![250409_21h03m00s_screenshot](https://github.com/user-attachments/assets/2b389a29-1fb7-499b-bd11-7e0bb489317b)
 ![250409_21h03m28s_screenshot](https://github.com/user-attachments/assets/96ea72e3-12a5-48a8-85c1-ae6c99a3e909)
@@ -9,9 +9,8 @@
 ![250409_21h05m18s_screenshot](https://github.com/user-attachments/assets/baeef62d-3db3-4c04-871c-0785465b1259)
 
 
-FlexRizz is a browser extension designed to enhance the Flex Student Portal by calculating and displaying expected course grades, Transcript and SGPA. The extension uses class averages (alternative to mca ) to calculate expected grades based on the course's grading type (either relative or absolute). It provides students with quick insights into their likely performance based on current class averages, helping them stay informed about their academic standing.
+SGPA - Expected Course Grades - Custom Grades - to check your semester progress.
 
-**!! Automatic Semester Selection - Custom Semester Can be Selected**
 
 **Features**
 
@@ -80,5 +79,7 @@ Load unpacked
 ![image](https://github.com/user-attachments/assets/d8f77316-aa49-4c5a-b637-41a9b7d2072d)
 
 **Now Visit your Portal and Enjoy**
-**This project is licensed under rizzons - visit www.rizzons.com for more details.**
-**Contact Me via Email ceo@rizzons.com : rizvicottage2@gmail.com**
+
+**Credits**
+
+MCA Grading Scheme Calculator is being used made by ![Nabeel Ahmed](https://github.com/NabeelAhmed-090/Grade_and_Gpa_Calculator.git)
