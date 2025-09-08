@@ -40,30 +40,29 @@
         headCaption.style.backgroundColor = 'transparent';
     }
 
-    // Create image wrapper
+    // Create image wrapper with transparent background
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("extension-content");
     imageContainer.style.cssText = `
-        margin: 0 0 var(--space-md) 0;
+        margin: 0px 0;
         text-align: center;
         background: transparent;
-        padding: var(--space-sm);
-        border-radius: var(--border-radius);
+        padding: 0px;
+        border-radius: 0px;
     `;
 
-    // Create the gif
+    // Create the gif with transparent background
     const supportImg = document.createElement("img");
     supportImg.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGQwZTN0bmZ6dnFlNm52ZjZrZXF1ajdqeHl6bTRzNXNheTF4ZTBicSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/SgGORf2HB9tNMnbmzu/giphy.gif";
     supportImg.alt = "Support us";
     supportImg.id = "injected-support-image";
     supportImg.style.cssText = `
         display: inline-block;
-        max-width: 100%;
+        width: auto;
         height: auto;
         background: transparent;
         margin: 0 auto;
         vertical-align: middle;
-        border-radius: var(--border-radius-sm);
     `;
 
     imageContainer.appendChild(supportImg);
@@ -443,7 +442,7 @@
                     <td colspan="4" style="text-align: left; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
                     <span class="credit-text">A project by @doubleroote 
                     <svg viewBox="0 0 24 24" aria-label="Verified account" style="color: var(--primary-color); width: 0.9em; height: 0.9em; margin-left: 2px; vertical-align: middle; fill: currentColor;">
-                        <g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g>
+                        <g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s-2.52 1.26-3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g>
                     </svg>
                     </span>
                     </td>
@@ -558,30 +557,6 @@
                 min-width: 30px;
             `;
 
-            const toggleDarkBtn = document.createElement('button');
-            toggleDarkBtn.textContent = '☀️';
-            toggleDarkBtn.className = 'modern-btn dark-mode-toggle';
-            toggleDarkBtn.style.cssText = `
-                margin: 0 var(--space-sm);
-                background: var(--primary-color);
-                color: var(--text-light);
-            `;
-
-            container.appendChild(toggleDarkBtn);
-
-            toggleDarkBtn.addEventListener('click', () => {
-                document.body.classList.toggle('dark-mode');
-                toggleDarkBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-                // Update the button style based on mode
-                if (document.body.classList.contains('dark-mode')) {
-                    toggleDarkBtn.style.background = 'var(--primary-color)';
-                    toggleDarkBtn.style.color = 'var(--text-light)';
-                } else {
-                    toggleDarkBtn.style.background = 'var(--secondary-bg)';
-                    toggleDarkBtn.style.color = 'var(--text-primary)';
-                }
-            });
-
             const semesterDisplay = document.createElement('span');
             semesterDisplay.className = 'semester-display';
             semesterDisplay.style.cssText = `
@@ -601,6 +576,39 @@
                 cursor: pointer;
                 min-width: 30px;
             `;
+
+            // Dark Mode Toggle (iOS style)
+            const darkModeContainer = document.createElement('div');
+            darkModeContainer.className = 'dark-mode-toggle-container';
+            
+            const darkModeLabel = document.createElement('span');
+            darkModeLabel.className = 'dark-mode-toggle-label';
+            darkModeLabel.textContent = 'Dark Mode';
+            
+            const darkModeToggle = document.createElement('label');
+            darkModeToggle.className = 'ios-toggle';
+            
+            const darkModeCheckbox = document.createElement('input');
+            darkModeCheckbox.type = 'checkbox';
+            darkModeCheckbox.checked = document.body.classList.contains('dark-mode');
+            
+            const darkModeSlider = document.createElement('span');
+            darkModeSlider.className = 'ios-toggle-slider';
+            
+            darkModeToggle.appendChild(darkModeCheckbox);
+            darkModeToggle.appendChild(darkModeSlider);
+            
+            darkModeContainer.appendChild(darkModeLabel);
+            darkModeContainer.appendChild(darkModeToggle);
+            
+            // Add event listener for dark mode toggle
+            darkModeCheckbox.addEventListener('change', () => {
+                if (darkModeCheckbox.checked) {
+                    document.body.classList.add('dark-mode');
+                } else {
+                    document.body.classList.remove('dark-mode');
+                }
+            });
 
             semesterContainer.appendChild(semesterLabel);
             semesterContainer.appendChild(decreaseBtn);
@@ -990,6 +998,7 @@
             increaseBtn.disabled = (currentSemester >= 8); 
 
             container.appendChild(semesterContainer);
+            container.appendChild(darkModeContainer);
             container.appendChild(transcriptButton);
             container.appendChild(roundingButton);
             container.appendChild(editMarksButton);
