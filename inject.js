@@ -276,7 +276,6 @@ portlet.prepend(imageContainer);
                 'Spring 2025': 2,
                 'Fall 2025': 3,
                 'Spring 2026': 4,
-                // Add more mappings as needed
             };
             
             return semesterMap[semesterText] || 1;
@@ -449,7 +448,6 @@ function showToast(message, isSuccess = true)
     const toast = document.createElement('div');
     toast.className = `toast-notification ${isSuccess ? 'toast-success' : 'toast-error'}`;
     
-    // Position at bottom-left for better UX (avoids navbar conflicts)
     Object.assign(toast.style, {
         position: 'fixed',
         bottom: '24px',
@@ -565,7 +563,6 @@ requestCourseButton.addEventListener('click', () => {
 container.appendChild(requestCourseButton);
 const BIN_ID = '685c28188561e97a502bb073'; 
 const API_KEY = '$2a$10$HF4fE75q/MK85FeY9lunte3azi.8/B8nrNqt/FmkiUnXwB2f3keFa'; 
-// Add this function to create the modal
 function showCourseRequestModal() {
     const modal = document.createElement('div');
     modal.className = 'modern-modal';
@@ -966,10 +963,8 @@ function showCourseRequestModal() {
         });
     });
 
-    // Initial Tab
     renderTab('form');
 }
-// Database functions
 async function fetchRequests() {
     const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
         headers: {
@@ -1003,7 +998,6 @@ async function saveRequest(requestData) {
     }
 }
 
-// User-specific request functions
 async function fetchActiveRequests() {
     try {
         const requests = await fetchRequests();
@@ -1037,7 +1031,6 @@ async function fetchRequestHistory() {
     }
 }
 
-// Helper function to get/set user ID
 function getUserId() {
     const userNameSpan = document.querySelector('.m-topbar__username .m-link');
     if (userNameSpan) {
@@ -1071,7 +1064,6 @@ function showNotification(message, type = 'success') {
         setTimeout(() => notification.remove(), 300);
     }, 3000);
     
-    // Add keyframes for animation
     const style = document.createElement('style');
     style.textContent = `
         @keyframes slideIn {
@@ -1085,7 +1077,6 @@ function showNotification(message, type = 'success') {
     `;
     document.head.appendChild(style);
 }
-// Add this CSS to your styles
 const style = document.createElement('style');
 style.textContent = `
 .modern-switch {
@@ -1174,7 +1165,6 @@ document.head.appendChild(style);
             roundingStatus.className = `status-indicator ${shouldRoundUp ? 'status-on' : 'status-off'}`;
             roundingButton.appendChild(roundingStatus);
            
-             // In the createToggleButtons function, replace the export button with:
 const editMarksButton = document.createElement('button');
 editMarksButton.id = 'edit-marks-button';
 editMarksButton.className = 'modern-btn';
@@ -1198,7 +1188,6 @@ editMarksButton.addEventListener('click', () => {
         const totalMarks = parseFloat(row.querySelector('td:nth-child(5)').textContent);
         
         if (editModeActive) {
-            // Enter edit mode
             const originalValue = obtainedCell.textContent;
             obtainedCell.classList.add('editable-cell');
             
@@ -1212,7 +1201,6 @@ editMarksButton.addEventListener('click', () => {
             obtainedCell.textContent = '';
             obtainedCell.appendChild(input);
 
-            // Update grade when input changes
             input.addEventListener('input', () => {
                 const newValue = parseFloat(input.value) || 0;
                 const courseName = row.querySelector('td:first-child').textContent;
@@ -1254,7 +1242,6 @@ editMarksButton.addEventListener('click', () => {
     editMarksButton.innerHTML = editModeActive ? 'Exit Edit' : 'Edit Marks';
     editMarksStatus.className = `status-indicator ${editModeActive ? 'status-on' : 'status-off'}`;
     
-    // If exiting edit mode, recreate table to ensure consistency
     if (!editModeActive) {
         createTable();
     }
@@ -1274,7 +1261,6 @@ editMarksButton.addEventListener('click', () => {
             let customGradesActive = false;
             let currentCustomGrades = {};
             
-            // Function to update SGPA
             const updateSGPA = () => {
                 const table = portlet.querySelector('#course-data-table');
                 if (!table) return;
@@ -1307,7 +1293,6 @@ editMarksButton.addEventListener('click', () => {
                 }
             };
             
-            // Function to reset to calculated grades
             const resetToCalculatedGrades = () => {
                 customGradesActive = false;
                 currentCustomGrades = {};
@@ -1323,8 +1308,6 @@ editMarksButton.addEventListener('click', () => {
             // Event Listeners
             decreaseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // No longer changing semesters since we're using detected courses
-                // Just update the display
                 currentSemester = Math.max(1, currentSemester - 1);
                 semesterDisplay.textContent = currentSemester;
                 decreaseBtn.disabled = (currentSemester <= 1);
@@ -1333,8 +1316,6 @@ editMarksButton.addEventListener('click', () => {
             
             increaseBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // No longer changing semesters since we're using detected courses
-                // Just update the display
                 currentSemester = currentSemester + 1;
                 semesterDisplay.textContent = currentSemester;
                 increaseBtn.disabled = (currentSemester >= 8); // Assuming max semester is 8
@@ -1556,11 +1537,9 @@ editMarksButton.addEventListener('click', () => {
                 });
             });
 
-            // Initialize buttons state
             decreaseBtn.disabled = (currentSemester <= 1);
             increaseBtn.disabled = (currentSemester >= 8); 
 
-            // Add all buttons to container
             container.appendChild(semesterContainer);
             container.appendChild(transcriptButton);
             container.appendChild(roundingButton);
@@ -1580,7 +1559,6 @@ const statsStatus = document.createElement('span');
 statsStatus.className = 'status-indicator status-off';
 statsButton.appendChild(statsStatus);
 
-// Add the button to the container
 container.appendChild(statsButton);
 statsButton.addEventListener('click', () => {
     const modal = document.createElement('div');
@@ -1603,7 +1581,6 @@ statsButton.addEventListener('click', () => {
         borderRadius: '8px'
     });
 
-    // Modal header
     const header = document.createElement('div');
     header.style.display = 'flex';
     header.style.justifyContent = 'space-between';
@@ -1629,12 +1606,10 @@ statsButton.addEventListener('click', () => {
     header.appendChild(closeButton);
     modal.appendChild(header);
 
-    // Stats content
     const content = document.createElement('div');
     content.style.display = 'grid';
     content.style.gap = '20px';
 
-    // Collect all course data first
     const courseStats = [];
     
     Object.keys(courses).forEach((code) => {
@@ -1643,7 +1618,6 @@ statsButton.addEventListener('click', () => {
         const courseLink = document.querySelector(`a.nav-link[href="#${code}"]`);
         if (!courseLink) return;
 
-        // Temporarily click to get the data
         const wasVisible = tableVisible;
         if (wasVisible) {
             const transcriptButton = portlet.querySelector('#show-transcript-button');
@@ -1742,14 +1716,12 @@ statsButton.addEventListener('click', () => {
             classAveragePercentage: (finalCalculateAverage / totalWeightage) * 100
         });
 
-        // Restore previous state
         if (wasVisible) {
             const transcriptButton = portlet.querySelector('#show-transcript-button');
             if (transcriptButton) transcriptButton.click();
         }
     });
 
-    // Create tabs for each course
     const tabsContainer = document.createElement('div');
     tabsContainer.style.display = 'flex';
     tabsContainer.style.gap = '5px';
@@ -1779,18 +1751,15 @@ statsButton.addEventListener('click', () => {
                 t.style.color = i === index ? 'var(--text-primary)' : 'var(--text-secondary)';
             });
 
-            // Update content
             updateStatsContent(course);
         });
 
         tabsContainer.appendChild(tab);
     });
 
-    // Function to update stats content
     const updateStatsContent = (course) => {
         statsContent.innerHTML = '';
 
-        // Course header
         const courseHeader = document.createElement('div');
         courseHeader.style.marginBottom = '20px';
         courseHeader.style.paddingBottom = '10px';
@@ -1816,7 +1785,6 @@ statsButton.addEventListener('click', () => {
         courseHeader.appendChild(courseSubtitle);
         statsContent.appendChild(courseHeader);
 
-        // Overall performance
         const overallSection = document.createElement('div');
         overallSection.style.marginBottom = '20px';
         overallSection.style.padding = '15px';
@@ -1867,14 +1835,12 @@ statsButton.addEventListener('click', () => {
         chartTitle.textContent = 'Performance Visualization';
         chartSection.appendChild(chartTitle);
 
-        // Create container for charts
         const chartsContainer = document.createElement('div');
         chartsContainer.style.display = 'grid';
         chartsContainer.style.gridTemplateColumns = '1fr 1fr';
         chartsContainer.style.gap = '20px';
         chartsContainer.style.marginBottom = '20px';
 
-        // 1. Donut Chart
         const donutContainer = document.createElement('div');
         donutContainer.style.position = 'relative';
         donutContainer.style.height = '200px';
@@ -1898,7 +1864,6 @@ statsButton.addEventListener('click', () => {
             `${colorPalette[12]} ${course.yourPercentage}% 100%)`;
         donutChart.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
 
-        // Center text
         const donutCenter = document.createElement('div');
         donutCenter.style.position = 'absolute';
         donutCenter.style.top = '50%';
@@ -1922,7 +1887,6 @@ statsButton.addEventListener('click', () => {
         donutChart.appendChild(donutCenter);
         donutContainer.appendChild(donutChart);
 
-        // Donut chart legend
         const donutLegend = document.createElement('div');
         donutLegend.style.display = 'flex';
         donutLegend.style.justifyContent = 'center';
@@ -1955,7 +1919,6 @@ statsButton.addEventListener('click', () => {
             heatmap.style.height = '100%';
             heatmap.style.minHeight = '150px'; // Ensure minimum height
             
-            // Calculate max and min for color scaling with fallbacks
             const percentages = course.assessments.map(a => a.percentage).filter(p => !isNaN(p));
             const maxPct = percentages.length > 0 ? Math.max(...percentages, 1) : 100;
             const minPct = percentages.length > 0 ? Math.min(...percentages, 0) : 0;
@@ -1991,7 +1954,6 @@ statsButton.addEventListener('click', () => {
                     </div>
                 `;
                 
-                // Tooltip on hover
                 cell.addEventListener('mouseenter', () => {
                     cell.style.transform = 'scale(1.05)';
                     cell.style.opacity = '1';
@@ -2030,7 +1992,6 @@ statsButton.addEventListener('click', () => {
             
             heatmapContainer.appendChild(heatmap);
             
-            // Heatmap legend
             const heatmapLegend = document.createElement('div');
             heatmapLegend.style.display = 'flex';
             heatmapLegend.style.justifyContent = 'center';
@@ -2057,7 +2018,6 @@ statsButton.addEventListener('click', () => {
         chartsContainer.appendChild(heatmapContainer);
         chartSection.appendChild(chartsContainer);
 
-        // 3. Bar Chart
         const barChartContainer = document.createElement('div');
         barChartContainer.style.height = '200px';
         barChartContainer.style.position = 'relative';
@@ -2093,7 +2053,6 @@ statsButton.addEventListener('click', () => {
         chartSection.appendChild(barChartContainer);
         statsContent.appendChild(chartSection);
 
-        // Assessment breakdown
         if (course.assessments.length > 0) {
             const breakdownSection = document.createElement('div');
             breakdownSection.style.marginBottom = '10px';
@@ -2156,7 +2115,6 @@ statsButton.addEventListener('click', () => {
         statsContent.appendChild(explanationSection);
     };
 
-    // Initialize with first course
     if (courseStats.length > 0) {
         updateStatsContent(courseStats[0]);
     } else {
@@ -2183,7 +2141,6 @@ statsButton.addEventListener('click', () => {
     document.body.appendChild(backdrop);
     document.body.appendChild(modal);
 
-    // Close handlers
     closeButton.addEventListener('click', () => {
         modal.remove();
         backdrop.remove();
