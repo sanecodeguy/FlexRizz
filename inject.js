@@ -40,31 +40,18 @@
         headCaption.style.backgroundColor = 'transparent';
     }
 
-    // Create image wrapper with transparent background
-    const imageContainer = document.createElement("div");
-    imageContainer.classList.add("extension-content");
-    imageContainer.style.cssText = `
-        margin: 0px 0;
-        text-align: center;
-        background: transparent;
-        padding: 0px;
-        border-radius: 0px;
-    `;
 
-    // Create the gif with transparent background
     const supportImg = document.createElement("img");
     supportImg.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGQwZTN0bmZ6dnFlNm52ZjZrZXF1ajdqeHl6bTRzNXNheTF4ZTBicSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/SgGORf2HB9tNMnbmzu/giphy.gif";
     supportImg.alt = "Support us";
     supportImg.id = "injected-support-image";
-    supportImg.style.cssText = `
-        display: inline-block;
-        width: auto;
-        height: auto;
-        background: transparent;
-        margin: 0 auto;
-        vertical-align: middle;
-    `;
-
+    supportImg.style.display = "inline-block";
+    supportImg.style.width = "auto";
+    supportImg.style.height = "auto";
+    supportImg.style.background = "transparent";
+    supportImg.style.margin = "0 auto";
+    supportImg.style.verticalAlign = "middle";
+    
     imageContainer.appendChild(supportImg);
     portlet.prepend(imageContainer);
 
