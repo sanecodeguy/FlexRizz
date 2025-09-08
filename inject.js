@@ -212,7 +212,15 @@ portlet.prepend(imageContainer);
             "SS1014": { name: "Expo", grading: "Relative", credits: 2, semester: 2 },
             "SL1014": { name: "Expo Lab", grading: "Relative", credits: 1, semester: 2 },
             "CS2001": { name: "Data Structures", grading: "Absolute", credits: 3, semester: 3 },
-            "CL2001": { name: "DS Lab", grading: "Absolute", credits: 1, semester: 3 },
+            "CL2001": { name: "Data Structures Lab", grading: "Absolute", credits: 1, semester: 3 },
+            "MT1004": { name: "Linear Algebra", grading: "Relative", credits: 3, semester: 3 },
+            "MG1009": { name: "Fundamentals of Mgmt (Elective)", grading: "Relative", credits: 2, semester: 3 },
+            "CS1005": { name: "Discrete Structures", grading: "Absolute", credits: 3, semester: 3 },
+            "CS3005": { name: "Theory of Automata", grading: "Absolute", credits: 3, semester: 3 },
+            "EE2003": { name: "COAL", grading: "Absolute", credits: 3, semester: 3 },
+            "EL2003": { name: "COAL Lab", grading: "Absolute", credits: 1, semester: 3 },
+            "SS2050": { name: "Organizational Behavior (Elective)", grading: "Relative", credits: 2, semester: 3 },
+            "MG2002": { name: "Engineering Economics (Elective)", grading: "Relative", credits: 2, semester: 3 },
         };
         const assessmentNameMapping = {
             'Assignment': 'Assignment',
