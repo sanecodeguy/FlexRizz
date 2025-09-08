@@ -29,15 +29,25 @@
 
     if (document.querySelector('#injected-support-image')) return;
 
+    // Fix blue backgrounds in the original UI
+    const headTools = document.querySelector('.m-portlet__head-tools');
+    if (headTools) {
+        headTools.style.backgroundColor = 'transparent';
+    }
+    
+    const headCaption = document.querySelector('.m-portlet__head-caption');
+    if (headCaption) {
+        headCaption.style.backgroundColor = 'transparent';
+    }
+
     // Create image wrapper
     const imageContainer = document.createElement("div");
     imageContainer.classList.add("extension-content");
     imageContainer.style.cssText = `
         margin: 0 0 var(--space-md) 0;
         text-align: center;
-        background: var(--primary-light);
+        background: transparent;
         padding: var(--space-sm);
-        border: 1px solid var(--border-light);
         border-radius: var(--border-radius);
     `;
 
@@ -173,6 +183,9 @@
         });
     }
 
+    // Enable dark mode by default
+    document.body.classList.add('dark-mode');
+
     // Main initialization
     loadUtils().then((utils) => {
         window.gradeUtils = utils;
@@ -299,16 +312,27 @@
 
             const table = document.createElement('table');
             table.id = 'course-data-table';
+            table.style.cssText = `
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: var(--card-bg);
+                font-size: var(--font-size-sm);
+                border-radius: var(--border-radius);
+                overflow: hidden;
+                margin-top: var(--space-md);
+                box-shadow: var(--shadow-sm);
+            `;
 
             const headerRow = `
                 <thead>
                     <tr>
-                        <th data-tooltip="Course Name">Course</th>
-                        <th data-tooltip="Absolute or Relative Grading">Type</th>
-                        <th data-tooltip="Class Average">Avg</th>
-                        <th data-tooltip="Marks Obtained">Obtained</th>
-                        <th data-tooltip="Total Marks">Total</th>
-                        <th data-tooltip="Final Grade">Grade</th>
+                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Course</th>
+                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Type</th>
+                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Avg</th>
+                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Obtained</th>
+                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Total</th>
+                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Grade</th>
                     </tr>
                 </thead>
             `;
@@ -323,13 +347,13 @@
             const addCourseDataToTable = (name, gradingType, finalCalculateAverage, totalObtMarks, totalWeightage, grade, credits) => {
                 const gradeClass = window.gradeUtils.getGradeClass(grade);
                 const newRow = `
-                    <tr>
-                        <td>${name}</td>
-                        <td>${gradingType}</td>
-                        <td>${finalCalculateAverage}</td>
-                        <td>${totalObtMarks.toFixed(2)}</td>
-                        <td>${totalWeightage.toFixed(2)}</td>
-                        <td class="${gradeClass}" style="font-weight: bold;">${grade}</td>
+                    <tr style="transition: var(--transition-fast);">
+                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${name}</td>
+                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${gradingType}</td>
+                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${finalCalculateAverage}</td>
+                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${totalObtMarks.toFixed(2)}</td>
+                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${totalWeightage.toFixed(2)}</td>
+                        <td class="${gradeClass}" style="padding: var(--space-md) var(--space-lg); position: relative; font-weight: bold;">${grade}</td>
                     </tr>
                 `;
                 tbody.innerHTML += newRow;
@@ -415,16 +439,16 @@
 
             const sgpa = (totalGradePoints / totalCredits).toFixed(2);
             const sgpaRow = `
-                <tr class="sgpa-row">
-                    <td colspan="4" style="text-align: left;">
+                <tr class="sgpa-row" style="background: rgba(52, 152, 219, 0.08) !important; font-weight: 600 !important;">
+                    <td colspan="4" style="text-align: left; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
                     <span class="credit-text">A project by @doubleroote 
                     <svg viewBox="0 0 24 24" aria-label="Verified account" style="color: var(--primary-color); width: 0.9em; height: 0.9em; margin-left: 2px; vertical-align: middle; fill: currentColor;">
                         <g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s2.52 1.26 3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g>
                     </svg>
                     </span>
                     </td>
-                    <td style="text-align: right; font-weight: bold;">SGPA</td>
-                    <td style="font-weight: bold; font-size: 1.1em;">${sgpa}</td>
+                    <td style="text-align: right; font-weight: bold; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">SGPA</td>
+                    <td style="font-weight: bold; font-size: 1.1em; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">${sgpa}</td>
                 </tr>
             `;
             tbody.innerHTML += sgpaRow;
@@ -496,65 +520,87 @@
 
             const container = document.createElement('div');
             container.className = 'toggle-container';
+            container.style.cssText = `
+                display: flex;
+                gap: var(--space-md);
+                padding: var(--space-lg) var(--space-xl);
+                background: var(--card-bg);
+                border-bottom: 1px solid var(--border-light);
+                flex-wrap: wrap;
+                align-items: center;
+            `;
             
             // Semester Selector
             const semesterContainer = document.createElement('div');
             semesterContainer.className = 'semester-selector';
-            Object.assign(semesterContainer.style, {
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                marginRight: 'auto'
-            });
+            semesterContainer.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-right: auto;
+                flex-wrap: wrap;
+            `;
 
             const semesterLabel = document.createElement('span');
-            Object.assign(semesterLabel.style, {
-                color: 'var(--text-primary)',
-                fontSize: '0.9rem'
-            });
+            semesterLabel.style.cssText = `
+                color: var(--text-primary);
+                font-size: 0.9rem;
+            `;
             semesterLabel.textContent = 'Semester:';
 
             const decreaseBtn = document.createElement('button');
             decreaseBtn.innerHTML = '&minus;';
             decreaseBtn.className = 'modern-btn semester-btn';
-            Object.assign(decreaseBtn.style, {
-                padding: '5px 12px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                minWidth: '30px'
-            });
+            decreaseBtn.style.cssText = `
+                padding: 5px 12px;
+                font-weight: bold;
+                cursor: pointer;
+                min-width: 30px;
+            `;
 
             const toggleDarkBtn = document.createElement('button');
-            toggleDarkBtn.textContent = '🌙';
+            toggleDarkBtn.textContent = '☀️';
             toggleDarkBtn.className = 'modern-btn dark-mode-toggle';
-            toggleDarkBtn.style.margin = '0 var(--space-sm)';
+            toggleDarkBtn.style.cssText = `
+                margin: 0 var(--space-sm);
+                background: var(--primary-color);
+                color: var(--text-light);
+            `;
 
             container.appendChild(toggleDarkBtn);
 
             toggleDarkBtn.addEventListener('click', () => {
                 document.body.classList.toggle('dark-mode');
                 toggleDarkBtn.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+                // Update the button style based on mode
+                if (document.body.classList.contains('dark-mode')) {
+                    toggleDarkBtn.style.background = 'var(--primary-color)';
+                    toggleDarkBtn.style.color = 'var(--text-light)';
+                } else {
+                    toggleDarkBtn.style.background = 'var(--secondary-bg)';
+                    toggleDarkBtn.style.color = 'var(--text-primary)';
+                }
             });
 
             const semesterDisplay = document.createElement('span');
             semesterDisplay.className = 'semester-display';
-            Object.assign(semesterDisplay.style, {
-                minWidth: '30px',
-                textAlign: 'center',
-                fontWeight: 'bold',
-                color: 'var(--primary-color)'
-            });
+            semesterDisplay.style.cssText = `
+                min-width: 30px;
+                text-align: center;
+                font-weight: bold;
+                color: var(--primary-color);
+            `;
             semesterDisplay.textContent = currentSemester;
 
             const increaseBtn = document.createElement('button');
             increaseBtn.innerHTML = '+';
             increaseBtn.className = 'modern-btn semester-btn';
-            Object.assign(increaseBtn.style, {
-                padding: '5px 12px',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                minWidth: '30px'
-            });
+            increaseBtn.style.cssText = `
+                padding: 5px 12px;
+                font-weight: bold;
+                cursor: pointer;
+                min-width: 30px;
+            `;
 
             semesterContainer.appendChild(semesterLabel);
             semesterContainer.appendChild(decreaseBtn);
@@ -781,7 +827,7 @@
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'var(--primary-bg)',
+                    backgroundColor: 'var(--card-bg)',
                     border: '1px solid var(--border-color)',
                     padding: '20px',
                     boxShadow: 'var(--shadow-lg)',
@@ -972,7 +1018,7 @@
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'var(--primary-bg)',
+                    backgroundColor: 'var(--card-bg)',
                     border: '1px solid var(--border-color)',
                     padding: '20px',
                     boxShadow: 'var(--shadow-lg)',
