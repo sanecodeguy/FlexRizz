@@ -39,7 +39,14 @@
     if (headCaption) {
         headCaption.style.backgroundColor = 'transparent';
     }
-
+    const imageContainer = document.createElement("div");
+    imageContainer.classList.add("extension-content");
+    imageContainer.style.margin = "0px 0";
+    imageContainer.style.textAlign = "center";
+    imageContainer.style.background = "#F2F3F8";
+    imageContainer.style.padding = "0px";
+    imageContainer.style.border = "1px solid #F2F3F8";
+    imageContainer.style.borderRadius = "0px";
 
     const supportImg = document.createElement("img");
     supportImg.src = "https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExZGQwZTN0bmZ6dnFlNm52ZjZrZXF1ajdqeHl6bTRzNXNheTF4ZTBicSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/SgGORf2HB9tNMnbmzu/giphy.gif";
