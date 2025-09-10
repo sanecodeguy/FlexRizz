@@ -2,11 +2,9 @@
 
 
 **Lahore Campus Grading Scheme (relative + abs)**
-
-![250409_21h03m00s_screenshot](https://github.com/user-attachments/assets/2b389a29-1fb7-499b-bd11-7e0bb489317b)
-![250409_21h03m28s_screenshot](https://github.com/user-attachments/assets/96ea72e3-12a5-48a8-85c1-ae6c99a3e909)
-![250409_21h04m22s_screenshot](https://github.com/user-attachments/assets/545ce935-ef17-4675-be0a-b1a35e2de52d)
-![250409_21h05m18s_screenshot](https://github.com/user-attachments/assets/baeef62d-3db3-4c04-871c-0785465b1259)
+<img width="1678" height="343" alt="image" src="https://github.com/user-attachments/assets/30a37ef1-e2b1-4659-9558-bb2f591a50ed" />
+<img width="1647" height="621" alt="image" src="https://github.com/user-attachments/assets/44609b7e-da0d-43c9-b7ce-6868cdec999f" />
+<img width="1209" height="697" alt="image" src="https://github.com/user-attachments/assets/c050f35b-adfc-4efb-be63-d0d2a61bffa4" />
 
 
 SGPA - Expected Course Grades - Custom Grades - to check your semester progress.
