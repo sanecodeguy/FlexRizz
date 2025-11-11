@@ -191,6 +191,18 @@
         let shouldRoundUp = true;
         let tableVisible = false;
         let stopAutoClick = false;
+        // Per-course weightage overrides persisted in localStorage
+        const WEIGHT_OVERRIDES_KEY = 'flexrizz_weight_overrides_v1';
+        let weightOverrides = {};
+        try {
+            const raw = localStorage.getItem(WEIGHT_OVERRIDES_KEY);
+            weightOverrides = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+            weightOverrides = {};
+        }
+        const saveWeightOverrides = () => {
+            try { localStorage.setItem(WEIGHT_OVERRIDES_KEY, JSON.stringify(weightOverrides)); } catch (_) {}
+        };
         
         // Complete database of all courses
         const allCourses = {
@@ -372,8 +384,95 @@
                 let totalObtMarks = 0;
                 let totalAverage = 0;
 
+                // Helper: compute totals using overrides if present for this course
+                const computeWithOverridesIfAny = () => {
+                    const ovr = weightOverrides[code];
+                    if (!ovr) return false;
+
+                    // Collect all assessment rows in active course pane
+                    const rows = activeDiv.querySelectorAll('.sum_table .calculationrow');
+                    if (!rows || rows.length === 0) return false;
+
+                    // Count occurrences for distributions
+                    let quizCount = 0, assignCount = 0;
+                    const distRows = [];
+                    rows.forEach(row => {
+                        const weightRow = row.querySelector('.weightage');
+                        const averageRow = row.querySelector('.AverageMarks');
+                        const totalMarksRow = row.querySelector('.GrandTotal');
+                        const obtMarksRow = row.querySelector('.ObtMarks');
+                        if (!averageRow || !totalMarksRow || !obtMarksRow) return;
+                        const name = getAssessmentName(row);
+                        const total = parseFloat(totalMarksRow.textContent) || 0;
+                        if (total === 0) return;
+                        if (name.toLowerCase().includes('quiz')) quizCount++;
+                        if (name.toLowerCase().includes('assignment')) assignCount++;
+                        distRows.push({ row, name });
+                    });
+
+                    // Assigned weights per type
+                    const sess1 = ovr.sessionalI || 0;
+                    const sess2 = ovr.sessionalII || 0;
+                    const finalW = ovr.finalTotal || 0;
+                    const projW = ovr.project || 0;
+                    const labW = ovr.labWork || 0;
+                    const quizTotal = ovr.quizzesTotal || 0;
+                    const assignTotal = ovr.assignmentsTotal || 0;
+
+                    let localTotalWeightage = 0;
+                    let localTotalObt = 0;
+                    let localTotalAvg = 0;
+
+                    const quizPer = quizCount > 0 ? quizTotal / quizCount : 0;
+                    const assignPer = assignCount > 0 ? assignTotal / assignCount : 0;
+
+                    distRows.forEach(({ row, name }) => {
+                        const averageRow = row.querySelector('.AverageMarks');
+                        const totalMarksRow = row.querySelector('.GrandTotal');
+                        const obtMarksRow = row.querySelector('.ObtMarks');
+                        const total = parseFloat(totalMarksRow.textContent) || 0;
+                        const avg = parseFloat(averageRow.textContent) || 0;
+                        const obt = parseFloat(obtMarksRow.textContent) || 0;
+
+                        let assigned = 0;
+                        const low = name.toLowerCase();
+                        if (low.includes('sessional') && low.includes('i') && !low.includes('ii')) {
+                            assigned = sess1;
+                        } else if (low.includes('sessional') && low.includes('ii')) {
+                            assigned = sess2;
+                        } else if (low.includes('quiz')) {
+                            assigned = quizPer;
+                        } else if (low.includes('assignment')) {
+                            assigned = assignPer;
+                        } else if (low.includes('project')) {
+                            assigned = projW;
+                        } else if (low.includes('lab')) {
+                            assigned = labW;
+                        } else if (low.includes('final')) {
+                            assigned = finalW;
+                        }
+
+                        if (assigned > 0) {
+                            localTotalWeightage += assigned;
+                            localTotalObt += (obt / total) * assigned;
+                            localTotalAvg += (avg / total) * assigned;
+                        }
+                    });
+
+                    if (localTotalWeightage > 0) {
+                        totalWeightage = localTotalWeightage;
+                        totalObtMarks = localTotalObt;
+                        totalAverage = localTotalAvg;
+                        return true;
+                    }
+                    return false;
+                };
+
                 const tables = activeDiv.querySelectorAll('.sum_table');
-                tables.forEach((table) => {
+                // If overrides exist and can compute, use them and skip portal totals
+                let usedOverrides = computeWithOverridesIfAny();
+                if (!usedOverrides) {
+                    tables.forEach((table) => {
                     let rowCalculatedAverage = 0;
                     let tableWeightageSum = 0;
 
@@ -408,7 +507,8 @@
                             totalObtMarks += parseFloat(colObtMarks.textContent);
                         }
                     }
-                });
+                    });
+                }
 
                 const finalCalculateAverage = isNaN(totalAverage) ? "N/A" : totalAverage.toFixed(2);
                 let grade = "I"; 
@@ -1012,6 +1112,20 @@
             statsButton.appendChild(statsStatus);
 
             container.appendChild(statsButton);
+
+            // Fix Weightage (manual) button
+            const fixWeightBtn = document.createElement('button');
+            fixWeightBtn.id = 'fix-weightage-button';
+            fixWeightBtn.className = 'modern-btn';
+            fixWeightBtn.textContent = 'Fix Weightage';
+            container.appendChild(fixWeightBtn);
+
+            // Auto-fix Weightage button
+            const autoFixBtn = document.createElement('button');
+            autoFixBtn.id = 'auto-fix-weightage-button';
+            autoFixBtn.className = 'modern-btn';
+            autoFixBtn.textContent = 'Auto Fix Weightage';
+            container.appendChild(autoFixBtn);
             
             statsButton.addEventListener('click', () => {
                 const modal = document.createElement('div');
@@ -1340,6 +1454,146 @@
                         document.removeEventListener('keydown', handleKeyDown);
                     }
                 });
+            });
+
+            const getActiveCourseCode = () => {
+                const activePane = document.querySelector('.tab-pane.active');
+                return activePane ? activePane.id : null;
+            };
+
+            const openManualWeightsModal = (code) => {
+                if (!code) { showToast('Open a course tab first', false); return; }
+                const existing = weightOverrides[code] || {};
+
+                const modal = document.createElement('div');
+                modal.className = 'request-course-modal';
+                Object.assign(modal.style, {
+                    position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '20px',
+                    boxShadow: 'var(--shadow-lg)', zIndex: '1000', width: 'min(90vw, 700px)', borderRadius: 'var(--border-radius)'
+                });
+                modal.innerHTML = `
+                    <h3 style="margin:0 0 10px 0; color: var(--primary-color);">Fix Weightage - ${code}</h3>
+                    <p style="margin:0 0 12px 0; color: var(--text-secondary); font-size: 0.9rem;">Set target weights (sum near 100).</p>
+                    <div class="form-group"><label>Sessional I</label><input id="w_sess1" type="number" min="0" max="100" value="${existing.sessionalI ?? 15}"></div>
+                    <div class="form-group"><label>Sessional II</label><input id="w_sess2" type="number" min="0" max="100" value="${existing.sessionalII ?? 15}"></div>
+                    <div class="form-group"><label>Assignments (total)</label><input id="w_assign_total" type="number" min="0" max="100" value="${existing.assignmentsTotal ?? 5}"></div>
+                    <div class="form-group"><label>Quizzes (total)</label><input id="w_quiz_total" type="number" min="0" max="100" value="${existing.quizzesTotal ?? 10}"></div>
+                    <div class="form-group"><label>Project</label><input id="w_project" type="number" min="0" max="100" value="${existing.project ?? 0}"></div>
+                    <div class="form-group"><label>Lab Work</label><input id="w_lab" type="number" min="0" max="100" value="${existing.labWork ?? 0}"></div>
+                    <div class="form-group"><label>Final Exam</label><input id="w_final" type="number" min="0" max="100" value="${existing.finalTotal ?? 45}"></div>
+                    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:10px;">
+                        <button id="w_cancel" class="modern-btn secondary">Cancel</button>
+                        <button id="w_reset" class="modern-btn danger">Reset</button>
+                        <button id="w_save" class="modern-btn success">Save</button>
+                    </div>
+                `;
+                const backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop';
+                Object.assign(backdrop.style, { position:'fixed', inset:'0', background:'rgba(0,0,0,0.7)', zIndex:'999' });
+                document.body.appendChild(backdrop);
+                document.body.appendChild(modal);
+
+                const close = () => { modal.remove(); backdrop.remove(); };
+                modal.querySelector('#w_cancel').onclick = close;
+                backdrop.onclick = close;
+                modal.querySelector('#w_reset').onclick = () => {
+                    delete weightOverrides[code];
+                    saveWeightOverrides();
+                    close();
+                    if (tableVisible) createTable();
+                    showToast('Weightage overrides reset');
+                };
+                modal.querySelector('#w_save').onclick = () => {
+                    const val = (id) => parseFloat(modal.querySelector(id).value) || 0;
+                    weightOverrides[code] = {
+                        sessionalI: val('#w_sess1'),
+                        sessionalII: val('#w_sess2'),
+                        assignmentsTotal: val('#w_assign_total'),
+                        quizzesTotal: val('#w_quiz_total'),
+                        project: val('#w_project'),
+                        labWork: val('#w_lab'),
+                        finalTotal: val('#w_final'),
+                    };
+                    saveWeightOverrides();
+                    close();
+                    if (tableVisible) createTable();
+                    showToast('Weightage overrides saved');
+                };
+            };
+
+            const runAutoFixForCourse = (code) => {
+                const activePane = document.getElementById(code);
+                if (!activePane) { showToast('Open a course tab first', false); return; }
+                const rows = activePane.querySelectorAll('.sum_table .calculationrow');
+                let quizCount = 0, assignCount = 0, hasSess1 = false, hasSess2 = false, hasProject = false, hasLab = false, hasFinal = false;
+                rows.forEach(row => {
+                    const totalMarksRow = row.querySelector('.GrandTotal');
+                    if (!totalMarksRow) return;
+                    const total = parseFloat(totalMarksRow.textContent) || 0;
+                    if (total === 0) return;
+                    const name = getAssessmentName(row).toLowerCase();
+                    if (name.includes('quiz')) quizCount++;
+                    if (name.includes('assignment')) assignCount++;
+                    if (name.includes('sessional') && name.includes('i') && !name.includes('ii')) hasSess1 = true;
+                    if (name.includes('sessional') && name.includes('ii')) hasSess2 = true;
+                    if (name.includes('project')) hasProject = true;
+                    if (name.includes('lab')) hasLab = true;
+                    if (name.includes('final')) hasFinal = true;
+                });
+
+                // Defaults
+                const sess1 = hasSess1 ? 15 : 0;
+                const sess2 = hasSess2 ? 15 : 0;
+                const assignTotal = assignCount > 0 ? Math.min(5, 5) : 0; // cap 5
+                const projW = hasProject ? 0 : 0;
+                const labW = hasLab ? 0 : 0;
+
+                const base = sess1 + sess2 + assignTotal + projW + labW;
+                const otherKnown = 0; // reserved for extra categories if added later
+
+                // Try to select final 45 or 40 such that quiz total in [5,15]
+                const chooseFinalAndQuiz = () => {
+                    const inRange = (x) => x >= 5 && x <= 15;
+                    let finalTry = 45;
+                    let quiz = 100 - base - otherKnown - finalTry;
+                    if (inRange(quiz)) return { final: finalTry, quizTotal: quiz };
+                    finalTry = 40;
+                    quiz = 100 - base - otherKnown - finalTry;
+                    if (inRange(quiz)) return { final: finalTry, quizTotal: quiz };
+                    // pick closer
+                    const q45 = 100 - base - otherKnown - 45;
+                    const q40 = 100 - base - otherKnown - 40;
+                    const diff45 = Math.min(Math.abs(q45 - 5), Math.abs(q45 - 15));
+                    const diff40 = Math.min(Math.abs(q40 - 5), Math.abs(q40 - 15));
+                    if (diff45 <= diff40) {
+                        return { final: 45, quizTotal: Math.max(5, Math.min(15, q45)) };
+                    } else {
+                        return { final: 40, quizTotal: Math.max(5, Math.min(15, q40)) };
+                    }
+                };
+
+                const finalQuiz = quizCount > 0 ? chooseFinalAndQuiz() : { final: 45, quizTotal: Math.max(0, 100 - base - otherKnown - 45) };
+
+                weightOverrides[code] = {
+                    sessionalI: sess1,
+                    sessionalII: sess2,
+                    assignmentsTotal: assignTotal,
+                    quizzesTotal: quizCount > 0 ? finalQuiz.quizTotal : 0,
+                    project: projW,
+                    labWork: labW,
+                    finalTotal: hasFinal ? finalQuiz.final : finalQuiz.final,
+                };
+                saveWeightOverrides();
+                if (tableVisible) createTable();
+                showToast('Auto weightage applied');
+            };
+
+            fixWeightBtn.addEventListener('click', () => openManualWeightsModal(getActiveCourseCode()));
+            autoFixBtn.addEventListener('click', () => {
+                const code = getActiveCourseCode();
+                if (!code) { showToast('Open a course tab first', false); return; }
+                runAutoFixForCourse(code);
             });
         };
         
