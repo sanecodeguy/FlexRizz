@@ -235,50 +235,23 @@
             "SS2050": { name: "Organizational Behavior (Elective)", grading: "Relative", credits: 2, semester: 3 },
             "MG2002": { name: "Engineering Economics (Elective)", grading: "Relative", credits: 2, semester: 3 },
         };
+        const assessmentNameMapping = {
+            'Assignment': 'Assignment',
+            'Quiz': 'Quiz',
+            'Sessional-I': 'Sessional I',
+            'Sessional-II': 'Sessional II',
+            'Lab Work': 'Lab Work',
+            'Project': 'Project',
+        };
         
         function getAssessmentName(row) {
-            // Try to find the button with assessment name
             const button = row.querySelector('button.btn.btn-link[data-target]');
             if (button) {
-                // Get the text content and clean it up
-                let name = button.textContent.trim();
-                
-                // Clean up common variations
-                name = name.replace(/[-_]/g, ' ').trim();
-                
-                // Map to standardized names
-                const nameMapping = {
-                    'sessional i': 'Sessional I',
-                    'sessional ii': 'Sessional II', 
-                    'sessional-i': 'Sessional I',
-                    'sessional-ii': 'Sessional II',
-                    'sessional1': 'Sessional I',
-                    'sessional2': 'Sessional II',
-                    'quiz': 'Quiz',
-                    'assignment': 'Assignment',
-                    'project': 'Project',
-                    'lab work': 'Lab Work',
-                    'lab': 'Lab Work',
-                    'final': 'Final'
-                };
-                
-                const lowerName = name.toLowerCase();
-                for (const [key, value] of Object.entries(nameMapping)) {
-                    if (lowerName.includes(key)) {
-                        return value;
-                    }
-                }
-                
-                return name; // Return original if no mapping found
+                const dataTarget = button.getAttribute('data-target');
+                const assessmentType = dataTarget.split('-').pop();
+                return assessmentNameMapping[assessmentType] || assessmentType;
             }
-            
-            // Fallback: try to find assessment name in other elements
-            const assessmentNameEl = row.querySelector('.assessmentName');
-            if (assessmentNameEl) {
-                return assessmentNameEl.textContent.trim();
-            }
-            
-            return 'Assessment';
+            return row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
         }
         
         // Function to detect registered courses from the marks tab
@@ -633,339 +606,16 @@
                 }, 400);
             }, 4000);
         }
-
-        // Add this function for debugging
-        function debugCourseStructure(code) {
-            const activePane = document.getElementById(code);
-            if (!activePane) {
-                console.log(`Course pane ${code} not found`);
-                return;
-            }
-
-            const rows = activePane.querySelectorAll('.calculationrow');
-            console.log(`=== DEBUG: Course ${code} ===`);
-            console.log(`Found ${rows.length} assessment rows`);
-
-            rows.forEach((row, index) => {
-                console.log(`\n--- Row ${index} ---`);
-                
-                // Check for button
-                const button = row.querySelector('button.btn.btn-link[data-target]');
-                if (button) {
-                    console.log('Button found:', {
-                        text: button.textContent.trim(),
-                        dataTarget: button.getAttribute('data-target'),
-                        classList: button.classList.toString()
-                    });
-                } else {
-                    console.log('No button found in this row');
-                }
-
-                // Check for assessment name element
-                const assessmentEl = row.querySelector('.assessmentName');
-                if (assessmentEl) {
-                    console.log('Assessment name element:', assessmentEl.textContent.trim());
-                }
-
-                // Check marks
-                const totalMarks = row.querySelector('.GrandTotal');
-                const obtainedMarks = row.querySelector('.ObtMarks');
-                const weightage = row.querySelector('.weightage');
-                
-                console.log('Marks:', {
-                    total: totalMarks?.textContent.trim(),
-                    obtained: obtainedMarks?.textContent.trim(),
-                    weightage: weightage?.textContent.trim()
-                });
-
-                // Test getAssessmentName
-                console.log('getAssessmentName result:', getAssessmentName(row));
-            });
-        }
-
-        const openManualWeightsModal = (code) => {
-            if (!code) { 
-                showToast('Please open a course tab first', false); 
-                return; 
-            }
-            
-            const existing = weightOverrides[code] || {};
-            const courseName = courses[code]?.name || code;
-
-            const modal = document.createElement('div');
-            modal.className = 'request-course-modal';
-            Object.assign(modal.style, {
-                position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '20px',
-                boxShadow: 'var(--shadow-lg)', zIndex: '1000', width: 'min(90vw, 500px)', 
-                borderRadius: 'var(--border-radius)', maxHeight: '80vh', overflowY: 'auto'
-            });
-            
-            modal.innerHTML = `
-                <h3 style="margin:0 0 10px 0; color: var(--primary-color);">Fix Weightage - ${courseName}</h3>
-                <p style="margin:0 0 15px 0; color: var(--text-secondary); font-size: 0.9rem;">
-                    Set custom weightages for ${code}. Total should be 100%.
-                </p>
-                
-                <div class="form-group">
-                    <label for="w_sess1">Sessional I</label>
-                    <input id="w_sess1" type="number" min="0" max="100" value="${existing.sessionalI ?? 15}" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="w_sess2">Sessional II</label>
-                    <input id="w_sess2" type="number" min="0" max="100" value="${existing.sessionalII ?? 15}" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="w_assign_total">Assignments (total)</label>
-                    <input id="w_assign_total" type="number" min="0" max="100" value="${existing.assignmentsTotal ?? 10}" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="w_quiz_total">Quizzes (total)</label>
-                    <input id="w_quiz_total" type="number" min="0" max="100" value="${existing.quizzesTotal ?? 10}" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="w_project">Project</label>
-                    <input id="w_project" type="number" min="0" max="100" value="${existing.project ?? 10}" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="w_lab">Lab Work</label>
-                    <input id="w_lab" type="number" min="0" max="100" value="${existing.labWork ?? 10}" step="1">
-                </div>
-                <div class="form-group">
-                    <label for="w_final">Final Exam</label>
-                    <input id="w_final" type="number" min="0" max="100" value="${existing.finalTotal ?? 40}" step="1">
-                </div>
-                
-                <div class="weightage-summary">
-                    <div>Current Total: <span class="weightage-total" id="weight-total">0</span>/100</div>
-                    <div class="weightage-warning" id="weight-warning" style="display: none;">
-                        Total should be 100% for accurate calculations
-                    </div>
-                </div>
-                
-                <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
-                    <button id="w_cancel" class="modern-btn secondary">Cancel</button>
-                    <button id="w_reset" class="modern-btn danger">Reset to Default</button>
-                    <button id="w_save" class="modern-btn success">Save Weightages</button>
-                </div>
-            `;
-
-            const backdrop = document.createElement('div');
-            backdrop.className = 'modal-backdrop';
-            Object.assign(backdrop.style, { 
-                position:'fixed', inset:'0', background:'rgba(0,0,0,0.7)', 
-                zIndex:'999', backdropFilter: 'blur(3px)' 
-            });
-            
-            document.body.appendChild(backdrop);
-            document.body.appendChild(modal);
-
-            // Calculate and update total
-            const updateTotal = () => {
-                const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
-                const total = getValue('#w_sess1') + getValue('#w_sess2') + 
-                             getValue('#w_assign_total') + getValue('#w_quiz_total') + 
-                             getValue('#w_project') + getValue('#w_lab') + getValue('#w_final');
-                
-                const totalEl = modal.querySelector('#weight-total');
-                const warningEl = modal.querySelector('#weight-warning');
-                
-                totalEl.textContent = total;
-                totalEl.style.color = total === 100 ? 'var(--success-color)' : 'var(--danger-color)';
-                warningEl.style.display = total !== 100 ? 'block' : 'none';
-            };
-
-            // Add event listeners to all inputs
-            modal.querySelectorAll('input').forEach(input => {
-                input.addEventListener('input', updateTotal);
-                input.addEventListener('change', updateTotal);
-            });
-
-            // Initial calculation
-            updateTotal();
-
-            const close = () => { 
-                modal.remove(); 
-                backdrop.remove(); 
-            };
-
-            modal.querySelector('#w_cancel').onclick = close;
-            backdrop.onclick = close;
-
-            modal.querySelector('#w_reset').onclick = () => {
-                delete weightOverrides[code];
-                saveWeightOverrides();
-                close();
-                if (tableVisible) createTable();
-                showToast('Weightage overrides reset to default');
-            };
-
-            modal.querySelector('#w_save').onclick = () => {
-                const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
-                
-                weightOverrides[code] = {
-                    sessionalI: getValue('#w_sess1'),
-                    sessionalII: getValue('#w_sess2'),
-                    assignmentsTotal: getValue('#w_assign_total'),
-                    quizzesTotal: getValue('#w_quiz_total'),
-                    project: getValue('#w_project'),
-                    labWork: getValue('#w_lab'),
-                    finalTotal: getValue('#w_final'),
-                };
-                
-                saveWeightOverrides();
-                close();
-                if (tableVisible) createTable();
-                showToast('Custom weightages saved successfully');
-            };
-
-            // Close on Escape key
-            const handleKeyDown = (e) => {
-                if (e.key === 'Escape') close();
-            };
-            document.addEventListener('keydown', handleKeyDown);
-            modal._keyHandler = handleKeyDown;
-        };
-
-        const runAutoFixForCourse = (code) => {
-            const activePane = document.getElementById(code);
-            if (!activePane) { 
-                showToast('Please open a course tab first', false); 
-                return; 
-            }
-
-            // Analyze the course structure more carefully
-            const rows = activePane.querySelectorAll('.calculationrow');
-            let quizCount = 0, assignCount = 0, hasSess1 = false, hasSess2 = false, 
-                hasProject = false, hasLab = false, hasFinal = false;
-
-            console.log(`Analyzing course ${code}, found ${rows.length} assessment rows`);
-
-            rows.forEach((row, index) => {
-                const totalMarksRow = row.querySelector('.GrandTotal');
-                if (!totalMarksRow) {
-                    console.log(`Row ${index}: No GrandTotal found`);
-                    return;
-                }
-                
-                const total = parseFloat(totalMarksRow.textContent) || 0;
-                if (total === 0) {
-                    console.log(`Row ${index}: Zero total marks`);
-                    return;
-                }
-                
-                const assessmentName = getAssessmentName(row);
-                console.log(`Row ${index}: Assessment "${assessmentName}", Total: ${total}`);
-                
-                const name = assessmentName.toLowerCase();
-                
-                if (name.includes('quiz')) {
-                    quizCount++;
-                    console.log(`Found quiz #${quizCount}`);
-                }
-                if (name.includes('assignment')) {
-                    assignCount++;
-                    console.log(`Found assignment #${assignCount}`);
-                }
-                if ((name.includes('sessional') || name.includes('sessional-i')) && 
-                    !name.includes('sessional-ii') && !name.includes('sessional ii')) {
-                    hasSess1 = true;
-                    console.log('Found Sessional I');
-                }
-                if (name.includes('sessional-ii') || name.includes('sessional ii')) {
-                    hasSess2 = true;
-                    console.log('Found Sessional II');
-                }
-                if (name.includes('project')) {
-                    hasProject = true;
-                    console.log('Found Project');
-                }
-                if (name.includes('lab')) {
-                    hasLab = true;
-                    console.log('Found Lab Work');
-                }
-                if (name.includes('final')) {
-                    hasFinal = true;
-                    console.log('Found Final');
-                }
-            });
-
-            console.log(`Final counts - Quizzes: ${quizCount}, Assignments: ${assignCount}, Sess1: ${hasSess1}, Sess2: ${hasSess2}, Project: ${hasProject}, Lab: ${hasLab}, Final: ${hasFinal}`);
-
-            // Calculate weights based on detected components
-            const sess1 = hasSess1 ? 15 : 0;
-            const sess2 = hasSess2 ? 15 : 0;
-            const assignTotal = assignCount > 0 ? 10 : 0;
-            const projW = hasProject ? 10 : 0;
-            const labW = hasLab ? 10 : 0;
-
-            const baseTotal = sess1 + sess2 + assignTotal + projW + labW;
-            const remaining = 100 - baseTotal;
-
-            console.log(`Base total: ${baseTotal}, Remaining: ${remaining}`);
-
-            // Smart distribution for quizzes and final
-            let quizTotal = 0;
-            let finalW = 0;
-
-            if (quizCount > 0 && hasFinal) {
-                // Both quizzes and final exist
-                quizTotal = Math.min(15, Math.max(5, Math.floor(remaining * 0.3))); // 30% of remaining to quizzes
-                finalW = remaining - quizTotal;
-            } else if (quizCount > 0) {
-                // Only quizzes, no final
-                quizTotal = remaining;
-            } else if (hasFinal) {
-                // Only final, no quizzes
-                finalW = remaining;
-            } else {
-                // Neither quizzes nor final - redistribute to existing components
-                const extraPerComponent = Math.floor(remaining / 3); // Distribute among 3 main components
-                if (hasSess1) weightOverrides[code].sessionalI += extraPerComponent;
-                if (hasSess2) weightOverrides[code].sessionalII += extraPerComponent;
-                if (assignCount > 0) weightOverrides[code].assignmentsTotal += extraPerComponent;
-            }
-
-            // Ensure we don't exceed 100%
-            const calculatedTotal = sess1 + sess2 + assignTotal + projW + labW + quizTotal + finalW;
-            if (calculatedTotal > 100) {
-                // Scale down proportionally
-                const scale = 100 / calculatedTotal;
-                quizTotal = Math.floor(quizTotal * scale);
-                finalW = Math.floor(finalW * scale);
-            }
-
-            console.log(`Final weights - Quizzes: ${quizTotal}, Final: ${finalW}`);
-
-            // Save the calculated weights
-            weightOverrides[code] = {
-                sessionalI: sess1,
-                sessionalII: sess2,
-                assignmentsTotal: assignTotal,
-                quizzesTotal: quizTotal,
-                project: projW,
-                labWork: labW,
-                finalTotal: finalW,
-            };
-
-            saveWeightOverrides();
-            
-            if (tableVisible) createTable();
-            
-            // Show detailed summary
-            const summary = [
-                quizCount > 0 ? `${quizCount} quiz(zes)` : null,
-                assignCount > 0 ? `${assignCount} assignment(s)` : null,
-                hasSess1 ? 'Sessional I' : null,
-                hasSess2 ? 'Sessional II' : null,
-                hasProject ? 'Project' : null,
-                hasLab ? 'Lab Work' : null,
-                hasFinal ? 'Final' : null
-            ].filter(Boolean).join(', ');
-            
-            showToast(`Auto weightage applied for: ${summary}`);
-        };
-
+const updateWeightageButtonStatus = () => {
+    const activeCode = getActiveCourseCode();
+    if (activeCode && weightOverrides[activeCode]) {
+        fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-on"></span>';
+        fixWeightBtn.classList.add('active');
+    } else {
+        fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-off"></span>';
+        fixWeightBtn.classList.remove('active');
+    }
+};
         const createToggleButtons = () => {
             const existingContainer = portlet.querySelector('.toggle-container');
             if (existingContainer) return;
@@ -1273,7 +923,18 @@
                     createTable();
                 }
             });
-            
+            // Add weightage status indicator to the Fix Weightage button
+
+
+// Call this when course tabs are clicked
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('nav-link') && e.target.getAttribute('href')?.startsWith('#')) {
+        setTimeout(updateWeightageButtonStatus, 100);
+    }
+});
+
+// Initial update
+setTimeout(updateWeightageButtonStatus, 1000);
             customGradesButton.addEventListener('click', () => {
                 if (customGradesActive) {
                     resetToCalculatedGrades();
@@ -1476,7 +1137,7 @@
             const fixWeightBtn = document.createElement('button');
             fixWeightBtn.id = 'fix-weightage-button';
             fixWeightBtn.className = 'modern-btn';
-            fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-off"></span>';
+            fixWeightBtn.textContent = 'Fix Weightage';
             container.appendChild(fixWeightBtn);
 
             // Auto-fix Weightage button
@@ -1486,33 +1147,6 @@
             autoFixBtn.textContent = 'Auto Fix Weightage';
             container.appendChild(autoFixBtn);
             
-            // Add weightage status indicator update function
-            const updateWeightageButtonStatus = () => {
-                const activeCode = getActiveCourseCode();
-                if (activeCode && weightOverrides[activeCode]) {
-                    fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-on"></span>';
-                    fixWeightBtn.classList.add('active');
-                } else {
-                    fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-off"></span>';
-                    fixWeightBtn.classList.remove('active');
-                }
-            };
-
-            // Call this when course tabs are clicked
-            document.addEventListener('click', (e) => {
-                if (e.target.classList.contains('nav-link') && e.target.getAttribute('href')?.startsWith('#')) {
-                    setTimeout(updateWeightageButtonStatus, 100);
-                }
-            });
-
-            // Initial update
-            setTimeout(updateWeightageButtonStatus, 1000);
-            
-            const getActiveCourseCode = () => {
-                const activePane = document.querySelector('.tab-pane.active');
-                return activePane ? activePane.id : null;
-            };
-
             statsButton.addEventListener('click', () => {
                 const modal = document.createElement('div');
                 modal.className = 'stats-modal';
@@ -1842,13 +1476,237 @@
                 });
             });
 
+            const getActiveCourseCode = () => {
+                const activePane = document.querySelector('.tab-pane.active');
+                return activePane ? activePane.id : null;
+            };
+
+           const openManualWeightsModal = (code) => {
+    if (!code) { 
+        showToast('Please open a course tab first', false); 
+        return; 
+    }
+    
+    const existing = weightOverrides[code] || {};
+    const courseName = courses[code]?.name || code;
+
+    const modal = document.createElement('div');
+    modal.className = 'request-course-modal';
+    Object.assign(modal.style, {
+        position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+        backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '20px',
+        boxShadow: 'var(--shadow-lg)', zIndex: '1000', width: 'min(90vw, 500px)', 
+        borderRadius: 'var(--border-radius)', maxHeight: '80vh', overflowY: 'auto'
+    });
+    
+    modal.innerHTML = `
+        <h3 style="margin:0 0 10px 0; color: var(--primary-color);">Fix Weightage - ${courseName}</h3>
+        <p style="margin:0 0 15px 0; color: var(--text-secondary); font-size: 0.9rem;">
+            Set custom weightages for ${code}. Total should be 100%.
+        </p>
+        
+        <div class="form-group">
+            <label for="w_sess1">Sessional I</label>
+            <input id="w_sess1" type="number" min="0" max="100" value="${existing.sessionalI ?? 15}" step="1">
+        </div>
+        <div class="form-group">
+            <label for="w_sess2">Sessional II</label>
+            <input id="w_sess2" type="number" min="0" max="100" value="${existing.sessionalII ?? 15}" step="1">
+        </div>
+        <div class="form-group">
+            <label for="w_assign_total">Assignments (total)</label>
+            <input id="w_assign_total" type="number" min="0" max="100" value="${existing.assignmentsTotal ?? 10}" step="1">
+        </div>
+        <div class="form-group">
+            <label for="w_quiz_total">Quizzes (total)</label>
+            <input id="w_quiz_total" type="number" min="0" max="100" value="${existing.quizzesTotal ?? 10}" step="1">
+        </div>
+        <div class="form-group">
+            <label for="w_project">Project</label>
+            <input id="w_project" type="number" min="0" max="100" value="${existing.project ?? 10}" step="1">
+        </div>
+        <div class="form-group">
+            <label for="w_lab">Lab Work</label>
+            <input id="w_lab" type="number" min="0" max="100" value="${existing.labWork ?? 10}" step="1">
+        </div>
+        <div class="form-group">
+            <label for="w_final">Final Exam</label>
+            <input id="w_final" type="number" min="0" max="100" value="${existing.finalTotal ?? 40}" step="1">
+        </div>
+        
+        <div class="weightage-summary">
+            <div>Current Total: <span class="weightage-total" id="weight-total">0</span>/100</div>
+            <div class="weightage-warning" id="weight-warning" style="display: none;">
+                Total should be 100% for accurate calculations
+            </div>
+        </div>
+        
+        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
+            <button id="w_cancel" class="modern-btn secondary">Cancel</button>
+            <button id="w_reset" class="modern-btn danger">Reset to Default</button>
+            <button id="w_save" class="modern-btn success">Save Weightages</button>
+        </div>
+    `;
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop';
+    Object.assign(backdrop.style, { 
+        position:'fixed', inset:'0', background:'rgba(0,0,0,0.7)', 
+        zIndex:'999', backdropFilter: 'blur(3px)' 
+    });
+    
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+
+    // Calculate and update total
+    const updateTotal = () => {
+        const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
+        const total = getValue('#w_sess1') + getValue('#w_sess2') + 
+                     getValue('#w_assign_total') + getValue('#w_quiz_total') + 
+                     getValue('#w_project') + getValue('#w_lab') + getValue('#w_final');
+        
+        const totalEl = modal.querySelector('#weight-total');
+        const warningEl = modal.querySelector('#weight-warning');
+        
+        totalEl.textContent = total;
+        totalEl.style.color = total === 100 ? 'var(--success-color)' : 'var(--danger-color)';
+        warningEl.style.display = total !== 100 ? 'block' : 'none';
+    };
+
+    // Add event listeners to all inputs
+    modal.querySelectorAll('input').forEach(input => {
+        input.addEventListener('input', updateTotal);
+        input.addEventListener('change', updateTotal);
+    });
+
+    // Initial calculation
+    updateTotal();
+
+    const close = () => { 
+        modal.remove(); 
+        backdrop.remove(); 
+    };
+
+    modal.querySelector('#w_cancel').onclick = close;
+    backdrop.onclick = close;
+
+    modal.querySelector('#w_reset').onclick = () => {
+        delete weightOverrides[code];
+        saveWeightOverrides();
+        close();
+        if (tableVisible) createTable();
+        showToast('Weightage overrides reset to default');
+    };
+
+    modal.querySelector('#w_save').onclick = () => {
+        const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
+        
+        weightOverrides[code] = {
+            sessionalI: getValue('#w_sess1'),
+            sessionalII: getValue('#w_sess2'),
+            assignmentsTotal: getValue('#w_assign_total'),
+            quizzesTotal: getValue('#w_quiz_total'),
+            project: getValue('#w_project'),
+            labWork: getValue('#w_lab'),
+            finalTotal: getValue('#w_final'),
+        };
+        
+        saveWeightOverrides();
+        close();
+        if (tableVisible) createTable();
+        showToast('Custom weightages saved successfully');
+    };
+
+    // Close on Escape key
+    const handleKeyDown = (e) => {
+        if (e.key === 'Escape') close();
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    modal._keyHandler = handleKeyDown;
+};
+
+           const runAutoFixForCourse = (code) => {
+    const activePane = document.getElementById(code);
+    if (!activePane) { 
+        showToast('Please open a course tab first', false); 
+        return; 
+    }
+
+    // Analyze the course structure
+    const rows = activePane.querySelectorAll('.sum_table .calculationrow');
+    let quizCount = 0, assignCount = 0, hasSess1 = false, hasSess2 = false, 
+        hasProject = false, hasLab = false, hasFinal = false;
+
+    rows.forEach(row => {
+        const totalMarksRow = row.querySelector('.GrandTotal');
+        if (!totalMarksRow) return;
+        
+        const total = parseFloat(totalMarksRow.textContent) || 0;
+        if (total === 0) return;
+        
+        const name = getAssessmentName(row).toLowerCase();
+        
+        if (name.includes('quiz')) quizCount++;
+        if (name.includes('assignment')) assignCount++;
+        if (name.includes('sessional') && name.includes('i') && !name.includes('ii')) hasSess1 = true;
+        if (name.includes('sessional') && name.includes('ii')) hasSess2 = true;
+        if (name.includes('project')) hasProject = true;
+        if (name.includes('lab work') || name.includes('labwork')) hasLab = true;
+        if (name.includes('final')) hasFinal = true;
+    });
+
+    // Calculate base weights
+    const sess1 = hasSess1 ? 15 : 0;
+    const sess2 = hasSess2 ? 15 : 0;
+    const assignTotal = assignCount > 0 ? 10 : 0;
+    const projW = hasProject ? 10 : 0;
+    const labW = hasLab ? 10 : 0;
+
+    const baseTotal = sess1 + sess2 + assignTotal + projW + labW;
+    const remaining = 100 - baseTotal;
+
+    // Distribute remaining between quizzes and final
+    let quizTotal, finalW;
+
+    if (quizCount > 0 && hasFinal) {
+        // Try to give quizzes 10-15 and rest to final
+        quizTotal = Math.min(15, Math.max(10, Math.floor(remaining * 0.25)));
+        finalW = remaining - quizTotal;
+    } else if (quizCount > 0) {
+        quizTotal = remaining;
+        finalW = 0;
+    } else if (hasFinal) {
+        quizTotal = 0;
+        finalW = remaining;
+    } else {
+        // No quizzes or final - distribute to other components
+        quizTotal = 0;
+        finalW = 0;
+        // Could add logic to redistribute here if needed
+    }
+
+    // Save the calculated weights
+    weightOverrides[code] = {
+        sessionalI: sess1,
+        sessionalII: sess2,
+        assignmentsTotal: assignTotal,
+        quizzesTotal: quizTotal,
+        project: projW,
+        labWork: labW,
+        finalTotal: finalW,
+    };
+
+    saveWeightOverrides();
+    
+    if (tableVisible) createTable();
+    
+    showToast(`Auto weightage applied: ${quizCount} quizzes, ${assignCount} assignments detected`);
+};
+
             fixWeightBtn.addEventListener('click', () => openManualWeightsModal(getActiveCourseCode()));
             autoFixBtn.addEventListener('click', () => {
                 const code = getActiveCourseCode();
-                if (!code) { 
-                    showToast('Please open a course tab first', false); 
-                    return; 
-                }
+                if (!code) { showToast('Open a course tab first', false); return; }
                 runAutoFixForCourse(code);
             });
         };
