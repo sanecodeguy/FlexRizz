@@ -234,6 +234,10 @@
             "EL2003": { name: "COAL Lab", grading: "Absolute", credits: 1, semester: 3 },
             "SS2050": { name: "Organizational Behavior (Elective)", grading: "Relative", credits: 2, semester: 3 },
             "MG2002": { name: "Engineering Economics (Elective)", grading: "Relative", credits: 2, semester: 3 },
+            "DS2001": { name: "Introduction to Data Science", grading: "Absolute", credits: 3, semester: 3},
+            "DL2001": { name: "Introduction to Data Science Lab", grading: "Absolute", credits: 1, semester: 3},
+            "MT2005": { name: "Probability and Statistics", grading: "Absolute", credits: 3, semester: 3},
+            "SS2044": { name: "International Relations", grading: "Relative", credits: 2, semester: 3},
         };
         const assessmentNameMapping = {
             'Assignment': 'Assignment',
