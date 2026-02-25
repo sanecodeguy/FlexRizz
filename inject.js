@@ -1,28 +1,7 @@
 (function() {
     window.FlexRizz = window.FlexRizz || {};
-    
-    // Track active users
-    function displayActiveUsers() {
-        const portletBody = document.querySelector('.portlet-body');
-        if (!portletBody) return;
 
-        const activeUsersCount = window.FlexRizz.utils.getActiveUsers();
-        
-        const activeUsersRow = document.createElement('div');
-        activeUsersRow.className = 'active-users-row';
-        activeUsersRow.innerHTML = `
-            <div style="padding: 10px; background-color: var(--primary-light); border-bottom: 1px solid var(--border-color); border-radius: var(--border-radius); margin-bottom: var(--space-md);">
-                <strong>Active Users:</strong> ${activeUsersCount} users currently using FlexRizz extension
-            </div>
-        `;
-        
-        portletBody.parentNode.insertBefore(activeUsersRow, portletBody);
-    }
-
-    window.FlexRizz.init = function() {
-        window.FlexRizz.utils.trackUserActivity();
-        displayActiveUsers();
-    };
+    window.FlexRizz.init = function() {};
     
     const portlet = document.querySelector('.m-portlet');
     if (!portlet) return;
@@ -43,9 +22,9 @@
     imageContainer.classList.add("extension-content");
     imageContainer.style.margin = "0px 0";
     imageContainer.style.textAlign = "center";
-    imageContainer.style.background = "#F2F3F8";
+    imageContainer.style.background = "var(--surface-1)";
     imageContainer.style.padding = "0px";
-    imageContainer.style.border = "1px solid #F2F3F8";
+    imageContainer.style.border = "1px solid var(--border)";
     imageContainer.style.borderRadius = "0px";
 
     const supportImg = document.createElement("img");
@@ -329,27 +308,16 @@
 
             const table = document.createElement('table');
             table.id = 'course-data-table';
-            table.style.cssText = `
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0;
-                background: var(--card-bg);
-                font-size: var(--font-size-sm);
-                border-radius: var(--border-radius);
-                overflow: hidden;
-                margin-top: var(--space-md);
-                box-shadow: var(--shadow-sm);
-            `;
 
             const headerRow = `
                 <thead>
                     <tr>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Course</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Type</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Avg</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Obtained</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Total</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Grade</th>
+                        <th>Course</th>
+                        <th>Type</th>
+                        <th>Avg</th>
+                        <th>Obtained</th>
+                        <th>Total</th>
+                        <th>Grade</th>
                     </tr>
                 </thead>
             `;
@@ -364,13 +332,13 @@
             const addCourseDataToTable = (name, gradingType, finalCalculateAverage, totalObtMarks, totalWeightage, grade, credits) => {
                 const gradeClass = window.gradeUtils.getGradeClass(grade);
                 const newRow = `
-                    <tr style="transition: var(--transition-fast);">
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${name}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${gradingType}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${finalCalculateAverage}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${totalObtMarks.toFixed(2)}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${totalWeightage.toFixed(2)}</td>
-                        <td class="${gradeClass}" style="padding: var(--space-md) var(--space-lg); position: relative; font-weight: bold;">${grade}</td>
+                    <tr>
+                        <td>${name}</td>
+                        <td><span style="display:inline-block;padding:2px 8px;border-radius:var(--radius-pill);font-size:0.6875rem;font-weight:600;letter-spacing:0.02em;background:${gradingType === 'Absolute' ? 'rgba(96,165,250,0.12)' : 'rgba(251,191,36,0.12)'};color:${gradingType === 'Absolute' ? 'var(--grade-B)' : 'var(--grade-C)'}">${gradingType}</span></td>
+                        <td style="color:var(--text-2);">${finalCalculateAverage}</td>
+                        <td style="font-weight:600;">${totalObtMarks.toFixed(2)}</td>
+                        <td style="color:var(--text-2);">${totalWeightage.toFixed(2)}</td>
+                        <td class="${gradeClass}" style="font-weight:700;font-size:0.9375rem;">${grade}</td>
                     </tr>
                 `;
                 tbody.innerHTML += newRow;
@@ -412,11 +380,10 @@
                         const weightRow = row.querySelector('.weightage');
                         const averageRow = row.querySelector('.AverageMarks');
                         const totalMarksRow = row.querySelector('.GrandTotal');
-                        const obtMarksRow = row.querySelector('.ObtMarks');
-                        if (!averageRow || !totalMarksRow || !obtMarksRow) return;
-                        const name = getAssessmentName(row);
+                        if (!averageRow || !totalMarksRow) return;
                         const total = parseFloat(totalMarksRow.textContent) || 0;
                         if (total === 0) return;
+                        const name = getAssessmentName(row);
                         if (name.toLowerCase().includes('quiz')) quizCount++;
                         if (name.toLowerCase().includes('assignment')) assignCount++;
                         distRows.push({ row, name });
@@ -544,16 +511,16 @@
 
             const sgpa = (totalGradePoints / totalCredits).toFixed(2);
             const sgpaRow = `
-                <tr class="sgpa-row" style="background: rgba(52, 152, 219, 0.08) !important; font-weight: 600 !important;">
-                    <td colspan="4" style="text-align: left; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
-                    <span class="credit-text">A project by @doubleroote 
-                    <svg viewBox="0 0 24 24" aria-label="Verified account" style="color: var(--primary-color); width: 0.9em; height: 0.9em; margin-left: 2px; vertical-align: middle; fill: currentColor;">
+                <tr class="sgpa-row">
+                    <td colspan="4" style="text-align:left;">
+                    <span style="color:var(--text-2);font-size:0.8125rem;">A project by @doubleroote 
+                    <svg viewBox="0 0 24 24" aria-label="Verified account" style="color:var(--accent);width:0.9em;height:0.9em;margin-left:2px;vertical-align:middle;fill:currentColor;">
                         <g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s-2.52 1.26-3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g>
                     </svg>
                     </span>
                     </td>
-                    <td style="text-align: right; font-weight: bold; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">SGPA</td>
-                    <td style="font-weight: bold; font-size: 1.1em; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">${sgpa}</td>
+                    <td style="text-align:right;font-weight:700;color:var(--accent);">SGPA</td>
+                    <td style="font-weight:700;font-size:1.15em;color:var(--accent);">${sgpa}</td>
                 </tr>
             `;
             tbody.innerHTML += sgpaRow;
@@ -573,124 +540,85 @@
                 bottom: '24px',
                 left: '24px',
                 maxWidth: 'calc(100% - 48px)',
-                padding: '16px 24px',
-                borderRadius: 'var(--border-radius)',
-                color: 'var(--text-light)',
+                padding: '12px 20px',
+                borderRadius: 'var(--radius)',
+                color: '#fff',
                 boxShadow: 'var(--shadow-lg)',
                 zIndex: '10000',
                 opacity: '0',
-                transform: 'translateX(-30px)',
-                transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+                transform: 'translateY(8px)',
+                transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '12px',
+                gap: '10px',
                 pointerEvents: 'none',
-                background: isSuccess ? 'var(--success-color)' : 'var(--danger-color)'
+                fontSize: '0.875rem',
+                fontFamily: 'var(--font)',
+                background: isSuccess ? 'var(--success)' : 'var(--danger)',
+                backdropFilter: 'blur(12px)'
             });
             
-            // Add icon
             const icon = document.createElement('span');
-            icon.innerHTML = isSuccess ? '✓' : '✗';
+            icon.textContent = isSuccess ? '\u2713' : '\u2717';
             icon.style.fontWeight = 'bold';
-            icon.style.fontSize = '1.2em';
             toast.appendChild(icon);
             
-            // Add message
             const messageEl = document.createElement('span');
             messageEl.textContent = message;
             toast.appendChild(messageEl);
             
             document.body.appendChild(toast);
             
-            // Animate in
             setTimeout(() => {
                 toast.style.opacity = '1';
-                toast.style.transform = 'translateX(0)';
-                toast.style.pointerEvents = 'auto';
+                toast.style.transform = 'translateY(0)';
             }, 10);
             
-            // Auto-dismiss after delay
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.transform = 'translateX(-30px)';
-                setTimeout(() => {
-                    toast.remove();
-                }, 400);
-            }, 4000);
+                toast.style.transform = 'translateY(8px)';
+                setTimeout(() => toast.remove(), 350);
+            }, 3500);
         }
-const updateWeightageButtonStatus = () => {
-    const activeCode = getActiveCourseCode();
-    if (activeCode && weightOverrides[activeCode]) {
-        fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-on"></span>';
-        fixWeightBtn.classList.add('active');
-    } else {
-        fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-off"></span>';
-        fixWeightBtn.classList.remove('active');
-    }
-};
+
+        const updateWeightageButtonStatus = () => {
+            const activeCode = getActiveCourseCode();
+            if (activeCode && weightOverrides[activeCode]) {
+                fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-on"></span>';
+                fixWeightBtn.classList.add('active');
+            } else {
+                fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-off"></span>';
+                fixWeightBtn.classList.remove('active');
+            }
+        };
+
         const createToggleButtons = () => {
             const existingContainer = portlet.querySelector('.toggle-container');
             if (existingContainer) return;
 
             const container = document.createElement('div');
             container.className = 'toggle-container';
-            container.style.cssText = `
-                display: flex;
-                gap: var(--space-md);
-                padding: var(--space-lg) var(--space-xl);
-                background: var(--card-bg);
-                border-bottom: 1px solid var(--border-light);
-                flex-wrap: wrap;
-                align-items: center;
-            `;
             
             // Semester Selector
             const semesterContainer = document.createElement('div');
             semesterContainer.className = 'semester-selector';
-            semesterContainer.style.cssText = `
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin-right: auto;
-                flex-wrap: wrap;
-            `;
 
             const semesterLabel = document.createElement('span');
-            semesterLabel.style.cssText = `
-                color: var(--text-primary);
-                font-size: 0.9rem;
-            `;
-            semesterLabel.textContent = 'Semester:';
+            semesterLabel.style.cssText = 'color:var(--text-2);font-size:0.8125rem;font-weight:500;';
+            semesterLabel.textContent = 'Semester';
 
             const decreaseBtn = document.createElement('button');
             decreaseBtn.innerHTML = '&minus;';
-            decreaseBtn.className = 'modern-btn semester-btn';
-            decreaseBtn.style.cssText = `
-                padding: 5px 12px;
-                font-weight: bold;
-                cursor: pointer;
-                min-width: 30px;
-            `;
+            decreaseBtn.className = 'semester-btn';
 
             const semesterDisplay = document.createElement('span');
             semesterDisplay.className = 'semester-display';
-            semesterDisplay.style.cssText = `
-                min-width: 30px;
-                text-align: center;
-                font-weight: bold;
-                color: var(--primary-color);
-            `;
+            semesterDisplay.style.cssText = 'min-width:24px;text-align:center;font-weight:700;color:var(--accent);font-size:0.9375rem;';
             semesterDisplay.textContent = currentSemester;
 
             const increaseBtn = document.createElement('button');
             increaseBtn.innerHTML = '+';
-            increaseBtn.className = 'modern-btn semester-btn';
-            increaseBtn.style.cssText = `
-                padding: 5px 12px;
-                font-weight: bold;
-                cursor: pointer;
-                min-width: 30px;
-            `;
+            increaseBtn.className = 'semester-btn';
 
             // Dark Mode Toggle (iOS style)
             const darkModeContainer = document.createElement('div');
@@ -698,7 +626,7 @@ const updateWeightageButtonStatus = () => {
             
             const darkModeLabel = document.createElement('span');
             darkModeLabel.className = 'dark-mode-toggle-label';
-            darkModeLabel.textContent = 'Dark Mode';
+            darkModeLabel.textContent = 'Dark';
             
             const darkModeToggle = document.createElement('label');
             darkModeToggle.className = 'ios-toggle';
@@ -716,7 +644,6 @@ const updateWeightageButtonStatus = () => {
             darkModeContainer.appendChild(darkModeLabel);
             darkModeContainer.appendChild(darkModeToggle);
             
-            // Add event listener for dark mode toggle
             darkModeCheckbox.addEventListener('change', () => {
                 if (darkModeCheckbox.checked) {
                     document.body.classList.add('dark-mode');
@@ -935,25 +862,22 @@ const updateWeightageButtonStatus = () => {
                     createTable();
                 }
             });
-            // Add weightage status indicator to the Fix Weightage button
 
+            // Update weightage status on course tab click
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('nav-link') && e.target.getAttribute('href')?.startsWith('#')) {
+                    setTimeout(updateWeightageButtonStatus, 100);
+                }
+            });
 
-// Call this when course tabs are clicked
-document.addEventListener('click', (e) => {
-    if (e.target.classList.contains('nav-link') && e.target.getAttribute('href')?.startsWith('#')) {
-        setTimeout(updateWeightageButtonStatus, 100);
-    }
-});
+            setTimeout(updateWeightageButtonStatus, 1000);
 
-// Initial update
-setTimeout(updateWeightageButtonStatus, 1000);
             customGradesButton.addEventListener('click', () => {
                 if (customGradesActive) {
                     resetToCalculatedGrades();
                     return;
                 }
 
-                // Modal creation code
                 const modal = document.createElement('div');
                 modal.className = 'custom-grades-modal';
                 Object.assign(modal.style, {
@@ -961,76 +885,51 @@ setTimeout(updateWeightageButtonStatus, 1000);
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'var(--card-bg)',
-                    border: '1px solid var(--border-color)',
-                    padding: '20px',
+                    backgroundColor: 'var(--surface-1)',
+                    border: '1px solid var(--border)',
+                    padding: '24px',
                     boxShadow: 'var(--shadow-lg)',
                     zIndex: '1000',
                     width: 'min(90vw, 800px)',
                     maxHeight: '70vh',
                     overflowY: 'auto',
-                    color: 'var(--text-primary)',
-                    fontFamily: 'var(--font-family)',
+                    color: 'var(--text-1)',
+                    fontFamily: 'var(--font)',
                     display: 'grid',
                     gridTemplateRows: 'auto 1fr auto',
-                    gap: '15px',
-                    borderRadius: 'var(--border-radius)'
+                    gap: '16px',
+                    borderRadius: 'var(--radius)'
                 });
 
                 modal.innerHTML = `
-                    <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                        <h3 style="margin: 0; color: var(--primary-color); font-size: 1.3rem;">
+                    <div style="border-bottom:1px solid var(--border);padding-bottom:12px;">
+                        <h3 style="margin:0;color:var(--accent);font-size:1.15rem;font-weight:700;">
                             Custom Grades
                         </h3>
-                        <p style="margin: 5px 0 0; color: var(--text-secondary); font-size: 0.85rem;">
+                        <p style="margin:6px 0 0;color:var(--text-3);font-size:0.8125rem;">
                             Enter custom grades for each course
                         </p>
                     </div>
                     
-                    <div class="grade-inputs-container" style="overflow-y: auto; padding-right: 5px;">
-                        <div class="grade-inputs-grid" style="
-                            display: grid;
-                            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-                            gap: 12px;
-                            align-items: center;
-                        ">
+                    <div class="grade-inputs-container" style="overflow-y:auto;padding-right:5px;">
+                        <div class="grade-inputs-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px;">
                             ${Object.entries(courses).map(([code, course]) => `
-                                <div class="grade-input-row" style="display: flex; align-items: center; gap: 10px;">
-                                    <label style="color: var(--text-primary); font-size: 0.9rem; min-width: 120px;">
+                                <div style="display:flex;align-items:center;gap:10px;">
+                                    <label style="color:var(--text-2);font-size:0.8125rem;min-width:110px;font-weight:500;">
                                         ${course.name} (${code}):
                                     </label>
                                     <input type="text" class="grade-input" id="${code}-grade" 
                                            placeholder="${currentCustomGrades[code] || 'Auto'}"
                                            value="${currentCustomGrades[code] || ''}"
-                                           style="
-                                               background: var(--card-bg); 
-                                               border: 1px solid var(--border-color); 
-                                               color: var(--text-primary); 
-                                               padding: 8px 12px; 
-                                               width: 100%;
-                                               text-align: center; 
-                                               border-radius: var(--border-radius-sm); 
-                                               font-family: var(--font-family); 
-                                               font-weight: 500;
-                                           ">
+                                           style="background:var(--surface-2);border:1px solid var(--border);color:var(--text-1);padding:8px 12px;width:100%;text-align:center;border-radius:var(--radius-sm);font-family:var(--font);font-weight:600;font-size:0.875rem;">
                                 </div>
                             `).join('')}
                         </div>
                     </div>
                     
-                    <div class="modal-actions" style="
-                        display: flex;
-                        justify-content: flex-end;
-                        gap: 12px;
-                        padding-top: 10px;
-                        border-top: 1px solid var(--border-color);
-                    ">
-                        <button id="cancel-custom-grades" class="modern-btn secondary" style="padding: 8px 16px;">
-                            Cancel
-                        </button>
-                        <button id="apply-custom-grades" class="modern-btn" style="padding: 8px 16px;">
-                            Apply
-                        </button>
+                    <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:12px;border-top:1px solid var(--border);">
+                        <button id="cancel-custom-grades" class="modern-btn secondary">Cancel</button>
+                        <button id="apply-custom-grades" class="modern-btn" style="background:var(--accent);color:var(--text-inv);border-color:var(--accent);">Apply</button>
                     </div>
                 `;
 
@@ -1039,14 +938,8 @@ setTimeout(updateWeightageButtonStatus, 1000);
                 const backdrop = document.createElement('div');
                 backdrop.className = 'modal-backdrop';
                 Object.assign(backdrop.style, {
-                    position: 'fixed',
-                    top: '0',
-                    left: '0',
-                    right: '0',
-                    bottom: '0',
-                    background: 'rgba(0, 0, 0, 0.7)',
-                    zIndex: '999',
-                    backdropFilter: 'blur(3px)'
+                    position: 'fixed', top: '0', left: '0', right: '0', bottom: '0',
+                    background: 'rgba(0, 0, 0, 0.6)', zIndex: '999', backdropFilter: 'blur(4px)'
                 });
                 document.body.appendChild(backdrop);
 
@@ -1101,20 +994,11 @@ setTimeout(updateWeightageButtonStatus, 1000);
                     backdrop.remove();
                 });
                 
-                cancelBtn.addEventListener('click', () => {
-                    modal.remove();
-                    backdrop.remove();
-                });
-                
-                backdrop.addEventListener('click', () => {
-                    modal.remove();
-                    backdrop.remove();
-                });
-                
+                cancelBtn.addEventListener('click', () => { modal.remove(); backdrop.remove(); });
+                backdrop.addEventListener('click', () => { modal.remove(); backdrop.remove(); });
                 document.addEventListener('keydown', function handleKeyDown(e) {
                     if (e.key === 'Escape') {
-                        modal.remove();
-                        backdrop.remove();
+                        modal.remove(); backdrop.remove();
                         document.removeEventListener('keydown', handleKeyDown);
                     }
                 });
@@ -1123,27 +1007,116 @@ setTimeout(updateWeightageButtonStatus, 1000);
             decreaseBtn.disabled = (currentSemester <= 1);
             increaseBtn.disabled = (currentSemester >= 8); 
 
+            // Download PDF Button
+            const downloadPdfButton = document.createElement('button');
+            downloadPdfButton.id = 'download-pdf-button';
+            downloadPdfButton.className = 'modern-btn';
+            downloadPdfButton.innerHTML = 'Download PDF';
+            const pdfIcon = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            pdfIcon.setAttribute('width', '14');
+            pdfIcon.setAttribute('height', '14');
+            pdfIcon.setAttribute('viewBox', '0 0 24 24');
+            pdfIcon.setAttribute('fill', 'none');
+            pdfIcon.setAttribute('stroke', 'currentColor');
+            pdfIcon.setAttribute('stroke-width', '2');
+            pdfIcon.setAttribute('stroke-linecap', 'round');
+            pdfIcon.setAttribute('stroke-linejoin', 'round');
+            pdfIcon.innerHTML = '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>';
+            downloadPdfButton.prepend(pdfIcon);
+
+            downloadPdfButton.addEventListener('click', async () => {
+                const table = portlet.querySelector('#course-data-table');
+                if (!table) {
+                    showToast('Show the transcript first, then download.', false);
+                    return;
+                }
+
+                downloadPdfButton.disabled = true;
+                downloadPdfButton.innerHTML = 'Generating...';
+
+                try {
+                    await loadHtml2Pdf();
+
+                    // Build a clean printable element
+                    const printEl = document.createElement('div');
+                    printEl.style.cssText = 'padding:32px;font-family:Inter,Helvetica,Arial,sans-serif;color:#111;background:#fff;';
+
+                    // Header
+                    const header = document.createElement('div');
+                    header.style.cssText = 'margin-bottom:20px;border-bottom:2px solid #7c5cfc;padding-bottom:12px;';
+                    header.innerHTML = `
+                        <h2 style="margin:0;font-size:1.4rem;color:#7c5cfc;">FlexRizz Transcript</h2>
+                        <p style="margin:4px 0 0;font-size:0.8rem;color:#666;">Semester ${currentSemester} &middot; Generated ${new Date().toLocaleDateString()}</p>
+                    `;
+                    printEl.appendChild(header);
+
+                    // Clone the table for PDF
+                    const clonedTable = table.cloneNode(true);
+                    clonedTable.style.cssText = 'width:100%;border-collapse:collapse;font-size:0.8rem;';
+
+                    // Style thead
+                    clonedTable.querySelectorAll('thead th').forEach(th => {
+                        th.style.cssText = 'padding:10px 12px;background:#f4f4f5;color:#555;font-weight:600;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;text-align:left;border-bottom:2px solid #e2e5ea;';
+                    });
+
+                    // Style tbody cells
+                    clonedTable.querySelectorAll('tbody td').forEach(td => {
+                        td.style.cssText = 'padding:10px 12px;border-bottom:1px solid #eee;color:#222;';
+                    });
+
+                    // Style SGPA row
+                    const sgpaRowEl = clonedTable.querySelector('.sgpa-row');
+                    if (sgpaRowEl) {
+                        sgpaRowEl.querySelectorAll('td').forEach(td => {
+                            td.style.cssText = 'padding:10px 12px;border-top:2px solid #7c5cfc;font-weight:700;color:#7c5cfc;background:rgba(124,92,252,0.06);';
+                        });
+                    }
+
+                    // Color grade cells for PDF
+                    const gradeColors = { 'A': '#059669', 'B': '#2563eb', 'C': '#d97706', 'D': '#ea580c', 'F': '#dc2626' };
+                    clonedTable.querySelectorAll('tbody tr:not(.sgpa-row) td:last-child').forEach(td => {
+                        const g = td.textContent.trim().charAt(0);
+                        td.style.color = gradeColors[g] || '#222';
+                        td.style.fontWeight = '700';
+                    });
+
+                    // Remove edit inputs if any
+                    clonedTable.querySelectorAll('input').forEach(input => {
+                        const val = input.value;
+                        const parent = input.parentElement;
+                        if (parent) {
+                            parent.textContent = val;
+                        }
+                    });
+
+                    printEl.appendChild(clonedTable);
+
+                    const opt = {
+                        margin: [0.4, 0.5, 0.4, 0.5],
+                        filename: `FlexRizz_Transcript_Sem${currentSemester}.pdf`,
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2, useCORS: true },
+                        jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                    };
+
+                    await html2pdf().set(opt).from(printEl).save();
+                    showToast('PDF downloaded successfully!');
+                } catch (err) {
+                    console.error('PDF generation failed:', err);
+                    showToast('PDF generation failed. Try again.', false);
+                } finally {
+                    downloadPdfButton.disabled = false;
+                    downloadPdfButton.innerHTML = 'Download PDF';
+                    downloadPdfButton.prepend(pdfIcon);
+                }
+            });
+
             container.appendChild(semesterContainer);
             container.appendChild(darkModeContainer);
             container.appendChild(transcriptButton);
             container.appendChild(roundingButton);
             container.appendChild(editMarksButton);
             container.appendChild(customGradesButton);
-
-            const portletBody = portlet.querySelector('.m-portlet__body');
-            if (portletBody) {
-                portlet.insertBefore(container, portletBody);
-            }
-
-            const statsButton = document.createElement('button');
-            statsButton.id = 'show-stats-button';
-            statsButton.className = 'modern-btn';
-            statsButton.innerHTML = 'Show Stats';
-            const statsStatus = document.createElement('span');
-            statsStatus.className = 'status-indicator status-off';
-            statsButton.appendChild(statsStatus);
-
-            container.appendChild(statsButton);
 
             // Fix Weightage (manual) button
             const fixWeightBtn = document.createElement('button');
@@ -1156,564 +1129,232 @@ setTimeout(updateWeightageButtonStatus, 1000);
             const autoFixBtn = document.createElement('button');
             autoFixBtn.id = 'auto-fix-weightage-button';
             autoFixBtn.className = 'modern-btn';
-            autoFixBtn.textContent = 'Auto Fix Weightage';
+            autoFixBtn.textContent = 'Auto Fix';
             container.appendChild(autoFixBtn);
-            
-            statsButton.addEventListener('click', () => {
-                const modal = document.createElement('div');
-                modal.className = 'stats-modal';
-                Object.assign(modal.style, {
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    backgroundColor: 'var(--card-bg)',
-                    border: '1px solid var(--border-color)',
-                    padding: '20px',
-                    boxShadow: 'var(--shadow-lg)',
-                    zIndex: '1000',
-                    width: 'min(90vw, 800px)',
-                    maxHeight: '80vh',
-                    overflowY: 'auto',
-                    color: 'var(--text-primary)',
-                    fontFamily: 'var(--font-family)',
-                    borderRadius: 'var(--border-radius)'
-                });
 
-                const header = document.createElement('div');
-                header.style.display = 'flex';
-                header.style.justifyContent = 'space-between';
-                header.style.alignItems = 'center';
-                header.style.marginBottom = '15px';
-                header.style.paddingBottom = '10px';
-                header.style.borderBottom = '1px solid var(--border-color)';
+            // PDF Download
+            container.appendChild(downloadPdfButton);
 
-                const title = document.createElement('h3');
-                title.textContent = 'Course Statistics';
-                title.style.margin = '0';
-                title.style.color = 'var(--primary-color)';
-
-                const closeButton = document.createElement('button');
-                closeButton.textContent = '×';
-                closeButton.style.background = 'none';
-                closeButton.style.border = 'none';
-                closeButton.style.fontSize = '1.5rem';
-                closeButton.style.cursor = 'pointer';
-                closeButton.style.color = 'var(--text-secondary)';
-
-                header.appendChild(title);
-                header.appendChild(closeButton);
-                modal.appendChild(header);
-
-                const content = document.createElement('div');
-                content.style.display = 'grid';
-                content.style.gap = '20px';
-
-                const courseStats = [];
-                
-                Object.keys(courses).forEach((code) => {
-                    const gradingType = courses[code].grading;
-                    const credits = courses[code].credits;
-                    const courseLink = document.querySelector(`a.nav-link[href="#${code}"]`);
-                    if (!courseLink) return;
-
-                    const wasVisible = tableVisible;
-                    if (wasVisible) {
-                        const transcriptButton = portlet.querySelector('#show-transcript-button');
-                        if (transcriptButton) transcriptButton.click();
-                    }
-                    
-                    courseLink.click();
-
-                    const activeDiv = document.querySelector('.tab-pane.active');
-                    if (!activeDiv) return;
-
-                    let totalWeightage = 0;
-                    let totalObtMarks = 0;
-                    let totalAverage = 0;
-                    let assessmentDetails = [];
-
-                    const tables = activeDiv.querySelectorAll('.sum_table');
-                    tables.forEach((table) => {
-                        let rowCalculatedAverage = 0;
-                        let tableWeightageSum = 0;
-
-                        const rows = table.querySelectorAll('.calculationrow');
-                        rows.forEach((row) => {
-                            const assessmentName = getAssessmentName(row);
-                            const weightRow = row.querySelector('.weightage');
-                            const averageRow = row.querySelector('.AverageMarks');
-                            const totalMarksRow = row.querySelector('.GrandTotal');
-                            const obtMarksRow = row.querySelector('.ObtMarks');
-
-                            if (!weightRow || !averageRow || !totalMarksRow || !obtMarksRow ||
-                                weightRow.textContent.trim() === "0" || 
-                                totalMarksRow.textContent.trim() === "0") {
-                                return;
-                            }
-
-                            const weight = parseFloat(weightRow.textContent);
-                            const average = parseFloat(averageRow.textContent);
-                            const total = parseFloat(totalMarksRow.textContent);
-                            const obt = parseFloat(obtMarksRow.textContent);
-
-                            tableWeightageSum += weight;
-                            rowCalculatedAverage += (average / total) * weight;
-
-                            assessmentDetails.push({
-                                name: assessmentName,
-                                weight: weight,
-                                classAverage: average,
-                                totalMarks: total,
-                                yourScore: obt,
-                                percentage: (obt / total) * 100,
-                                classAveragePercentage: (average / total) * 100
-                            });
-                        });
-
-                        const totalSection = table.querySelector('[class*="totalColumn_"]');
-                        if (totalSection) {
-                            const colWeightage = totalSection.querySelector('.totalColweightage');
-                            if (colWeightage && tableWeightageSum !== 0 && rowCalculatedAverage !== 0) {
-                                rowCalculatedAverage = (rowCalculatedAverage / tableWeightageSum) * parseFloat(colWeightage.textContent);
-                                totalAverage += rowCalculatedAverage;
-                            }
-
-                            const colObtMarks = totalSection.querySelector('.totalColObtMarks');
-                            if (colWeightage && colObtMarks) {
-                                totalWeightage += parseFloat(colWeightage.textContent);
-                                totalObtMarks += parseFloat(colObtMarks.textContent);
-                            }
-                        }
-                    });
-
-                    const finalCalculateAverage = isNaN(totalAverage) ? 0 : totalAverage;
-                    const finalMarks = shouldRoundUp ? Math.ceil(totalObtMarks) : totalObtMarks;
-                    
-                    let grade = "I";
-                    if (gradingType === "Absolute") {
-                        const percentage = (finalMarks / totalWeightage) * 100;            
-                        grade = window.gradeUtils.calculateAbsoluteGrade(percentage);
-                    }
-                    else if (gradingType === "Relative") {
-                        const percentage = Math.round((finalMarks / totalWeightage) * 100);
-                        const mca = Math.round((totalAverage / totalWeightage) * 100);
-                        grade = window.gradeUtils.getGrade(mca, percentage)[0];
-                    }
-
-                    courseStats.push({
-                        code: code,
-                        name: courses[code].name,
-                        gradingType: gradingType,
-                        classAverage: finalCalculateAverage,
-                        yourScore: finalMarks,
-                        totalMarks: totalWeightage,
-                        grade: grade,
-                        credits: credits,
-                        assessments: assessmentDetails,
-                        yourPercentage: (finalMarks / totalWeightage) * 100,
-                        classAveragePercentage: (finalCalculateAverage / totalWeightage) * 100
-                    });
-
-                    if (wasVisible) {
-                        const transcriptButton = portlet.querySelector('#show-transcript-button');
-                        if (transcriptButton) transcriptButton.click();
-                    }
-                });
-
-                const tabsContainer = document.createElement('div');
-                tabsContainer.style.display = 'flex';
-                tabsContainer.style.gap = '5px';
-                tabsContainer.style.marginBottom = '15px';
-                tabsContainer.style.overflowX = 'auto';
-                tabsContainer.style.paddingBottom = '5px';
-
-                const statsContent = document.createElement('div');
-                statsContent.style.minHeight = '400px';
-
-                courseStats.forEach((course, index) => {
-                    const tab = document.createElement('button');
-                    tab.textContent = course.code;
-                    tab.style.padding = '8px 12px';
-                    tab.style.border = '1px solid var(--border-color)';
-                    tab.style.background = index === 0 ? 'var(--primary-color)' : 'transparent';
-                    tab.style.color = index === 0 ? 'var(--text-light)' : 'var(--text-secondary)';
-                    tab.style.borderRadius = 'var(--border-radius-sm)';
-                    tab.style.cursor = 'pointer';
-                    tab.style.whiteSpace = 'nowrap';
-                    tab.style.transition = 'all 0.2s';
-
-                    tab.addEventListener('click', () => {
-                        // Update all tabs
-                        tabsContainer.querySelectorAll('button').forEach((t, i) => {
-                            t.style.background = i === index ? 'var(--primary-color)' : 'transparent';
-                            t.style.color = i === index ? 'var(--text-light)' : 'var(--text-secondary)';
-                        });
-
-                        updateStatsContent(course);
-                    });
-
-                    tabsContainer.appendChild(tab);
-                });
-
-                const updateStatsContent = (course) => {
-                    statsContent.innerHTML = '';
-
-                    const courseHeader = document.createElement('div');
-                    courseHeader.style.marginBottom = '20px';
-                    courseHeader.style.paddingBottom = '10px';
-                    courseHeader.style.borderBottom = '1px solid var(--border-color)';
-
-                    const courseTitle = document.createElement('h4');
-                    courseTitle.style.margin = '0 0 5px 0';
-                    courseTitle.textContent = `${course.name} (${course.code})`;
-                    
-                    const courseSubtitle = document.createElement('div');
-                    courseSubtitle.style.display = 'flex';
-                    courseSubtitle.style.gap = '15px';
-                    courseSubtitle.style.fontSize = '0.9rem';
-                    courseSubtitle.style.color = 'var(--text-secondary)';
-
-                    courseSubtitle.innerHTML = `
-                        <span>Credits: ${course.credits}</span>
-                        <span>Grading: ${course.gradingType}</span>
-                        <span>Grade: <span class="${window.gradeUtils.getGradeClass(course.grade)}" style="font-weight: bold;">${course.grade}</span></span>
-                    `;
-
-                    courseHeader.appendChild(courseTitle);
-                    courseHeader.appendChild(courseSubtitle);
-                    statsContent.appendChild(courseHeader);
-
-                    const overallSection = document.createElement('div');
-                    overallSection.style.marginBottom = '20px';
-                    overallSection.style.padding = '15px';
-                    overallSection.style.background = 'var(--primary-light)';
-                    overallSection.style.borderRadius = 'var(--border-radius)';
-
-                    const overallTitle = document.createElement('h5');
-                    overallTitle.style.margin = '0 0 10px 0';
-                    overallTitle.textContent = 'Overall Performance';
-                    overallSection.appendChild(overallTitle);
-
-                    const overallGrid = document.createElement('div');
-                    overallGrid.style.display = 'grid';
-                    overallGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
-                    overallGrid.style.gap = '15px';
-
-                    overallGrid.innerHTML = `
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Your Score</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.yourScore.toFixed(2)} / ${course.totalMarks.toFixed(2)}</div>
-                        </div>
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Your Percentage</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.yourPercentage.toFixed(2)}%</div>
-                        </div>
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Class Average</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.classAverage.toFixed(2)} / ${course.totalMarks.toFixed(2)}</div>
-                        </div>
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Class Avg %</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.classAveragePercentage.toFixed(2)}%</div>
-                        </div>
-                    `;
-
-                    overallSection.appendChild(overallGrid);
-                    statsContent.appendChild(overallSection);
-
-                    // Grade explanation
-                    const explanationSection = document.createElement('div');
-                    explanationSection.style.marginTop = '20px';
-                    explanationSection.style.padding = '15px';
-                    explanationSection.style.background = 'var(--primary-light)';
-                    explanationSection.style.borderRadius = 'var(--border-radius)';
-                    explanationSection.style.fontSize = '0.9rem';
-
-                    explanationSection.innerHTML = `
-                        <h5 style="margin: 0 0 10px 0;">Grade Explanation</h5>
-                        <p style="margin: 0;">
-                            This course uses <strong>${course.gradingType} grading</strong>. 
-                            ${course.gradingType === 'Absolute' ? 
-                                'Your grade is determined by fixed percentage thresholds regardless of class performance.' : 
-                                'Your grade is determined relative to the class average performance.'}
-                        </p>
-                    `;
-
-                    statsContent.appendChild(explanationSection);
-                };
-
-                if (courseStats.length > 0) {
-                    updateStatsContent(courseStats[0]);
-                } else {
-                    statsContent.innerHTML = '<p>No course data available</p>';
-                }
-
-                modal.appendChild(tabsContainer);
-                modal.appendChild(statsContent);
-
-                // Backdrop
-                const backdrop = document.createElement('div');
-                backdrop.className = 'modal-backdrop';
-                Object.assign(backdrop.style, {
-                    position: 'fixed',
-                    top: '0',
-                    left: '0',
-                    right: '0',
-                    bottom: '0',
-                    background: 'rgba(0, 0, 0, 0.7)',
-                    zIndex: '999',
-                    backdropFilter: 'blur(3px)'
-                });
-
-                document.body.appendChild(backdrop);
-                document.body.appendChild(modal);
-
-                closeButton.addEventListener('click', () => {
-                    modal.remove();
-                    backdrop.remove();
-                });
-
-                backdrop.addEventListener('click', () => {
-                    modal.remove();
-                    backdrop.remove();
-                });
-
-                document.addEventListener('keydown', function handleKeyDown(e) {
-                    if (e.key === 'Escape') {
-                        modal.remove();
-                        backdrop.remove();
-                        document.removeEventListener('keydown', handleKeyDown);
-                    }
-                });
-            });
+            const portletBody = portlet.querySelector('.m-portlet__body');
+            if (portletBody) {
+                portlet.insertBefore(container, portletBody);
+            }
 
             const getActiveCourseCode = () => {
                 const activePane = document.querySelector('.tab-pane.active');
                 return activePane ? activePane.id : null;
             };
 
-           const openManualWeightsModal = (code) => {
-    if (!code) { 
-        showToast('Please open a course tab first', false); 
-        return; 
-    }
-    
-    const existing = weightOverrides[code] || {};
-    const courseName = courses[code]?.name || code;
+            const openManualWeightsModal = (code) => {
+                if (!code) { 
+                    showToast('Please open a course tab first', false); 
+                    return; 
+                }
+                
+                const existing = weightOverrides[code] || {};
+                const courseName = courses[code]?.name || code;
 
-    const modal = document.createElement('div');
-    modal.className = 'request-course-modal';
-    Object.assign(modal.style, {
-        position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-        backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '20px',
-        boxShadow: 'var(--shadow-lg)', zIndex: '1000', width: 'min(90vw, 500px)', 
-        borderRadius: 'var(--border-radius)', maxHeight: '80vh', overflowY: 'auto'
-    });
-    
-    modal.innerHTML = `
-        <h3 style="margin:0 0 10px 0; color: var(--primary-color);">Fix Weightage - ${courseName}</h3>
-        <p style="margin:0 0 15px 0; color: var(--text-secondary); font-size: 0.9rem;">
-            Set custom weightages for ${code}. Total should be 100%.
-        </p>
-        
-        <div class="form-group">
-            <label for="w_sess1">Sessional I</label>
-            <input id="w_sess1" type="number" min="0" max="100" value="${existing.sessionalI ?? 15}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_sess2">Sessional II</label>
-            <input id="w_sess2" type="number" min="0" max="100" value="${existing.sessionalII ?? 15}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_assign_total">Assignments (total)</label>
-            <input id="w_assign_total" type="number" min="0" max="100" value="${existing.assignmentsTotal ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_quiz_total">Quizzes (total)</label>
-            <input id="w_quiz_total" type="number" min="0" max="100" value="${existing.quizzesTotal ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_project">Project</label>
-            <input id="w_project" type="number" min="0" max="100" value="${existing.project ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_lab">Lab Work</label>
-            <input id="w_lab" type="number" min="0" max="100" value="${existing.labWork ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_final">Final Exam</label>
-            <input id="w_final" type="number" min="0" max="100" value="${existing.finalTotal ?? 40}" step="1">
-        </div>
-        
-        <div class="weightage-summary">
-            <div>Current Total: <span class="weightage-total" id="weight-total">0</span>/100</div>
-            <div class="weightage-warning" id="weight-warning" style="display: none;">
-                Total should be 100% for accurate calculations
-            </div>
-        </div>
-        
-        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
-            <button id="w_cancel" class="modern-btn secondary">Cancel</button>
-            <button id="w_reset" class="modern-btn danger">Reset to Default</button>
-            <button id="w_save" class="modern-btn success">Save Weightages</button>
-        </div>
-    `;
+                const modal = document.createElement('div');
+                modal.className = 'request-course-modal';
+                Object.assign(modal.style, {
+                    position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+                    backgroundColor: 'var(--surface-1)', border: '1px solid var(--border)', padding: '24px',
+                    boxShadow: 'var(--shadow-lg)', zIndex: '1000', width: 'min(90vw, 480px)', 
+                    borderRadius: 'var(--radius)', maxHeight: '80vh', overflowY: 'auto'
+                });
+                
+                modal.innerHTML = `
+                    <h3 style="margin:0 0 8px 0;color:var(--accent);font-size:1.1rem;font-weight:700;">Fix Weightage - ${courseName}</h3>
+                    <p style="margin:0 0 16px 0;color:var(--text-3);font-size:0.8125rem;">
+                        Set custom weightages for ${code}. Total should be 100%.
+                    </p>
+                    
+                    <div class="form-group">
+                        <label for="w_sess1">Sessional I</label>
+                        <input id="w_sess1" type="number" min="0" max="100" value="${existing.sessionalI ?? 15}" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="w_sess2">Sessional II</label>
+                        <input id="w_sess2" type="number" min="0" max="100" value="${existing.sessionalII ?? 15}" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="w_assign_total">Assignments (total)</label>
+                        <input id="w_assign_total" type="number" min="0" max="100" value="${existing.assignmentsTotal ?? 10}" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="w_quiz_total">Quizzes (total)</label>
+                        <input id="w_quiz_total" type="number" min="0" max="100" value="${existing.quizzesTotal ?? 10}" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="w_project">Project</label>
+                        <input id="w_project" type="number" min="0" max="100" value="${existing.project ?? 10}" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="w_lab">Lab Work</label>
+                        <input id="w_lab" type="number" min="0" max="100" value="${existing.labWork ?? 10}" step="1">
+                    </div>
+                    <div class="form-group">
+                        <label for="w_final">Final Exam</label>
+                        <input id="w_final" type="number" min="0" max="100" value="${existing.finalTotal ?? 40}" step="1">
+                    </div>
+                    
+                    <div class="weightage-summary">
+                        <div>Current Total: <span class="weightage-total" id="weight-total">0</span>/100</div>
+                        <div class="weightage-warning" id="weight-warning" style="display:none;">
+                            Total should be 100% for accurate calculations
+                        </div>
+                    </div>
+                    
+                    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;">
+                        <button id="w_cancel" class="modern-btn secondary">Cancel</button>
+                        <button id="w_reset" class="modern-btn danger">Reset</button>
+                        <button id="w_save" class="modern-btn success">Save</button>
+                    </div>
+                `;
 
-    const backdrop = document.createElement('div');
-    backdrop.className = 'modal-backdrop';
-    Object.assign(backdrop.style, { 
-        position:'fixed', inset:'0', background:'rgba(0,0,0,0.7)', 
-        zIndex:'999', backdropFilter: 'blur(3px)' 
-    });
-    
-    document.body.appendChild(backdrop);
-    document.body.appendChild(modal);
+                const backdrop = document.createElement('div');
+                backdrop.className = 'modal-backdrop';
+                Object.assign(backdrop.style, { 
+                    position:'fixed', inset:'0', background:'rgba(0,0,0,0.6)', 
+                    zIndex:'999', backdropFilter: 'blur(4px)' 
+                });
+                
+                document.body.appendChild(backdrop);
+                document.body.appendChild(modal);
 
-    // Calculate and update total
-    const updateTotal = () => {
-        const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
-        const total = getValue('#w_sess1') + getValue('#w_sess2') + 
-                     getValue('#w_assign_total') + getValue('#w_quiz_total') + 
-                     getValue('#w_project') + getValue('#w_lab') + getValue('#w_final');
-        
-        const totalEl = modal.querySelector('#weight-total');
-        const warningEl = modal.querySelector('#weight-warning');
-        
-        totalEl.textContent = total;
-        totalEl.style.color = total === 100 ? 'var(--success-color)' : 'var(--danger-color)';
-        warningEl.style.display = total !== 100 ? 'block' : 'none';
-    };
+                const updateTotal = () => {
+                    const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
+                    const total = getValue('#w_sess1') + getValue('#w_sess2') + 
+                                 getValue('#w_assign_total') + getValue('#w_quiz_total') + 
+                                 getValue('#w_project') + getValue('#w_lab') + getValue('#w_final');
+                    
+                    const totalEl = modal.querySelector('#weight-total');
+                    const warningEl = modal.querySelector('#weight-warning');
+                    
+                    totalEl.textContent = total;
+                    totalEl.style.color = total === 100 ? 'var(--success)' : 'var(--danger)';
+                    warningEl.style.display = total !== 100 ? 'block' : 'none';
+                };
 
-    // Add event listeners to all inputs
-    modal.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', updateTotal);
-        input.addEventListener('change', updateTotal);
-    });
+                modal.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('input', updateTotal);
+                    input.addEventListener('change', updateTotal);
+                });
 
-    // Initial calculation
-    updateTotal();
+                updateTotal();
 
-    const close = () => { 
-        modal.remove(); 
-        backdrop.remove(); 
-    };
+                const close = () => { 
+                    modal.remove(); 
+                    backdrop.remove(); 
+                };
 
-    modal.querySelector('#w_cancel').onclick = close;
-    backdrop.onclick = close;
+                modal.querySelector('#w_cancel').onclick = close;
+                backdrop.onclick = close;
 
-    modal.querySelector('#w_reset').onclick = () => {
-        delete weightOverrides[code];
-        saveWeightOverrides();
-        close();
-        if (tableVisible) createTable();
-        showToast('Weightage overrides reset to default');
-    };
+                modal.querySelector('#w_reset').onclick = () => {
+                    delete weightOverrides[code];
+                    saveWeightOverrides();
+                    close();
+                    if (tableVisible) createTable();
+                    showToast('Weightage overrides reset to default');
+                };
 
-    modal.querySelector('#w_save').onclick = () => {
-        const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
-        
-        weightOverrides[code] = {
-            sessionalI: getValue('#w_sess1'),
-            sessionalII: getValue('#w_sess2'),
-            assignmentsTotal: getValue('#w_assign_total'),
-            quizzesTotal: getValue('#w_quiz_total'),
-            project: getValue('#w_project'),
-            labWork: getValue('#w_lab'),
-            finalTotal: getValue('#w_final'),
-        };
-        
-        saveWeightOverrides();
-        close();
-        if (tableVisible) createTable();
-        showToast('Custom weightages saved successfully');
-    };
+                modal.querySelector('#w_save').onclick = () => {
+                    const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
+                    
+                    weightOverrides[code] = {
+                        sessionalI: getValue('#w_sess1'),
+                        sessionalII: getValue('#w_sess2'),
+                        assignmentsTotal: getValue('#w_assign_total'),
+                        quizzesTotal: getValue('#w_quiz_total'),
+                        project: getValue('#w_project'),
+                        labWork: getValue('#w_lab'),
+                        finalTotal: getValue('#w_final'),
+                    };
+                    
+                    saveWeightOverrides();
+                    close();
+                    if (tableVisible) createTable();
+                    showToast('Custom weightages saved successfully');
+                };
 
-    // Close on Escape key
-    const handleKeyDown = (e) => {
-        if (e.key === 'Escape') close();
-    };
-    document.addEventListener('keydown', handleKeyDown);
-    modal._keyHandler = handleKeyDown;
-};
+                const handleKeyDown = (e) => {
+                    if (e.key === 'Escape') close();
+                };
+                document.addEventListener('keydown', handleKeyDown);
+                modal._keyHandler = handleKeyDown;
+            };
 
-           const runAutoFixForCourse = (code) => {
-    const activePane = document.getElementById(code);
-    if (!activePane) { 
-        showToast('Please open a course tab first', false); 
-        return; 
-    }
+            const runAutoFixForCourse = (code) => {
+                const activePane = document.getElementById(code);
+                if (!activePane) { 
+                    showToast('Please open a course tab first', false); 
+                    return; 
+                }
 
-    // Analyze the course structure
-    const rows = activePane.querySelectorAll('.sum_table .calculationrow');
-    let quizCount = 0, assignCount = 0, hasSess1 = false, hasSess2 = false, 
-        hasProject = false, hasLab = false, hasFinal = false;
+                const rows = activePane.querySelectorAll('.sum_table .calculationrow');
+                let quizCount = 0, assignCount = 0, hasSess1 = false, hasSess2 = false, 
+                    hasProject = false, hasLab = false, hasFinal = false;
 
-    rows.forEach(row => {
-        const totalMarksRow = row.querySelector('.GrandTotal');
-        if (!totalMarksRow) return;
-        
-        const total = parseFloat(totalMarksRow.textContent) || 0;
-        if (total === 0) return;
-        
-        const name = getAssessmentName(row).toLowerCase();
-        
-        if (name.includes('quiz')) quizCount++;
-        if (name.includes('assignment')) assignCount++;
-        if (name.includes('sessional') && name.includes('i') && !name.includes('ii')) hasSess1 = true;
-        if (name.includes('sessional') && name.includes('ii')) hasSess2 = true;
-        if (name.includes('project')) hasProject = true;
-        if (name.includes('lab work') || name.includes('labwork')) hasLab = true;
-        if (name.includes('final')) hasFinal = true;
-    });
+                rows.forEach(row => {
+                    const totalMarksRow = row.querySelector('.GrandTotal');
+                    if (!totalMarksRow) return;
+                    
+                    const total = parseFloat(totalMarksRow.textContent) || 0;
+                    if (total === 0) return;
+                    
+                    const name = getAssessmentName(row).toLowerCase();
+                    
+                    if (name.includes('quiz')) quizCount++;
+                    if (name.includes('assignment')) assignCount++;
+                    if (name.includes('sessional') && name.includes('i') && !name.includes('ii')) hasSess1 = true;
+                    if (name.includes('sessional') && name.includes('ii')) hasSess2 = true;
+                    if (name.includes('project')) hasProject = true;
+                    if (name.includes('lab work') || name.includes('labwork')) hasLab = true;
+                    if (name.includes('final')) hasFinal = true;
+                });
 
-    // Calculate base weights
-    const sess1 = hasSess1 ? 15 : 0;
-    const sess2 = hasSess2 ? 15 : 0;
-    const assignTotal = assignCount > 0 ? 10 : 0;
-    const projW = hasProject ? 10 : 0;
-    const labW = hasLab ? 10 : 0;
+                const sess1 = hasSess1 ? 15 : 0;
+                const sess2 = hasSess2 ? 15 : 0;
+                const assignTotal = assignCount > 0 ? 10 : 0;
+                const projW = hasProject ? 10 : 0;
+                const labW = hasLab ? 10 : 0;
 
-    const baseTotal = sess1 + sess2 + assignTotal + projW + labW;
-    const remaining = 100 - baseTotal;
+                const baseTotal = sess1 + sess2 + assignTotal + projW + labW;
+                const remaining = 100 - baseTotal;
 
-    // Distribute remaining between quizzes and final
-    let quizTotal, finalW;
+                let quizTotal, finalW;
 
-    if (quizCount > 0 && hasFinal) {
-        // Try to give quizzes 10-15 and rest to final
-        quizTotal = Math.min(15, Math.max(10, Math.floor(remaining * 0.25)));
-        finalW = remaining - quizTotal;
-    } else if (quizCount > 0) {
-        quizTotal = remaining;
-        finalW = 0;
-    } else if (hasFinal) {
-        quizTotal = 0;
-        finalW = remaining;
-    } else {
-        // No quizzes or final - distribute to other components
-        quizTotal = 0;
-        finalW = 0;
-        // Could add logic to redistribute here if needed
-    }
+                if (quizCount > 0 && hasFinal) {
+                    quizTotal = Math.min(15, Math.max(10, Math.floor(remaining * 0.25)));
+                    finalW = remaining - quizTotal;
+                } else if (quizCount > 0) {
+                    quizTotal = remaining;
+                    finalW = 0;
+                } else if (hasFinal) {
+                    quizTotal = 0;
+                    finalW = remaining;
+                } else {
+                    quizTotal = 0;
+                    finalW = 0;
+                }
 
-    // Save the calculated weights
-    weightOverrides[code] = {
-        sessionalI: sess1,
-        sessionalII: sess2,
-        assignmentsTotal: assignTotal,
-        quizzesTotal: quizTotal,
-        project: projW,
-        labWork: labW,
-        finalTotal: finalW,
-    };
+                weightOverrides[code] = {
+                    sessionalI: sess1,
+                    sessionalII: sess2,
+                    assignmentsTotal: assignTotal,
+                    quizzesTotal: quizTotal,
+                    project: projW,
+                    labWork: labW,
+                    finalTotal: finalW,
+                };
 
-    saveWeightOverrides();
-    
-    if (tableVisible) createTable();
-    
-    showToast(`Auto weightage applied: ${quizCount} quizzes, ${assignCount} assignments detected`);
-};
+                saveWeightOverrides();
+                
+                if (tableVisible) createTable();
+                
+                showToast(`Auto weightage applied: ${quizCount} quizzes, ${assignCount} assignments detected`);
+            };
 
             fixWeightBtn.addEventListener('click', () => openManualWeightsModal(getActiveCourseCode()));
             autoFixBtn.addEventListener('click', () => {
