@@ -242,6 +242,7 @@ body {
     border-bottom: 1px solid var(--border-color);
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
 }
 
 .toggle-container label {
@@ -454,6 +455,14 @@ body {
 /* Override portal's native blue backgrounds — only for header/containers */
 .m-portlet__body {
     background: var(--primary-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.m-portlet__body table,
+.m-portlet__body .sum_table,
+.m-portlet__body .calculationrow td,
+.m-portlet__body th,
+.m-portlet__body td {
     color: var(--text-primary) !important;
 }
 
@@ -766,6 +775,20 @@ body {
 .fr-card-sub {
     font-size: var(--font-size-xs);
     color: var(--text-muted);
+}
+
+.fr-card-total {
+    background: var(--primary-light);
+    border-color: var(--border-color);
+}
+
+.fr-card-total .fr-card-value {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-bold);
+}
+
+.fr-card-total .fr-card-sub {
+    font-weight: var(--font-weight-medium);
 }
 
 .fr-total-row {

@@ -576,6 +576,15 @@
             `;
           });
 
+          const totalPct = totalMax > 0 ? ((totalObt / totalMax) * 100).toFixed(1) : '0.0';
+          html += `
+            <div class="fr-card fr-card-total" role="group" aria-label="${type} total">
+              <div class="fr-card-label">${type} Total</div>
+              <div class="fr-card-value">${totalObt.toFixed(1)} / ${totalMax.toFixed(1)}</div>
+              <div class="fr-card-sub">${totalPct}% — Weight: ${totalWeight.toFixed(1)}%</div>
+            </div>
+          `;
+
           html += `</div></div>`;
         });
 
@@ -723,16 +732,6 @@
 
       const container = document.createElement('div');
       container.className = 'toggle-container';
-      container.style.cssText = `
-                display: flex;
-                gap: var(--space-md);
-                padding: var(--space-lg) var(--space-xl);
-                background: var(--card-bg);
-                border-bottom: 1px solid var(--border-light);
-                flex-wrap: wrap;
-                align-items: center;
-            `;
-
 
       const transcriptButton = document.createElement('button');
       transcriptButton.id = 'show-transcript-button';
