@@ -189,20 +189,16 @@
 
   function init() {
     let shouldRoundUp = true;
-    let tableVisible = false;
+    let panelVisible = false;
     let stopAutoClick = false;
-    // Per-course weightage overrides persisted in localStorage
-    const WEIGHT_OVERRIDES_KEY = 'flexrizz_weight_overrides_v1';
-    let weightOverrides = {};
-    try {
-      const raw = localStorage.getItem(WEIGHT_OVERRIDES_KEY);
-      weightOverrides = raw ? JSON.parse(raw) : {};
-    } catch (e) {
-      weightOverrides = {};
-    }
-    const saveWeightOverrides = () => {
-      try { localStorage.setItem(WEIGHT_OVERRIDES_KEY, JSON.stringify(weightOverrides)); } catch (_) { }
-    };
+    let selectedCourse = null;
+    let allCourseData = [];
+    let panelContainer = null;
+    let courseListEl = null;
+    let contentEl = null;
+    let summaryCardEl = null;
+    let searchInput = null;
+    const LAST_COURSE_KEY = 'flexrizz_last_course';
 
     // Complete database of all courses
     const allCourses = {
@@ -266,11 +262,9 @@
       return row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
     }
 
-    // Function to detect registered courses from the marks tab
     function detectRegisteredCourses() {
       const registeredCourses = {};
       const courseTabs = document.querySelectorAll('.m-portlet__head-tools .nav-link.m-tabs__link');
-
       courseTabs.forEach(tab => {
         const href = tab.getAttribute('href');
         if (href && href.startsWith('#')) {
@@ -280,25 +274,17 @@
           }
         }
       });
-
       return registeredCourses;
     }
 
-    // Detect current semester from dropdown
     const detectCurrentSemester = () => {
       const semesterDropdown = document.querySelector('select#SemId');
       if (!semesterDropdown) return 1;
-
       const selectedOption = semesterDropdown.options[semesterDropdown.selectedIndex];
       const semesterText = selectedOption.textContent.trim();
-
       const semesterMap = {
-        'Fall 2024': 1,
-        'Spring 2025': 2,
-        'Fall 2025': 3,
-        'Spring 2026': 4,
+        'Fall 2024': 1, 'Spring 2025': 2, 'Fall 2025': 3, 'Spring 2026': 4,
       };
-
       return semesterMap[semesterText] || 1;
     };
 
@@ -310,7 +296,6 @@
         if (typeof html2pdf !== "undefined") {
           return resolve();
         }
-
         const script = document.createElement('script');
         script.src = 'https://unpkg.com/html2pdf.js@0.9.2/dist/html2pdf.bundle.min.js';
         script.onload = () => resolve();
@@ -319,250 +304,318 @@
       });
     }
 
-    const createTable = () => {
-      const existingTable = portlet.querySelector('#course-data-table');
-      if (existingTable) {
-        existingTable.remove();
-      }
+    function collectCourseData(code) {
+      const gradingType = courses[code].grading;
+      const credits = courses[code].credits;
+      const courseLink = document.querySelector(`a.nav-link[href="#${code}"]`);
+      if (!courseLink) return null;
 
-      stopAutoClick = false;
+      courseLink.click();
+      const activeDiv = document.querySelector('.tab-pane.active');
+      if (!activeDiv) return null;
 
-      const table = document.createElement('table');
-      table.id = 'course-data-table';
-      table.style.cssText = `
-                width: 100%;
-                border-collapse: separate;
-                border-spacing: 0;
-                background: var(--card-bg);
-                font-size: var(--font-size-sm);
-                border-radius: var(--border-radius);
-                overflow: hidden;
-                margin-top: var(--space-md);
-                box-shadow: var(--shadow-sm);
-            `;
+      let totalWeightage = 0;
+      let totalObtMarks = 0;
+      let totalAverage = 0;
+      let assessmentDetails = [];
 
-      const headerRow = `
-                <thead>
-                    <tr>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Course</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Type</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Avg</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Obtained</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Total</th>
-                        <th style="padding: var(--space-md) var(--space-lg); background: var(--primary-bg); color: var(--text-secondary); font-weight: var(--font-weight-semibold); text-align: left; border-bottom: 2px solid var(--border-color); position: relative;">Grade</th>
-                    </tr>
-                </thead>
-            `;
-      table.innerHTML = headerRow;
+      const tables = activeDiv.querySelectorAll('.sum_table');
+      tables.forEach((table) => {
+        let rowCalculatedAverage = 0;
+        let tableWeightageSum = 0;
 
-      const tbody = document.createElement('tbody');
-      table.appendChild(tbody);
+        const rows = table.querySelectorAll('.calculationrow');
+        rows.forEach((row) => {
+          const assessmentName = getAssessmentName(row);
+          const weightRow = row.querySelector('.weightage');
+          const averageRow = row.querySelector('.AverageMarks');
+          const totalMarksRow = row.querySelector('.GrandTotal');
+          const obtMarksRow = row.querySelector('.ObtMarks');
 
-      let totalCredits = 0;
-      let totalGradePoints = 0;
-
-      const addCourseDataToTable = (name, gradingType, finalCalculateAverage, totalObtMarks, totalWeightage, grade, credits) => {
-        const gradeClass = window.gradeUtils.getGradeClass(grade);
-        const newRow = `
-                    <tr style="transition: var(--transition-fast);">
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${name}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${gradingType}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${finalCalculateAverage}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${totalObtMarks.toFixed(2)}</td>
-                        <td style="padding: var(--space-md) var(--space-lg); position: relative;">${totalWeightage.toFixed(2)}</td>
-                        <td class="${gradeClass}" style="padding: var(--space-md) var(--space-lg); position: relative; font-weight: bold;">${grade}</td>
-                    </tr>
-                `;
-        tbody.innerHTML += newRow;
-
-        totalCredits += credits;
-        totalGradePoints += window.gradeUtils.getGradePoints(grade) * credits;
-      };
-
-      Object.keys(courses).forEach((code, index) => {
-        if (stopAutoClick) return;
-
-        const gradingType = courses[code].grading;
-        const credits = courses[code].credits;
-        const courseLink = document.querySelector(`a.nav-link[href="#${code}"]`);
-        if (courseLink) {
-          courseLink.click();
-        }
-
-        const activeDiv = document.querySelector('.tab-pane.active');
-        if (!activeDiv) return;
-
-        let totalWeightage = 0;
-        let totalObtMarks = 0;
-        let totalAverage = 0;
-
-        // Helper: compute totals using overrides if present for this course
-        const computeWithOverridesIfAny = () => {
-          const ovr = weightOverrides[code];
-          if (!ovr) return false;
-
-          // Collect all assessment rows in active course pane
-          const rows = activeDiv.querySelectorAll('.sum_table .calculationrow');
-          if (!rows || rows.length === 0) return false;
-
-          // Count occurrences for distributions
-          let quizCount = 0, assignCount = 0;
-          const distRows = [];
-          rows.forEach(row => {
-            const weightRow = row.querySelector('.weightage');
-            const averageRow = row.querySelector('.AverageMarks');
-            const totalMarksRow = row.querySelector('.GrandTotal');
-            const obtMarksRow = row.querySelector('.ObtMarks');
-            if (!averageRow || !totalMarksRow || !obtMarksRow) return;
-            const name = getAssessmentName(row);
-            const total = parseFloat(totalMarksRow.textContent) || 0;
-            if (total === 0) return;
-            if (name.toLowerCase().includes('quiz')) quizCount++;
-            if (name.toLowerCase().includes('assignment')) assignCount++;
-            distRows.push({ row, name });
-          });
-
-          // Assigned weights per type
-          const sess1 = ovr.sessionalI || 0;
-          const sess2 = ovr.sessionalII || 0;
-          const finalW = ovr.finalTotal || 0;
-          const projW = ovr.project || 0;
-          const labW = ovr.labWork || 0;
-          const quizTotal = ovr.quizzesTotal || 0;
-          const assignTotal = ovr.assignmentsTotal || 0;
-
-          let localTotalWeightage = 0;
-          let localTotalObt = 0;
-          let localTotalAvg = 0;
-
-          const quizPer = quizCount > 0 ? quizTotal / quizCount : 0;
-          const assignPer = assignCount > 0 ? assignTotal / assignCount : 0;
-
-          distRows.forEach(({ row, name }) => {
-            const averageRow = row.querySelector('.AverageMarks');
-            const totalMarksRow = row.querySelector('.GrandTotal');
-            const obtMarksRow = row.querySelector('.ObtMarks');
-            const total = parseFloat(totalMarksRow.textContent) || 0;
-            const avg = parseFloat(averageRow.textContent) || 0;
-            const obt = parseFloat(obtMarksRow.textContent) || 0;
-
-            let assigned = 0;
-            const low = name.toLowerCase();
-            if (low.includes('sessional') && low.includes('i') && !low.includes('ii')) {
-              assigned = sess1;
-            } else if (low.includes('sessional') && low.includes('ii')) {
-              assigned = sess2;
-            } else if (low.includes('quiz')) {
-              assigned = quizPer;
-            } else if (low.includes('assignment')) {
-              assigned = assignPer;
-            } else if (low.includes('project')) {
-              assigned = projW;
-            } else if (low.includes('lab')) {
-              assigned = labW;
-            } else if (low.includes('final')) {
-              assigned = finalW;
-            }
-
-            if (assigned > 0) {
-              localTotalWeightage += assigned;
-              localTotalObt += (obt / total) * assigned;
-              localTotalAvg += (avg / total) * assigned;
-            }
-          });
-
-          if (localTotalWeightage > 0) {
-            totalWeightage = localTotalWeightage;
-            totalObtMarks = localTotalObt;
-            totalAverage = localTotalAvg;
-            return true;
+          if (!weightRow || !averageRow || !totalMarksRow || !obtMarksRow ||
+            weightRow.textContent.trim() === "0" ||
+            totalMarksRow.textContent.trim() === "0") {
+            return;
           }
-          return false;
-        };
 
-        const tables = activeDiv.querySelectorAll('.sum_table');
-        // If overrides exist and can compute, use them and skip portal totals
-        let usedOverrides = computeWithOverridesIfAny();
-        if (!usedOverrides) {
-          tables.forEach((table) => {
-            let rowCalculatedAverage = 0;
-            let tableWeightageSum = 0;
+          const weight = parseFloat(weightRow.textContent);
+          const average = parseFloat(averageRow.textContent);
+          const total = parseFloat(totalMarksRow.textContent);
+          const obt = parseFloat(obtMarksRow.textContent);
 
-            const rows = table.querySelectorAll('.calculationrow');
-            rows.forEach((row) => {
-              const weightRow = row.querySelector('.weightage');
-              const averageRow = row.querySelector('.AverageMarks');
-              const totalMarksRow = row.querySelector('.GrandTotal');
+          tableWeightageSum += weight;
+          rowCalculatedAverage += (average / total) * weight;
 
-              if (!weightRow || !averageRow || !totalMarksRow ||
-                weightRow.textContent.trim() === "0" ||
-                averageRow.textContent.trim() === "0" ||
-                totalMarksRow.textContent.trim() === "0") {
-                return;
-              }
-
-              tableWeightageSum += parseFloat(weightRow.textContent);
-              rowCalculatedAverage += (parseFloat(averageRow.textContent) / parseFloat(totalMarksRow.textContent)) * parseFloat(weightRow.textContent);
-            });
-
-            const totalSection = table.querySelector('[class*="totalColumn_"]');
-            if (totalSection) {
-              const colWeightage = totalSection.querySelector('.totalColweightage');
-              if (colWeightage && tableWeightageSum !== 0 && rowCalculatedAverage !== 0) {
-                rowCalculatedAverage = (rowCalculatedAverage / tableWeightageSum) * parseFloat(colWeightage.textContent);
-                totalAverage += rowCalculatedAverage;
-              }
-
-              const colObtMarks = totalSection.querySelector('.totalColObtMarks');
-              if (colWeightage && colObtMarks) {
-                totalWeightage += parseFloat(colWeightage.textContent);
-                totalObtMarks += parseFloat(colObtMarks.textContent);
-              }
-            }
+          assessmentDetails.push({
+            name: assessmentName,
+            weight: weight,
+            classAverage: average,
+            totalMarks: total,
+            yourScore: obt,
+            percentage: (obt / total) * 100,
+            classAveragePercentage: (average / total) * 100
           });
-        }
+        });
 
-        const finalCalculateAverage = isNaN(totalAverage) ? "N/A" : totalAverage.toFixed(2);
-        let grade = "I";
-        const finalMarks = shouldRoundUp ? Math.ceil(totalObtMarks) : totalObtMarks;
+        const totalSection = table.querySelector('[class*="totalColumn_"]');
+        if (totalSection) {
+          const colWeightage = totalSection.querySelector('.totalColweightage');
+          if (colWeightage && tableWeightageSum !== 0 && rowCalculatedAverage !== 0) {
+            rowCalculatedAverage = (rowCalculatedAverage / tableWeightageSum) * parseFloat(colWeightage.textContent);
+            totalAverage += rowCalculatedAverage;
+          }
 
-        if (gradingType === "Absolute") {
-          const percentage = (finalMarks / totalWeightage) * 100;
-          grade = window.gradeUtils.calculateAbsoluteGrade(percentage);
-        }
-        else if (gradingType === "Relative") {
-          const percentage = Math.round((finalMarks / totalWeightage) * 100);
-          const mca = Math.round((totalAverage / totalWeightage) * 100);
-          grade = window.gradeUtils.getGrade(mca, percentage)[0];
-        }
-
-        addCourseDataToTable(courses[code].name, gradingType, finalCalculateAverage, finalMarks, totalWeightage, grade, credits);
-        if (index === Object.keys(courses).length - 1) {
-          stopAutoClick = true;
+          const colObtMarks = totalSection.querySelector('.totalColObtMarks');
+          if (colWeightage && colObtMarks) {
+            totalWeightage += parseFloat(colWeightage.textContent);
+            totalObtMarks += parseFloat(colObtMarks.textContent);
+          }
         }
       });
 
-      const sgpa = (totalGradePoints / totalCredits).toFixed(2);
-      const sgpaRow = `
-                <tr class="sgpa-row" style="background: rgba(52, 152, 219, 0.08) !important; font-weight: 600 !important;">
-                    <td colspan="4" style="text-align: left; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
-                    <span class="credit-text">A project by @doubleroote 
-                    <svg viewBox="0 0 24 24" aria-label="Verified account" style="color: var(--primary-color); width: 0.9em; height: 0.9em; margin-left: 2px; vertical-align: middle; fill: currentColor;">
-                        <g><path d="M22.25 12c0-1.43-.88-2.67-2.19-3.34.46-1.39.2-2.9-.81-3.91s-2.52-1.27-3.91-.81c-.66-1.31-1.91-2.19-3.34-2.19s-2.67.88-3.33 2.19c-1.4-.46-2.91-.2-3.92.81s-1.26 2.52-.8 3.91c-1.31.67-2.2 1.91-2.2 3.34s.89 2.67 2.2 3.34c-.46 1.39-.21 2.9.8 3.91s-2.52 1.26-3.91.81c.67 1.31 1.91 2.19 3.34 2.19s2.68-.88 3.34-2.19c1.39.45 2.9.2 3.91-.81s1.27-2.52.81-3.91c1.31-.67 2.19-1.91 2.19-3.34zm-11.71 4.2L6.8 12.46l1.41-1.42 2.26 2.26 4.8-5.23 1.47 1.36-6.2 6.77z"></path></g>
-                    </svg>
-                    </span>
-                    </td>
-                    <td style="text-align: right; font-weight: bold; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">SGPA</td>
-                    <td style="font-weight: bold; font-size: 1.1em; padding: var(--space-md) var(--space-lg); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">${sgpa}</td>
-                </tr>
-            `;
-      tbody.innerHTML += sgpaRow;
+      const finalCalculateAverage = isNaN(totalAverage) ? 0 : totalAverage;
+      const finalMarks = shouldRoundUp ? Math.ceil(totalObtMarks) : totalObtMarks;
+
+      let grade = "I";
+      if (gradingType === "Absolute") {
+        const percentage = totalWeightage > 0 ? (finalMarks / totalWeightage) * 100 : 0;
+        grade = window.gradeUtils.calculateAbsoluteGrade(percentage);
+      } else if (gradingType === "Relative") {
+        const percentage = totalWeightage > 0 ? Math.round((finalMarks / totalWeightage) * 100) : 0;
+        const mca = totalWeightage > 0 ? Math.round((totalAverage / totalWeightage) * 100) : 0;
+        grade = window.gradeUtils.getGrade(mca, percentage)[0];
+      }
+
+      return {
+        code,
+        name: courses[code].name,
+        gradingType,
+        credits,
+        classAverage: finalCalculateAverage,
+        yourScore: finalMarks,
+        totalMarks: totalWeightage,
+        grade,
+        assessments: assessmentDetails,
+        percentage: totalWeightage > 0 ? (finalMarks / totalWeightage) * 100 : 0
+      };
+    }
+
+    function computeAllCourseData() {
+      allCourseData = [];
+      Object.keys(courses).forEach((code) => {
+        const data = collectCourseData(code);
+        if (data) allCourseData.push(data);
+      });
+    }
+
+    function getSavedLastCourse() {
+      try {
+        return localStorage.getItem(LAST_COURSE_KEY);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveLastCourse(code) {
+      try {
+        localStorage.setItem(LAST_COURSE_KEY, code);
+      } catch (e) { }
+    }
+
+    function renderSummaryCard() {
+      if (!summaryCardEl) return;
+      let totalCredits = 0;
+      let totalGradePoints = 0;
+      allCourseData.forEach(c => {
+        totalCredits += c.credits;
+        totalGradePoints += window.gradeUtils.getGradePoints(c.grade) * c.credits;
+      });
+      const sgpa = totalCredits > 0 ? (totalGradePoints / totalCredits).toFixed(2) : 'N/A';
+      summaryCardEl.innerHTML = `
+        <div class="fr-summary-card-title">Semester Overview</div>
+        <div class="fr-summary-card-values">
+          <div class="fr-summary-item">
+            <span class="fr-summary-label">SGPA</span>
+            <span class="fr-summary-value">${sgpa}</span>
+          </div>
+          <div class="fr-summary-item">
+            <span class="fr-summary-label">Total Credits</span>
+            <span class="fr-summary-value">${totalCredits}</span>
+          </div>
+          <div class="fr-summary-item">
+            <span class="fr-summary-label">Courses</span>
+            <span class="fr-summary-value">${allCourseData.length}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderCourseList(filterText) {
+      if (!courseListEl) return;
+      courseListEl.innerHTML = '';
+      const filter = (filterText || '').toLowerCase();
+      const filtered = allCourseData.filter(c => {
+        if (!filter) return true;
+        return c.code.toLowerCase().includes(filter) || c.name.toLowerCase().includes(filter);
+      });
+
+      if (filtered.length === 0) {
+        courseListEl.innerHTML = '<div class="fr-empty-state"><span class="fr-empty-state-text">No courses found</span></div>';
+        return;
+      }
+
+      filtered.forEach(c => {
+        const item = document.createElement('button');
+        item.className = 'fr-course-item' + (selectedCourse === c.code ? ' active' : '');
+        item.setAttribute('role', 'option');
+        item.setAttribute('tabindex', '0');
+        item.setAttribute('aria-selected', selectedCourse === c.code ? 'true' : 'false');
+        item.dataset.code = c.code;
+
+        const gradeClass = window.gradeUtils.getGradeClass(c.grade);
+        item.innerHTML = `
+          <div class="fr-course-item-info">
+            <span class="fr-course-item-code">${c.code}</span>
+            <span class="fr-course-item-name">${c.name}</span>
+          </div>
+          <span class="fr-course-item-grade ${gradeClass}">${c.grade}</span>
+        `;
+
+        item.addEventListener('click', () => selectCourse(c.code));
+        item.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectCourse(c.code);
+          }
+        });
+
+        courseListEl.appendChild(item);
+      });
+    }
+
+    function renderCourseContent(code) {
+      if (!contentEl) return;
+      const data = allCourseData.find(c => c.code === code);
+      if (!data) {
+        contentEl.innerHTML = '<div class="fr-empty-state"><span class="fr-empty-state-text">No marks available yet</span></div>';
+        return;
+      }
+
+      const gradeClass = window.gradeUtils.getGradeClass(data.grade);
+      let html = `
+        <div class="fr-cards-header">
+          <div>
+            <h3 class="fr-cards-course-title">${data.name} <span class="${gradeClass}">(${data.grade})</span></h3>
+            <div class="fr-cards-course-meta">${data.code} — ${data.credits} credits — ${data.gradingType}</div>
+          </div>
+        </div>
+      `;
+
+      if (data.assessments.length === 0) {
+        html += '<div class="fr-empty-state"><span class="fr-empty-state-text">No marks available yet</span></div>';
+      } else {
+        html += '<div class="fr-cards-grid">';
+        data.assessments.forEach(a => {
+          html += `
+            <div class="fr-card" role="group" aria-label="${a.name}">
+              <div class="fr-card-label">${a.name}</div>
+              <div class="fr-card-value">${a.yourScore.toFixed(1)} / ${a.totalMarks.toFixed(1)}</div>
+              <div class="fr-card-sub">Avg: ${a.classAverage.toFixed(1)} — Weight: ${a.weight.toFixed(0)}%</div>
+            </div>
+          `;
+        });
+
+        html += `
+          <div class="fr-card" role="group" aria-label="Total">
+            <div class="fr-card-label">Total</div>
+            <div class="fr-card-value">${data.yourScore.toFixed(1)} / ${data.totalMarks.toFixed(1)}</div>
+            <div class="fr-card-sub">${data.percentage.toFixed(1)}% — ${data.gradingType}</div>
+          </div>
+        `;
+        html += '</div>';
+      }
+
+      contentEl.innerHTML = html;
+    }
+
+    function selectCourse(code) {
+      selectedCourse = code;
+      saveLastCourse(code);
+      renderCourseList(searchInput ? searchInput.value : '');
+      renderCourseContent(code);
+    }
+
+    function createPanel() {
+      const existingPanel = portlet.querySelector('.fr-panel');
+      if (existingPanel) existingPanel.remove();
+
+      stopAutoClick = false;
+      computeAllCourseData();
+
+      panelContainer = document.createElement('div');
+      panelContainer.className = 'fr-panel';
+
+      const sidebar = document.createElement('div');
+      sidebar.className = 'fr-course-sidebar';
+
+      const sidebarHeader = document.createElement('div');
+      sidebarHeader.className = 'fr-course-sidebar-header';
+
+      searchInput = document.createElement('input');
+      searchInput.type = 'text';
+      searchInput.className = 'fr-search';
+      searchInput.placeholder = 'Search courses...';
+      searchInput.setAttribute('aria-label', 'Search courses');
+      searchInput.addEventListener('input', () => {
+        renderCourseList(searchInput.value);
+      });
+
+      if (allCourseData.length > 6) {
+        sidebarHeader.appendChild(searchInput);
+      }
+
+      courseListEl = document.createElement('div');
+      courseListEl.className = 'fr-course-list';
+      courseListEl.setAttribute('role', 'listbox');
+      courseListEl.setAttribute('aria-label', 'Course list');
+
+      sidebar.appendChild(sidebarHeader);
+      sidebar.appendChild(courseListEl);
+
+      const contentArea = document.createElement('div');
+      contentArea.className = 'fr-content';
+
+      summaryCardEl = document.createElement('div');
+      summaryCardEl.className = 'fr-summary-card';
+      contentArea.appendChild(summaryCardEl);
+
+      contentEl = document.createElement('div');
+      contentArea.appendChild(contentEl);
+
+      panelContainer.appendChild(sidebar);
+      panelContainer.appendChild(contentArea);
 
       const portletBody = portlet.querySelector('.m-portlet__body');
       if (portletBody) {
-        portlet.insertBefore(table, portletBody);
+        portlet.insertBefore(panelContainer, portletBody);
       }
-    };
+
+      renderSummaryCard();
+
+      const savedCode = getSavedLastCourse();
+      if (savedCode && allCourseData.find(c => c.code === savedCode)) {
+        selectedCourse = savedCode;
+      } else if (allCourseData.length > 0) {
+        selectedCourse = allCourseData[0].code;
+      }
+
+      renderCourseList('');
+      if (selectedCourse) {
+        renderCourseContent(selectedCourse);
+      } else {
+        contentEl.innerHTML = '<div class="fr-empty-state"><span class="fr-empty-state-text">No marks available yet</span></div>';
+      }
+    }
 
     function showToast(message, isSuccess = true) {
       const toast = document.createElement('div');
@@ -588,28 +641,24 @@
         background: isSuccess ? 'var(--success-color)' : 'var(--danger-color)'
       });
 
-      // Add icon
       const icon = document.createElement('span');
-      icon.innerHTML = isSuccess ? '✓' : '✗';
+      icon.innerHTML = isSuccess ? '\u2713' : '\u2717';
       icon.style.fontWeight = 'bold';
       icon.style.fontSize = '1.2em';
       toast.appendChild(icon);
 
-      // Add message
       const messageEl = document.createElement('span');
       messageEl.textContent = message;
       toast.appendChild(messageEl);
 
       document.body.appendChild(toast);
 
-      // Animate in
       setTimeout(() => {
         toast.style.opacity = '1';
         toast.style.transform = 'translateX(0)';
         toast.style.pointerEvents = 'auto';
       }, 10);
 
-      // Auto-dismiss after delay
       setTimeout(() => {
         toast.style.opacity = '0';
         toast.style.transform = 'translateX(-30px)';
@@ -618,16 +667,7 @@
         }, 400);
       }, 4000);
     }
-    const updateWeightageButtonStatus = () => {
-      const activeCode = getActiveCourseCode();
-      if (activeCode && weightOverrides[activeCode]) {
-        fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-on"></span>';
-        fixWeightBtn.classList.add('active');
-      } else {
-        fixWeightBtn.innerHTML = 'Fix Weightage <span class="status-indicator status-off"></span>';
-        fixWeightBtn.classList.remove('active');
-      }
-    };
+
     const createToggleButtons = () => {
       const existingContainer = portlet.querySelector('.toggle-container');
       if (existingContainer) return;
@@ -644,7 +684,6 @@
                 align-items: center;
             `;
 
-      // Semester Selector
       const semesterContainer = document.createElement('div');
       semesterContainer.className = 'semester-selector';
       semesterContainer.style.cssText = `
@@ -692,7 +731,6 @@
                 min-width: 30px;
             `;
 
-      // Dark Mode Toggle (iOS style)
       const darkModeContainer = document.createElement('div');
       darkModeContainer.className = 'dark-mode-toggle-container';
 
@@ -716,7 +754,6 @@
       darkModeContainer.appendChild(darkModeLabel);
       darkModeContainer.appendChild(darkModeToggle);
 
-      // Add event listener for dark mode toggle
       darkModeCheckbox.addEventListener('change', () => {
         if (darkModeCheckbox.checked) {
           document.body.classList.add('dark-mode');
@@ -733,13 +770,12 @@
       const transcriptButton = document.createElement('button');
       transcriptButton.id = 'show-transcript-button';
       transcriptButton.className = 'modern-btn';
-      transcriptButton.innerHTML = `${tableVisible ? 'Hide' : 'Show'} Transcript`;
+      transcriptButton.innerHTML = `${panelVisible ? 'Hide' : 'Show'} Transcript`;
 
       const transcriptStatus = document.createElement('span');
-      transcriptStatus.className = `status-indicator ${tableVisible ? 'status-on' : 'status-off'}`;
+      transcriptStatus.className = `status-indicator ${panelVisible ? 'status-on' : 'status-off'}`;
       transcriptButton.appendChild(transcriptStatus);
 
-      // Rounding Button
       const roundingButton = document.createElement('button');
       roundingButton.id = 'toggle-rounding-button';
       roundingButton.className = 'modern-btn';
@@ -761,77 +797,21 @@
 
       editMarksButton.addEventListener('click', () => {
         editModeActive = !editModeActive;
-        const table = portlet.querySelector('#course-data-table');
 
-        if (!table) return;
+        if (editModeActive) {
+          enableEditMode();
+        } else {
+          disableEditMode();
+        }
 
-        const rows = table.querySelectorAll('tbody tr:not(.sgpa-row)');
-        rows.forEach(row => {
-          const obtainedCell = row.querySelector('td:nth-child(4)');
-          const gradeCell = row.querySelector('td:nth-child(6)');
-          const totalMarks = parseFloat(row.querySelector('td:nth-child(5)').textContent);
-
-          if (editModeActive) {
-            const originalValue = obtainedCell.textContent;
-            obtainedCell.classList.add('editable-cell');
-
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.step = '0.01';
-            input.min = 0;
-            input.max = totalMarks;
-            input.value = originalValue;
-
-            obtainedCell.textContent = '';
-            obtainedCell.appendChild(input);
-
-            input.addEventListener('input', () => {
-              const newValue = parseFloat(input.value) || 0;
-              const courseName = row.querySelector('td:first-child').textContent;
-              const courseEntry = Object.entries(courses).find(([_, course]) => course.name === courseName);
-
-              if (courseEntry) {
-                const [code, courseData] = courseEntry;
-                let grade = "I";
-
-                if (courseData.grading === "Absolute") {
-                  const percentage = (newValue / totalMarks) * 100;
-                  grade = window.gradeUtils.calculateAbsoluteGrade(percentage);
-                } else if (courseData.grading === "Relative") {
-                  const classAverage = parseFloat(row.querySelector('td:nth-child(3)').textContent);
-                  const percentage = (newValue / totalMarks) * 100;
-                  const mca = (classAverage / totalMarks) * 100;
-                  grade = window.gradeUtils.getGrade(mca, percentage)[0];
-                }
-
-                const gradeClass = window.gradeUtils.getGradeClass(grade);
-                gradeCell.className = gradeClass;
-                gradeCell.textContent = grade;
-
-                // Update SGPA
-                updateSGPA();
-              }
-            });
-          } else {
-            // Exit edit mode
-            const input = obtainedCell.querySelector('input');
-            if (input) {
-              obtainedCell.textContent = parseFloat(input.value).toFixed(2);
-              obtainedCell.classList.remove('editable-cell');
-            }
-          }
-        });
-
-        // Update button state
         editMarksButton.innerHTML = editModeActive ? 'Exit Edit' : 'Edit Marks';
         editMarksStatus.className = `status-indicator ${editModeActive ? 'status-on' : 'status-off'}`;
 
         if (!editModeActive) {
-          createTable();
+          createPanel();
         }
       });
 
-      // Custom Grades Button
       const customGradesButton = document.createElement('button');
       customGradesButton.id = 'custom-grades-button';
       customGradesButton.className = 'modern-btn';
@@ -843,36 +823,51 @@
       let customGradesActive = false;
       let currentCustomGrades = {};
 
-      const updateSGPA = () => {
-        const table = portlet.querySelector('#course-data-table');
-        if (!table) return;
+      function enableEditMode() {
+        if (!contentEl) return;
+        const cards = contentEl.querySelectorAll('.fr-card');
+        cards.forEach(card => {
+          const valueEl = card.querySelector('.fr-card-value');
+          if (!valueEl || valueEl.dataset.original) return;
 
-        let totalCredits = 0;
-        let totalGradePoints = 0;
+          const text = valueEl.textContent;
+          const match = text.match(/([\d.]+)\s*\/\s*([\d.]+)/);
+          if (!match) return;
 
-        const rows = table.querySelectorAll('tbody tr:not(.sgpa-row)');
-        rows.forEach(row => {
-          const courseNameCell = row.querySelector('td:first-child');
-          if (courseNameCell) {
-            const courseName = courseNameCell.textContent;
-            const courseEntry = Object.entries(courses).find(([_, course]) => course.name === courseName);
-            if (courseEntry) {
-              const [code, courseData] = courseEntry;
-              const gradeCell = row.querySelector('td:last-child');
-              if (gradeCell) {
-                const grade = gradeCell.textContent.trim();
-                totalCredits += courseData.credits;
-                totalGradePoints += window.gradeUtils.getGradePoints(grade) * courseData.credits;
-              }
-            }
-          }
+          const obt = parseFloat(match[1]);
+          const total = parseFloat(match[2]);
+
+          valueEl.dataset.original = text;
+          valueEl.dataset.total = total;
+
+          const input = document.createElement('input');
+          input.type = 'number';
+          input.step = '0.1';
+          input.min = 0;
+          input.max = total;
+          input.value = obt;
+          input.style.cssText = 'width: 80px; padding: 4px 8px; border: 1px solid var(--primary-color); border-radius: var(--border-radius-sm); background: var(--card-bg); color: var(--text-primary); text-align: center; font: inherit; font-weight: var(--font-weight-bold); font-size: var(--font-size-xl);';
+
+          valueEl.textContent = '';
+          valueEl.appendChild(input);
         });
+      }
 
-        const sgpa = (totalGradePoints / totalCredits).toFixed(2);
-        const sgpaRow = table.querySelector('.sgpa-row td:last-child');
-        if (sgpaRow) {
-          sgpaRow.textContent = sgpa;
-        }
+      function disableEditMode() {
+        if (!contentEl) return;
+        const cards = contentEl.querySelectorAll('.fr-card');
+        cards.forEach(card => {
+          const valueEl = card.querySelector('.fr-card-value');
+          if (!valueEl || !valueEl.dataset.original) return;
+
+          valueEl.textContent = valueEl.dataset.original;
+          delete valueEl.dataset.original;
+          delete valueEl.dataset.total;
+        });
+      }
+
+      const updateSGPA = () => {
+        renderSummaryCard();
       };
 
       const resetToCalculatedGrades = () => {
@@ -882,12 +877,11 @@
         customGradesButton.innerHTML = 'Custom Grades';
         customGradesButton.classList.remove('active');
 
-        if (tableVisible) {
-          createTable();
+        if (panelVisible) {
+          createPanel();
         }
       };
 
-      // Event Listeners
       decreaseBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         currentSemester = Math.max(1, currentSemester - 1);
@@ -905,24 +899,24 @@
       });
 
       transcriptButton.addEventListener('click', () => {
-        const existingTable = portlet.querySelector('#course-data-table');
-        if (existingTable) {
-          if (existingTable.style.display === 'none') {
-            existingTable.style.display = 'table';
+        const existingPanel = portlet.querySelector('.fr-panel');
+        if (existingPanel) {
+          if (existingPanel.style.display === 'none') {
+            existingPanel.style.display = 'flex';
             transcriptButton.innerHTML = 'Hide Transcript';
             transcriptStatus.className = 'status-indicator status-on';
-            tableVisible = true;
+            panelVisible = true;
           } else {
-            existingTable.style.display = 'none';
+            existingPanel.style.display = 'none';
             transcriptButton.innerHTML = 'Show Transcript';
             transcriptStatus.className = 'status-indicator status-off';
-            tableVisible = false;
+            panelVisible = false;
           }
         } else {
-          createTable();
+          createPanel();
           transcriptButton.innerHTML = 'Hide Transcript';
           transcriptStatus.className = 'status-indicator status-on';
-          tableVisible = true;
+          panelVisible = true;
         }
       });
 
@@ -931,29 +925,19 @@
         roundingButton.innerHTML = `Rounding: ${shouldRoundUp ? 'ON' : 'OFF'}`;
         roundingStatus.className = `status-indicator ${shouldRoundUp ? 'status-on' : 'status-off'}`;
 
-        if (tableVisible) {
-          createTable();
-        }
-      });
-      // Add weightage status indicator to the Fix Weightage button
-
-
-      // Call this when course tabs are clicked
-      document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('nav-link') && e.target.getAttribute('href')?.startsWith('#')) {
-          setTimeout(updateWeightageButtonStatus, 100);
+        if (panelVisible) {
+          computeAllCourseData();
+          renderSummaryCard();
+          if (selectedCourse) renderCourseContent(selectedCourse);
         }
       });
 
-      // Initial update
-      setTimeout(updateWeightageButtonStatus, 1000);
       customGradesButton.addEventListener('click', () => {
         if (customGradesActive) {
           resetToCalculatedGrades();
           return;
         }
 
-        // Modal creation code
         const modal = document.createElement('div');
         modal.className = 'custom-grades-modal';
         Object.assign(modal.style, {
@@ -1065,31 +1049,14 @@
             }
           });
 
-          if (tableVisible) {
-            const table = portlet.querySelector('#course-data-table');
-            if (table) {
-              const rows = table.querySelectorAll('tbody tr:not(.sgpa-row)');
-              rows.forEach(row => {
-                const courseNameCell = row.querySelector('td:first-child');
-                if (courseNameCell) {
-                  const courseName = courseNameCell.textContent;
-                  const courseEntry = Object.entries(courses).find(([_, course]) => course.name === courseName);
-                  if (courseEntry) {
-                    const [code] = courseEntry;
-                    if (currentCustomGrades[code]) {
-                      const gradeCell = row.querySelector('td:last-child');
-                      if (gradeCell) {
-                        const gradeClass = window.gradeUtils.getGradeClass(currentCustomGrades[code]);
-                        gradeCell.className = gradeClass;
-                        gradeCell.textContent = currentCustomGrades[code];
-                      }
-                    }
-                  }
-                }
-              });
-
-              updateSGPA();
-            }
+          if (panelVisible) {
+            allCourseData.forEach(c => {
+              if (currentCustomGrades[c.code]) {
+                c.grade = currentCustomGrades[c.code];
+              }
+            });
+            renderSummaryCard();
+            if (selectedCourse) renderCourseContent(selectedCourse);
           }
 
           customGradesActive = Object.keys(currentCustomGrades).length > 0;
@@ -1134,593 +1101,6 @@
       if (portletBody) {
         portlet.insertBefore(container, portletBody);
       }
-
-      const statsButton = document.createElement('button');
-      statsButton.id = 'show-stats-button';
-      statsButton.className = 'modern-btn';
-      statsButton.innerHTML = 'Show Stats';
-      const statsStatus = document.createElement('span');
-      statsStatus.className = 'status-indicator status-off';
-      statsButton.appendChild(statsStatus);
-
-      container.appendChild(statsButton);
-
-      // Fix Weightage (manual) button
-      const fixWeightBtn = document.createElement('button');
-      fixWeightBtn.id = 'fix-weightage-button';
-      fixWeightBtn.className = 'modern-btn';
-      fixWeightBtn.textContent = 'Fix Weightage';
-      container.appendChild(fixWeightBtn);
-
-      // Auto-fix Weightage button
-      const autoFixBtn = document.createElement('button');
-      autoFixBtn.id = 'auto-fix-weightage-button';
-      autoFixBtn.className = 'modern-btn';
-      autoFixBtn.textContent = 'Auto Fix Weightage';
-      container.appendChild(autoFixBtn);
-
-      statsButton.addEventListener('click', () => {
-        const modal = document.createElement('div');
-        modal.className = 'stats-modal';
-        Object.assign(modal.style, {
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          backgroundColor: 'var(--card-bg)',
-          border: '1px solid var(--border-color)',
-          padding: '20px',
-          boxShadow: 'var(--shadow-lg)',
-          zIndex: '1000',
-          width: 'min(90vw, 800px)',
-          maxHeight: '80vh',
-          overflowY: 'auto',
-          color: 'var(--text-primary)',
-          fontFamily: 'var(--font-family)',
-          borderRadius: 'var(--border-radius)'
-        });
-
-        const header = document.createElement('div');
-        header.style.display = 'flex';
-        header.style.justifyContent = 'space-between';
-        header.style.alignItems = 'center';
-        header.style.marginBottom = '15px';
-        header.style.paddingBottom = '10px';
-        header.style.borderBottom = '1px solid var(--border-color)';
-
-        const title = document.createElement('h3');
-        title.textContent = 'Course Statistics';
-        title.style.margin = '0';
-        title.style.color = 'var(--primary-color)';
-
-        const closeButton = document.createElement('button');
-        closeButton.textContent = '×';
-        closeButton.style.background = 'none';
-        closeButton.style.border = 'none';
-        closeButton.style.fontSize = '1.5rem';
-        closeButton.style.cursor = 'pointer';
-        closeButton.style.color = 'var(--text-secondary)';
-
-        header.appendChild(title);
-        header.appendChild(closeButton);
-        modal.appendChild(header);
-
-        const content = document.createElement('div');
-        content.style.display = 'grid';
-        content.style.gap = '20px';
-
-        const courseStats = [];
-
-        Object.keys(courses).forEach((code) => {
-          const gradingType = courses[code].grading;
-          const credits = courses[code].credits;
-          const courseLink = document.querySelector(`a.nav-link[href="#${code}"]`);
-          if (!courseLink) return;
-
-          const wasVisible = tableVisible;
-          if (wasVisible) {
-            const transcriptButton = portlet.querySelector('#show-transcript-button');
-            if (transcriptButton) transcriptButton.click();
-          }
-
-          courseLink.click();
-
-          const activeDiv = document.querySelector('.tab-pane.active');
-          if (!activeDiv) return;
-
-          let totalWeightage = 0;
-          let totalObtMarks = 0;
-          let totalAverage = 0;
-          let assessmentDetails = [];
-
-          const tables = activeDiv.querySelectorAll('.sum_table');
-          tables.forEach((table) => {
-            let rowCalculatedAverage = 0;
-            let tableWeightageSum = 0;
-
-            const rows = table.querySelectorAll('.calculationrow');
-            rows.forEach((row) => {
-              const assessmentName = getAssessmentName(row);
-              const weightRow = row.querySelector('.weightage');
-              const averageRow = row.querySelector('.AverageMarks');
-              const totalMarksRow = row.querySelector('.GrandTotal');
-              const obtMarksRow = row.querySelector('.ObtMarks');
-
-              if (!weightRow || !averageRow || !totalMarksRow || !obtMarksRow ||
-                weightRow.textContent.trim() === "0" ||
-                totalMarksRow.textContent.trim() === "0") {
-                return;
-              }
-
-              const weight = parseFloat(weightRow.textContent);
-              const average = parseFloat(averageRow.textContent);
-              const total = parseFloat(totalMarksRow.textContent);
-              const obt = parseFloat(obtMarksRow.textContent);
-
-              tableWeightageSum += weight;
-              rowCalculatedAverage += (average / total) * weight;
-
-              assessmentDetails.push({
-                name: assessmentName,
-                weight: weight,
-                classAverage: average,
-                totalMarks: total,
-                yourScore: obt,
-                percentage: (obt / total) * 100,
-                classAveragePercentage: (average / total) * 100
-              });
-            });
-
-            const totalSection = table.querySelector('[class*="totalColumn_"]');
-            if (totalSection) {
-              const colWeightage = totalSection.querySelector('.totalColweightage');
-              if (colWeightage && tableWeightageSum !== 0 && rowCalculatedAverage !== 0) {
-                rowCalculatedAverage = (rowCalculatedAverage / tableWeightageSum) * parseFloat(colWeightage.textContent);
-                totalAverage += rowCalculatedAverage;
-              }
-
-              const colObtMarks = totalSection.querySelector('.totalColObtMarks');
-              if (colWeightage && colObtMarks) {
-                totalWeightage += parseFloat(colWeightage.textContent);
-                totalObtMarks += parseFloat(colObtMarks.textContent);
-              }
-            }
-          });
-
-          const finalCalculateAverage = isNaN(totalAverage) ? 0 : totalAverage;
-          const finalMarks = shouldRoundUp ? Math.ceil(totalObtMarks) : totalObtMarks;
-
-          let grade = "I";
-          if (gradingType === "Absolute") {
-            const percentage = (finalMarks / totalWeightage) * 100;
-            grade = window.gradeUtils.calculateAbsoluteGrade(percentage);
-          }
-          else if (gradingType === "Relative") {
-            const percentage = Math.round((finalMarks / totalWeightage) * 100);
-            const mca = Math.round((totalAverage / totalWeightage) * 100);
-            grade = window.gradeUtils.getGrade(mca, percentage)[0];
-          }
-
-          courseStats.push({
-            code: code,
-            name: courses[code].name,
-            gradingType: gradingType,
-            classAverage: finalCalculateAverage,
-            yourScore: finalMarks,
-            totalMarks: totalWeightage,
-            grade: grade,
-            credits: credits,
-            assessments: assessmentDetails,
-            yourPercentage: (finalMarks / totalWeightage) * 100,
-            classAveragePercentage: (finalCalculateAverage / totalWeightage) * 100
-          });
-
-          if (wasVisible) {
-            const transcriptButton = portlet.querySelector('#show-transcript-button');
-            if (transcriptButton) transcriptButton.click();
-          }
-        });
-
-        const tabsContainer = document.createElement('div');
-        tabsContainer.style.display = 'flex';
-        tabsContainer.style.gap = '5px';
-        tabsContainer.style.marginBottom = '15px';
-        tabsContainer.style.overflowX = 'auto';
-        tabsContainer.style.paddingBottom = '5px';
-
-        const statsContent = document.createElement('div');
-        statsContent.style.minHeight = '400px';
-
-        courseStats.forEach((course, index) => {
-          const tab = document.createElement('button');
-          tab.textContent = course.code;
-          tab.style.padding = '8px 12px';
-          tab.style.border = '1px solid var(--border-color)';
-          tab.style.background = index === 0 ? 'var(--primary-color)' : 'transparent';
-          tab.style.color = index === 0 ? 'var(--text-light)' : 'var(--text-secondary)';
-          tab.style.borderRadius = 'var(--border-radius-sm)';
-          tab.style.cursor = 'pointer';
-          tab.style.whiteSpace = 'nowrap';
-          tab.style.transition = 'all 0.2s';
-
-          tab.addEventListener('click', () => {
-            // Update all tabs
-            tabsContainer.querySelectorAll('button').forEach((t, i) => {
-              t.style.background = i === index ? 'var(--primary-color)' : 'transparent';
-              t.style.color = i === index ? 'var(--text-light)' : 'var(--text-secondary)';
-            });
-
-            updateStatsContent(course);
-          });
-
-          tabsContainer.appendChild(tab);
-        });
-
-        const updateStatsContent = (course) => {
-          statsContent.innerHTML = '';
-
-          const courseHeader = document.createElement('div');
-          courseHeader.style.marginBottom = '20px';
-          courseHeader.style.paddingBottom = '10px';
-          courseHeader.style.borderBottom = '1px solid var(--border-color)';
-
-          const courseTitle = document.createElement('h4');
-          courseTitle.style.margin = '0 0 5px 0';
-          courseTitle.textContent = `${course.name} (${course.code})`;
-
-          const courseSubtitle = document.createElement('div');
-          courseSubtitle.style.display = 'flex';
-          courseSubtitle.style.gap = '15px';
-          courseSubtitle.style.fontSize = '0.9rem';
-          courseSubtitle.style.color = 'var(--text-secondary)';
-
-          courseSubtitle.innerHTML = `
-                        <span>Credits: ${course.credits}</span>
-                        <span>Grading: ${course.gradingType}</span>
-                        <span>Grade: <span class="${window.gradeUtils.getGradeClass(course.grade)}" style="font-weight: bold;">${course.grade}</span></span>
-                    `;
-
-          courseHeader.appendChild(courseTitle);
-          courseHeader.appendChild(courseSubtitle);
-          statsContent.appendChild(courseHeader);
-
-          const overallSection = document.createElement('div');
-          overallSection.style.marginBottom = '20px';
-          overallSection.style.padding = '15px';
-          overallSection.style.background = 'var(--primary-light)';
-          overallSection.style.borderRadius = 'var(--border-radius)';
-
-          const overallTitle = document.createElement('h5');
-          overallTitle.style.margin = '0 0 10px 0';
-          overallTitle.textContent = 'Overall Performance';
-          overallSection.appendChild(overallTitle);
-
-          const overallGrid = document.createElement('div');
-          overallGrid.style.display = 'grid';
-          overallGrid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(200px, 1fr))';
-          overallGrid.style.gap = '15px';
-
-          overallGrid.innerHTML = `
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Your Score</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.yourScore.toFixed(2)} / ${course.totalMarks.toFixed(2)}</div>
-                        </div>
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Your Percentage</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.yourPercentage.toFixed(2)}%</div>
-                        </div>
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Class Average</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.classAverage.toFixed(2)} / ${course.totalMarks.toFixed(2)}</div>
-                        </div>
-                        <div style="padding: 10px; border-radius: var(--border-radius-sm); background: var(--card-bg);">
-                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;">Class Avg %</div>
-                            <div style="font-size: 1.3rem; font-weight: bold;">${course.classAveragePercentage.toFixed(2)}%</div>
-                        </div>
-                    `;
-
-          overallSection.appendChild(overallGrid);
-          statsContent.appendChild(overallSection);
-
-          // Grade explanation
-          const explanationSection = document.createElement('div');
-          explanationSection.style.marginTop = '20px';
-          explanationSection.style.padding = '15px';
-          explanationSection.style.background = 'var(--primary-light)';
-          explanationSection.style.borderRadius = 'var(--border-radius)';
-          explanationSection.style.fontSize = '0.9rem';
-
-          explanationSection.innerHTML = `
-                        <h5 style="margin: 0 0 10px 0;">Grade Explanation</h5>
-                        <p style="margin: 0;">
-                            This course uses <strong>${course.gradingType} grading</strong>. 
-                            ${course.gradingType === 'Absolute' ?
-              'Your grade is determined by fixed percentage thresholds regardless of class performance.' :
-              'Your grade is determined relative to the class average performance.'}
-                        </p>
-                    `;
-
-          statsContent.appendChild(explanationSection);
-        };
-
-        if (courseStats.length > 0) {
-          updateStatsContent(courseStats[0]);
-        } else {
-          statsContent.innerHTML = '<p>No course data available</p>';
-        }
-
-        modal.appendChild(tabsContainer);
-        modal.appendChild(statsContent);
-
-        // Backdrop
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop';
-        Object.assign(backdrop.style, {
-          position: 'fixed',
-          top: '0',
-          left: '0',
-          right: '0',
-          bottom: '0',
-          background: 'rgba(0, 0, 0, 0.7)',
-          zIndex: '999',
-          backdropFilter: 'blur(3px)'
-        });
-
-        document.body.appendChild(backdrop);
-        document.body.appendChild(modal);
-
-        closeButton.addEventListener('click', () => {
-          modal.remove();
-          backdrop.remove();
-        });
-
-        backdrop.addEventListener('click', () => {
-          modal.remove();
-          backdrop.remove();
-        });
-
-        document.addEventListener('keydown', function handleKeyDown(e) {
-          if (e.key === 'Escape') {
-            modal.remove();
-            backdrop.remove();
-            document.removeEventListener('keydown', handleKeyDown);
-          }
-        });
-      });
-
-      const getActiveCourseCode = () => {
-        const activePane = document.querySelector('.tab-pane.active');
-        return activePane ? activePane.id : null;
-      };
-
-      const openManualWeightsModal = (code) => {
-        if (!code) {
-          showToast('Please open a course tab first', false);
-          return;
-        }
-
-        const existing = weightOverrides[code] || {};
-        const courseName = courses[code]?.name || code;
-
-        const modal = document.createElement('div');
-        modal.className = 'request-course-modal';
-        Object.assign(modal.style, {
-          position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-          backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', padding: '20px',
-          boxShadow: 'var(--shadow-lg)', zIndex: '1000', width: 'min(90vw, 500px)',
-          borderRadius: 'var(--border-radius)', maxHeight: '80vh', overflowY: 'auto'
-        });
-
-        modal.innerHTML = `
-        <h3 style="margin:0 0 10px 0; color: var(--primary-color);">Fix Weightage - ${courseName}</h3>
-        <p style="margin:0 0 15px 0; color: var(--text-secondary); font-size: 0.9rem;">
-            Set custom weightages for ${code}. Total should be 100%.
-        </p>
-        
-        <div class="form-group">
-            <label for="w_sess1">Sessional I</label>
-            <input id="w_sess1" type="number" min="0" max="100" value="${existing.sessionalI ?? 15}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_sess2">Sessional II</label>
-            <input id="w_sess2" type="number" min="0" max="100" value="${existing.sessionalII ?? 15}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_assign_total">Assignments (total)</label>
-            <input id="w_assign_total" type="number" min="0" max="100" value="${existing.assignmentsTotal ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_quiz_total">Quizzes (total)</label>
-            <input id="w_quiz_total" type="number" min="0" max="100" value="${existing.quizzesTotal ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_project">Project</label>
-            <input id="w_project" type="number" min="0" max="100" value="${existing.project ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_lab">Lab Work</label>
-            <input id="w_lab" type="number" min="0" max="100" value="${existing.labWork ?? 10}" step="1">
-        </div>
-        <div class="form-group">
-            <label for="w_final">Final Exam</label>
-            <input id="w_final" type="number" min="0" max="100" value="${existing.finalTotal ?? 40}" step="1">
-        </div>
-        
-        <div class="weightage-summary">
-            <div>Current Total: <span class="weightage-total" id="weight-total">0</span>/100</div>
-            <div class="weightage-warning" id="weight-warning" style="display: none;">
-                Total should be 100% for accurate calculations
-            </div>
-        </div>
-        
-        <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
-            <button id="w_cancel" class="modern-btn secondary">Cancel</button>
-            <button id="w_reset" class="modern-btn danger">Reset to Default</button>
-            <button id="w_save" class="modern-btn success">Save Weightages</button>
-        </div>
-    `;
-
-        const backdrop = document.createElement('div');
-        backdrop.className = 'modal-backdrop';
-        Object.assign(backdrop.style, {
-          position: 'fixed', inset: '0', background: 'rgba(0,0,0,0.7)',
-          zIndex: '999', backdropFilter: 'blur(3px)'
-        });
-
-        document.body.appendChild(backdrop);
-        document.body.appendChild(modal);
-
-        // Calculate and update total
-        const updateTotal = () => {
-          const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
-          const total = getValue('#w_sess1') + getValue('#w_sess2') +
-            getValue('#w_assign_total') + getValue('#w_quiz_total') +
-            getValue('#w_project') + getValue('#w_lab') + getValue('#w_final');
-
-          const totalEl = modal.querySelector('#weight-total');
-          const warningEl = modal.querySelector('#weight-warning');
-
-          totalEl.textContent = total;
-          totalEl.style.color = total === 100 ? 'var(--success-color)' : 'var(--danger-color)';
-          warningEl.style.display = total !== 100 ? 'block' : 'none';
-        };
-
-        // Add event listeners to all inputs
-        modal.querySelectorAll('input').forEach(input => {
-          input.addEventListener('input', updateTotal);
-          input.addEventListener('change', updateTotal);
-        });
-
-        // Initial calculation
-        updateTotal();
-
-        const close = () => {
-          modal.remove();
-          backdrop.remove();
-        };
-
-        modal.querySelector('#w_cancel').onclick = close;
-        backdrop.onclick = close;
-
-        modal.querySelector('#w_reset').onclick = () => {
-          delete weightOverrides[code];
-          saveWeightOverrides();
-          close();
-          if (tableVisible) createTable();
-          showToast('Weightage overrides reset to default');
-        };
-
-        modal.querySelector('#w_save').onclick = () => {
-          const getValue = (id) => parseFloat(modal.querySelector(id).value) || 0;
-
-          weightOverrides[code] = {
-            sessionalI: getValue('#w_sess1'),
-            sessionalII: getValue('#w_sess2'),
-            assignmentsTotal: getValue('#w_assign_total'),
-            quizzesTotal: getValue('#w_quiz_total'),
-            project: getValue('#w_project'),
-            labWork: getValue('#w_lab'),
-            finalTotal: getValue('#w_final'),
-          };
-
-          saveWeightOverrides();
-          close();
-          if (tableVisible) createTable();
-          showToast('Custom weightages saved successfully');
-        };
-
-        // Close on Escape key
-        const handleKeyDown = (e) => {
-          if (e.key === 'Escape') close();
-        };
-        document.addEventListener('keydown', handleKeyDown);
-        modal._keyHandler = handleKeyDown;
-      };
-
-      const runAutoFixForCourse = (code) => {
-        const activePane = document.getElementById(code);
-        if (!activePane) {
-          showToast('Please open a course tab first', false);
-          return;
-        }
-
-        // Analyze the course structure
-        const rows = activePane.querySelectorAll('.sum_table .calculationrow');
-        let quizCount = 0, assignCount = 0, hasSess1 = false, hasSess2 = false,
-          hasProject = false, hasLab = false, hasFinal = false;
-
-        rows.forEach(row => {
-          const totalMarksRow = row.querySelector('.GrandTotal');
-          if (!totalMarksRow) return;
-
-          const total = parseFloat(totalMarksRow.textContent) || 0;
-          if (total === 0) return;
-
-          const name = getAssessmentName(row).toLowerCase();
-
-          if (name.includes('quiz')) quizCount++;
-          if (name.includes('assignment')) assignCount++;
-          if (name.includes('sessional') && name.includes('i') && !name.includes('ii')) hasSess1 = true;
-          if (name.includes('sessional') && name.includes('ii')) hasSess2 = true;
-          if (name.includes('project')) hasProject = true;
-          if (name.includes('lab work') || name.includes('labwork')) hasLab = true;
-          if (name.includes('final')) hasFinal = true;
-        });
-
-        // Calculate base weights
-        const sess1 = hasSess1 ? 15 : 0;
-        const sess2 = hasSess2 ? 15 : 0;
-        const assignTotal = assignCount > 0 ? 10 : 0;
-        const projW = hasProject ? 10 : 0;
-        const labW = hasLab ? 10 : 0;
-
-        const baseTotal = sess1 + sess2 + assignTotal + projW + labW;
-        const remaining = 100 - baseTotal;
-
-        // Distribute remaining between quizzes and final
-        let quizTotal, finalW;
-
-        if (quizCount > 0 && hasFinal) {
-          // Try to give quizzes 10-15 and rest to final
-          quizTotal = Math.min(15, Math.max(10, Math.floor(remaining * 0.25)));
-          finalW = remaining - quizTotal;
-        } else if (quizCount > 0) {
-          quizTotal = remaining;
-          finalW = 0;
-        } else if (hasFinal) {
-          quizTotal = 0;
-          finalW = remaining;
-        } else {
-          // No quizzes or final - distribute to other components
-          quizTotal = 0;
-          finalW = 0;
-          // Could add logic to redistribute here if needed
-        }
-
-        // Save the calculated weights
-        weightOverrides[code] = {
-          sessionalI: sess1,
-          sessionalII: sess2,
-          assignmentsTotal: assignTotal,
-          quizzesTotal: quizTotal,
-          project: projW,
-          labWork: labW,
-          finalTotal: finalW,
-        };
-
-        saveWeightOverrides();
-
-        if (tableVisible) createTable();
-
-        showToast(`Auto weightage applied: ${quizCount} quizzes, ${assignCount} assignments detected`);
-      };
-
-      fixWeightBtn.addEventListener('click', () => openManualWeightsModal(getActiveCourseCode()));
-      autoFixBtn.addEventListener('click', () => {
-        const code = getActiveCourseCode();
-        if (!code) { showToast('Open a course tab first', false); return; }
-        runAutoFixForCourse(code);
-      });
     };
 
     createToggleButtons();
