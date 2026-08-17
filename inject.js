@@ -751,33 +751,6 @@
       roundingStatus.className = `status-indicator ${shouldRoundUp ? 'status-on' : 'status-off'}`;
       roundingButton.appendChild(roundingStatus);
 
-      const editMarksButton = document.createElement('button');
-      editMarksButton.id = 'edit-marks-button';
-      editMarksButton.className = 'modern-btn';
-      editMarksButton.innerHTML = 'Edit Marks';
-      const editMarksStatus = document.createElement('span');
-      editMarksStatus.className = 'status-indicator status-off';
-      editMarksButton.appendChild(editMarksStatus);
-
-      let editModeActive = false;
-
-      editMarksButton.addEventListener('click', () => {
-        editModeActive = !editModeActive;
-
-        if (editModeActive) {
-          enableEditMode();
-        } else {
-          disableEditMode();
-        }
-
-        editMarksButton.innerHTML = editModeActive ? 'Exit Edit' : 'Edit Marks';
-        editMarksStatus.className = `status-indicator ${editModeActive ? 'status-on' : 'status-off'}`;
-
-        if (!editModeActive) {
-          createPanel(false);
-        }
-      });
-
       const customGradesButton = document.createElement('button');
       customGradesButton.id = 'custom-grades-button';
       customGradesButton.className = 'modern-btn';
@@ -788,86 +761,6 @@
 
       let customGradesActive = false;
       let currentCustomGrades = {};
-
-      function enableEditMode() {
-        if (!contentEl) return;
-        const cards = contentEl.querySelectorAll('.fr-card');
-        cards.forEach(card => {
-          const valueEl = card.querySelector('.fr-card-value');
-          if (!valueEl || valueEl.dataset.original) return;
-
-          const text = valueEl.textContent;
-          const match = text.match(/([\d.]+)\s*\/\s*([\d.]+)/);
-          if (!match) return;
-
-          const obt = parseFloat(match[1]);
-          const total = parseFloat(match[2]);
-
-          valueEl.dataset.original = text;
-          valueEl.dataset.total = total;
-
-          const input = document.createElement('input');
-          input.type = 'number';
-          input.step = '0.1';
-          input.min = 0;
-          input.max = total;
-          input.value = obt;
-          input.style.cssText = 'width: 80px; padding: 4px 8px; border: 1px solid var(--primary-color); border-radius: var(--border-radius-sm); background: var(--card-bg); color: var(--text-primary); text-align: center; font: inherit; font-weight: var(--font-weight-bold); font-size: var(--font-size-xl);';
-
-          valueEl.textContent = '';
-          valueEl.appendChild(input);
-        });
-      }
-
-      function disableEditMode() {
-        if (!contentEl) return;
-
-        const cards = contentEl.querySelectorAll('.fr-card');
-        cards.forEach(card => {
-          const valueEl = card.querySelector('.fr-card-value');
-          const input = valueEl?.querySelector('input');
-          if (!input || !valueEl?.dataset.original) return;
-
-          const newObt = parseFloat(input.value);
-          const total = parseFloat(valueEl.dataset.total);
-          if (isNaN(newObt) || newObt < 0 || newObt > total) return;
-
-          const label = card.querySelector('.fr-card-label')?.textContent.trim();
-          if (!label) return;
-
-          for (const course of allCourseData) {
-            const match = course.assessments.find(a => a.name === label);
-            if (match) {
-              match.yourScore = newObt;
-              match.totalMarks = total;
-              match.percentage = total > 0 ? (newObt / total) * 100 : 0;
-              break;
-            }
-          }
-        });
-
-        for (const course of allCourseData) {
-          let totalWeightage = 0;
-          let totalObtMarks = 0;
-          let totalAverage = 0;
-          course.assessments.forEach(a => {
-            totalWeightage += a.weight;
-            totalObtMarks += a.yourScore;
-            totalAverage += (a.classAverage / a.totalMarks) * a.weight;
-          });
-          course.totalMarks = totalWeightage;
-          course.yourScore = totalObtMarks;
-          course.percentage = totalWeightage > 0 ? (totalObtMarks / totalWeightage) * 100 : 0;
-          course.classAverage = totalAverage;
-
-          if (course.gradingType === 'Absolute') {
-            course.grade = window.gradeUtils.calculateAbsoluteGrade(course.percentage);
-          } else if (course.gradingType === 'Relative') {
-            const mca = totalWeightage > 0 ? Math.round((totalAverage / totalWeightage) * 100) : 0;
-            course.grade = window.gradeUtils.getGrade(mca, Math.round(course.percentage))[0];
-          }
-        }
-      }
 
       const updateSGPA = () => {
         renderSummaryCard();
@@ -1076,7 +969,6 @@
 
       container.appendChild(transcriptButton);
       container.appendChild(roundingButton);
-      container.appendChild(editMarksButton);
       container.appendChild(customGradesButton);
 
       const portletBody = portlet.querySelector('.m-portlet__body');
