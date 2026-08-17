@@ -506,7 +506,7 @@ body {
     border-color: var(--text-primary);
 }
 
-/* Override portal's native blue backgrounds */
+/* Override portal's native blue backgrounds — only for header/containers */
 .m-portlet__body {
     background: var(--primary-bg) !important;
     color: var(--text-primary) !important;
@@ -520,44 +520,7 @@ body {
     background: var(--primary-bg) !important;
 }
 
-.m-portlet__body .sum_table {
-    background: var(--card-bg) !important;
-    color: var(--text-primary) !important;
-}
-
-.m-portlet__body .sum_table th,
-.m-portlet__body .sum_table td {
-    background: transparent !important;
-    color: var(--text-primary) !important;
-    border-color: var(--border-color) !important;
-}
-
-.m-portlet__body .calculationrow td {
-    background: transparent !important;
-    color: var(--text-primary) !important;
-}
-
-.m-portlet__body .sgpa-row td {
-    background: var(--primary-light) !important;
-    color: var(--text-primary) !important;
-}
-
-.m-portlet__body h3,
-.m-portlet__body h4,
-.m-portlet__body h5 {
-    color: var(--text-primary) !important;
-}
-
-.m-portlet__body table {
-    background: var(--card-bg) !important;
-    color: var(--text-primary) !important;
-}
-
-.m-portlet__body table th {
-    background: var(--primary-light) !important;
-    color: var(--text-secondary) !important;
-    border-color: var(--border-color) !important;
-}
+/* Do NOT override portal's native tables — they keep their own styling */
 
 /* Title styling */
 .m-portlet__head-title {

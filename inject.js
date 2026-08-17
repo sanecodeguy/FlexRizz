@@ -249,9 +249,21 @@
       'Sessional-II': 'Sessional II',
       'Lab Work': 'Lab Work',
       'Project': 'Project',
+      'Final': 'Final',
     };
 
-    function getAssessmentName(row) {
+    function getAssessmentType(table) {
+      const headerCells = table.querySelectorAll('th');
+      for (const th of headerCells) {
+        const text = th.textContent.trim().toLowerCase();
+        for (const [key, name] of Object.entries(assessmentNameMapping)) {
+          if (text.includes(key.toLowerCase())) return name;
+        }
+      }
+      return null;
+    }
+
+    function getAssessmentName(row, table, rowIdx) {
       const button = row.querySelector('button.btn.btn-link[data-target]');
       if (button) {
         const dataTarget = button.getAttribute('data-target');
@@ -263,7 +275,16 @@
         const displayName = assessmentNameMapping[rawType] || rawType;
         return num ? `${displayName} #${num}` : displayName;
       }
-      return row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
+
+      const assessmentEl = row.querySelector('.assessmentName');
+      if (assessmentEl) return assessmentEl.textContent.trim();
+
+      if (table) {
+        const typeName = getAssessmentType(table);
+        if (typeName) return `${typeName} #${rowIdx}`;
+      }
+
+      return 'Assessment';
     }
 
     function detectRegisteredCourses() {
@@ -329,8 +350,10 @@
         let tableWeightageSum = 0;
 
         const rows = table.querySelectorAll('.calculationrow');
+        let rowIdx = 0;
         rows.forEach((row) => {
-          const assessmentName = getAssessmentName(row);
+          rowIdx++;
+          const assessmentName = getAssessmentName(row, table, rowIdx);
           const weightRow = row.querySelector('.weightage');
           const averageRow = row.querySelector('.AverageMarks');
           const totalMarksRow = row.querySelector('.GrandTotal');
