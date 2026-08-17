@@ -476,6 +476,44 @@ body {
     color: var(--text-primary) !important;
 }
 
+/* Dark theme on portal's native card/accordion elements */
+.m-portlet__body .card {
+    background: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.m-portlet__body .card-header {
+    background: var(--primary-light) !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-primary) !important;
+}
+
+.m-portlet__body .card-body {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
+.m-portlet__body h5,
+.m-portlet__body h4,
+.m-portlet__body h3 {
+    color: var(--text-primary) !important;
+}
+
+.m-portlet__body .btn-link {
+    color: var(--text-primary) !important;
+    text-decoration: none !important;
+}
+
+.m-portlet__body .btn-link:hover {
+    color: var(--text-secondary) !important;
+}
+
+.m-portlet__body .tab-content,
+.m-portlet__body .tab-pane {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
 /* Title styling */
 .m-portlet__head-title {
     color: var(--text-primary);
