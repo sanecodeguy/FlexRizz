@@ -381,16 +381,9 @@ body {
     justify-content: space-between;
 }
 /* Portlet Head Styling — override portal blue */
-.m-portlet__head,
-.m-portlet__head *,
-.m-portlet__head *::before,
-.m-portlet__head *::after {
-    background-color: var(--card-bg) !important;
-    color: var(--text-primary) !important;
-}
-
 .m-portlet__head {
     padding: var(--space-md) var(--space-lg);
+    background: var(--card-bg) !important;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -401,26 +394,10 @@ body {
 
 .m-portlet__head-caption {
     background: transparent !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 1;
-    margin: 0 auto;
-    order: 2;
-    min-width: 0;
 }
 
 .m-portlet__head-tools {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-xs);
     background: transparent !important;
-    order: 3;
-    flex-wrap: wrap;
-    margin-left: auto;
-    padding: var(--space-xs);
-    border-radius: var(--border-radius-sm);
 }
 
 /* Course tabs styling */
@@ -462,15 +439,6 @@ body {
 /* Override portal's native blue backgrounds — only for header/containers */
 .m-portlet__body {
     background: var(--primary-bg) !important;
-    color: var(--text-primary) !important;
-}
-
-.m-portlet__body table,
-.m-portlet__body .sum_table,
-.m-portlet__body .calculationrow td,
-.m-portlet__body th,
-.m-portlet__body td {
-    color: var(--text-primary) !important;
 }
 
 .tab-pane {
@@ -481,7 +449,7 @@ body {
     background: var(--primary-bg) !important;
 }
 
-/* Do NOT override portal's native tables — they keep their own styling */
+/* Portal's native tables keep their own text colors — do not override */
 
 /* Title styling */
 .m-portlet__head-title {
