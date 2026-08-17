@@ -514,25 +514,51 @@
       if (data.assessments.length === 0) {
         html += '<div class="fr-empty-state"><span class="fr-empty-state-text">No marks available yet</span></div>';
       } else {
-        html += '<div class="fr-cards-grid">';
+        const typeCounters = {};
+        const grouped = {};
         data.assessments.forEach(a => {
-          html += `
-            <div class="fr-card" role="group" aria-label="${a.name}">
-              <div class="fr-card-label">${a.name}</div>
-              <div class="fr-card-value">${a.yourScore.toFixed(1)} / ${a.totalMarks.toFixed(1)}</div>
-              <div class="fr-card-sub">Avg: ${a.classAverage.toFixed(1)} — Weight: ${a.weight.toFixed(0)}%</div>
-            </div>
-          `;
+          const rawType = a.name.replace(/\s*\d+$/, '').trim();
+          if (!grouped[rawType]) grouped[rawType] = [];
+          grouped[rawType].push(a);
+        });
+
+        const typeOrder = ['Assignment', 'Quiz', 'Sessional I', 'Sessional II', 'Lab Work', 'Project', 'Final'];
+        const sortedTypes = Object.keys(grouped).sort((a, b) => {
+          const ai = typeOrder.indexOf(a);
+          const bi = typeOrder.indexOf(b);
+          return (ai === -1 ? 99 : ai) - (bi === -1 ? 99 : bi);
+        });
+
+        sortedTypes.forEach(type => {
+          const items = grouped[type];
+          const totalWeight = items.reduce((s, a) => s + a.weight, 0);
+          const totalObt = items.reduce((s, a) => s + a.yourScore, 0);
+          const totalMax = items.reduce((s, a) => s + a.totalMarks, 0);
+
+          html += `<div class="fr-card-group">`;
+          html += `<div class="fr-card-group-header">${type} <span class="fr-card-group-total">${totalObt.toFixed(1)} / ${totalMax.toFixed(1)}</span></div>`;
+          html += `<div class="fr-cards-grid">`;
+
+          items.forEach((a, i) => {
+            html += `
+              <div class="fr-card" role="group" aria-label="${type} ${i + 1}">
+                <div class="fr-card-label">${type} #${i + 1}</div>
+                <div class="fr-card-value">${a.yourScore.toFixed(1)} / ${a.totalMarks.toFixed(1)}</div>
+                <div class="fr-card-sub">Avg: ${a.classAverage.toFixed(1)} — Weight: ${a.weight.toFixed(1)}%</div>
+              </div>
+            `;
+          });
+
+          html += `</div></div>`;
         });
 
         html += `
-          <div class="fr-card" role="group" aria-label="Total">
-            <div class="fr-card-label">Total</div>
-            <div class="fr-card-value">${data.yourScore.toFixed(1)} / ${data.totalMarks.toFixed(1)}</div>
-            <div class="fr-card-sub">${data.percentage.toFixed(1)}% — ${data.gradingType}</div>
+          <div class="fr-total-row">
+            <span class="fr-total-label">Total</span>
+            <span class="fr-total-value">${data.yourScore.toFixed(1)} / ${data.totalMarks.toFixed(1)}</span>
+            <span class="fr-total-sub">${data.percentage.toFixed(1)}%</span>
           </div>
         `;
-        html += '</div>';
       }
 
       contentEl.innerHTML = html;
@@ -626,17 +652,15 @@
         bottom: '24px',
         left: '24px',
         maxWidth: 'calc(100% - 48px)',
-        padding: '16px 24px',
+        padding: '12px 20px',
         borderRadius: 'var(--border-radius)',
         color: 'var(--text-light)',
-        boxShadow: 'var(--shadow-lg)',
         zIndex: '10000',
         opacity: '0',
-        transform: 'translateX(-30px)',
-        transition: 'all 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+        transition: 'opacity 0.2s ease',
         display: 'flex',
         alignItems: 'center',
-        gap: '12px',
+        gap: '10px',
         pointerEvents: 'none',
         background: isSuccess ? 'var(--success-color)' : 'var(--danger-color)'
       });
@@ -644,7 +668,7 @@
       const icon = document.createElement('span');
       icon.innerHTML = isSuccess ? '\u2713' : '\u2717';
       icon.style.fontWeight = 'bold';
-      icon.style.fontSize = '1.2em';
+      icon.style.fontSize = '1em';
       toast.appendChild(icon);
 
       const messageEl = document.createElement('span');
@@ -655,17 +679,15 @@
 
       setTimeout(() => {
         toast.style.opacity = '1';
-        toast.style.transform = 'translateX(0)';
         toast.style.pointerEvents = 'auto';
       }, 10);
 
       setTimeout(() => {
         toast.style.opacity = '0';
-        toast.style.transform = 'translateX(-30px)';
         setTimeout(() => {
           toast.remove();
-        }, 400);
-      }, 4000);
+        }, 200);
+      }, 3000);
     }
 
     const createToggleButtons = () => {
@@ -948,7 +970,6 @@
           backgroundColor: 'var(--card-bg)',
           border: '1px solid var(--border-color)',
           padding: '20px',
-          boxShadow: 'var(--shadow-lg)',
           zIndex: '1000',
           width: 'min(90vw, 800px)',
           maxHeight: '70vh',
@@ -1028,9 +1049,8 @@
           left: '0',
           right: '0',
           bottom: '0',
-          background: 'rgba(0, 0, 0, 0.7)',
-          zIndex: '999',
-          backdropFilter: 'blur(3px)'
+          background: 'rgba(0, 0, 0, 0.5)',
+          zIndex: '999'
         });
         document.body.appendChild(backdrop);
 
