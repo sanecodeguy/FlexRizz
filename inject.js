@@ -43,9 +43,9 @@
   imageContainer.classList.add("extension-content");
   imageContainer.style.margin = "0px 0";
   imageContainer.style.textAlign = "center";
-  imageContainer.style.background = "#F2F3F8";
+  imageContainer.style.background = "var(--primary-bg)";
   imageContainer.style.padding = "0px";
-  imageContainer.style.border = "1px solid #F2F3F8";
+  imageContainer.style.border = "none";
   imageContainer.style.borderRadius = "0px";
 
   const supportImg = document.createElement("img");
@@ -176,8 +176,7 @@
     });
   }
 
-  // Enable dark mode by default
-  document.body.classList.add('dark-mode');
+  // Dark mode is now the only theme — no toggle needed
 
   // Main initialization
   loadUtils().then((utils) => {
@@ -256,8 +255,13 @@
       const button = row.querySelector('button.btn.btn-link[data-target]');
       if (button) {
         const dataTarget = button.getAttribute('data-target');
-        const assessmentType = dataTarget.split('-').pop();
-        return assessmentNameMapping[assessmentType] || assessmentType;
+        const targetParts = dataTarget.replace('#', '').split('-');
+        const suffix = targetParts.pop();
+        const numberMatch = suffix.match(/(\d+)$/);
+        const num = numberMatch ? numberMatch[1] : null;
+        const rawType = num ? suffix.replace(num, '') : suffix;
+        const displayName = assessmentNameMapping[rawType] || rawType;
+        return num ? `${displayName} #${num}` : displayName;
       }
       return row.querySelector('.assessmentName')?.textContent.trim() || 'Assessment';
     }
@@ -517,9 +521,9 @@
         const typeCounters = {};
         const grouped = {};
         data.assessments.forEach(a => {
-          const rawType = a.name.replace(/\s*\d+$/, '').trim();
-          if (!grouped[rawType]) grouped[rawType] = [];
-          grouped[rawType].push(a);
+          const typeName = a.name.replace(/\s*#\d+$/, '').trim();
+          if (!grouped[typeName]) grouped[typeName] = [];
+          grouped[typeName].push(a);
         });
 
         const typeOrder = ['Assignment', 'Quiz', 'Sessional I', 'Sessional II', 'Lab Work', 'Project', 'Final'];
@@ -539,10 +543,10 @@
           html += `<div class="fr-card-group-header">${type} <span class="fr-card-group-total">${totalObt.toFixed(1)} / ${totalMax.toFixed(1)}</span></div>`;
           html += `<div class="fr-cards-grid">`;
 
-          items.forEach((a, i) => {
+          items.forEach((a) => {
             html += `
-              <div class="fr-card" role="group" aria-label="${type} ${i + 1}">
-                <div class="fr-card-label">${type} #${i + 1}</div>
+              <div class="fr-card" role="group" aria-label="${a.name}">
+                <div class="fr-card-label">${a.name}</div>
                 <div class="fr-card-value">${a.yourScore.toFixed(1)} / ${a.totalMarks.toFixed(1)}</div>
                 <div class="fr-card-sub">Avg: ${a.classAverage.toFixed(1)} — Weight: ${a.weight.toFixed(1)}%</div>
               </div>
@@ -752,37 +756,6 @@
                 cursor: pointer;
                 min-width: 30px;
             `;
-
-      const darkModeContainer = document.createElement('div');
-      darkModeContainer.className = 'dark-mode-toggle-container';
-
-      const darkModeLabel = document.createElement('span');
-      darkModeLabel.className = 'dark-mode-toggle-label';
-      darkModeLabel.textContent = 'Dark Mode';
-
-      const darkModeToggle = document.createElement('label');
-      darkModeToggle.className = 'ios-toggle';
-
-      const darkModeCheckbox = document.createElement('input');
-      darkModeCheckbox.type = 'checkbox';
-      darkModeCheckbox.checked = document.body.classList.contains('dark-mode');
-
-      const darkModeSlider = document.createElement('span');
-      darkModeSlider.className = 'ios-toggle-slider';
-
-      darkModeToggle.appendChild(darkModeCheckbox);
-      darkModeToggle.appendChild(darkModeSlider);
-
-      darkModeContainer.appendChild(darkModeLabel);
-      darkModeContainer.appendChild(darkModeToggle);
-
-      darkModeCheckbox.addEventListener('change', () => {
-        if (darkModeCheckbox.checked) {
-          document.body.classList.add('dark-mode');
-        } else {
-          document.body.classList.remove('dark-mode');
-        }
-      });
 
       semesterContainer.appendChild(semesterLabel);
       semesterContainer.appendChild(decreaseBtn);
@@ -1111,7 +1084,6 @@
       increaseBtn.disabled = (currentSemester >= 8);
 
       container.appendChild(semesterContainer);
-      container.appendChild(darkModeContainer);
       container.appendChild(transcriptButton);
       container.appendChild(roundingButton);
       container.appendChild(editMarksButton);
