@@ -381,9 +381,16 @@ body {
     justify-content: space-between;
 }
 /* Portlet Head Styling — override portal blue */
+.m-portlet__head,
+.m-portlet__head *,
+.m-portlet__head *::before,
+.m-portlet__head *::after {
+    background-color: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+}
+
 .m-portlet__head {
     padding: var(--space-md) var(--space-lg);
-    background: var(--card-bg) !important;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
