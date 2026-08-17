@@ -250,43 +250,6 @@ body {
     margin-right: var(--space-xs);
 }
 
-.semester-selector {
-    display: flex;
-    gap: var(--space-xs);
-    margin-right: auto;
-    flex-wrap: wrap;
-}
-
-.semester-btn {
-    min-width: 3rem;
-    padding: 6px 10px;
-    background: var(--card-bg);
-    color: var(--text-secondary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-    transition: var(--transition-fast);
-    cursor: pointer;
-    font-weight: var(--font-weight-medium);
-    text-align: center;
-    font-size: var(--font-size-sm);
-}
-
-.semester-btn:hover:not(:disabled) {
-    background: var(--primary-light);
-    color: var(--text-primary);
-}
-
-.semester-btn.active {
-    background: var(--primary-color);
-    color: var(--text-light);
-    border-color: var(--primary-color);
-}
-
-.semester-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-}
-
 /* Editable Cells */
 .editable-cell {
     position: relative;
@@ -339,12 +302,6 @@ body {
         padding: 6px 10px;
         font-size: var(--font-size-xs);
     }
-    
-    .semester-btn {
-        min-width: 2.5rem;
-        padding: 4px 8px;
-        font-size: var(--font-size-xs);
-    }
 }
 
 @media (max-width: 768px) {
@@ -368,13 +325,6 @@ body {
         align-items: flex-start;
     }
     
-    .semester-selector {
-        margin-right: 0;
-        margin-bottom: var(--space-sm);
-        width: 100%;
-        justify-content: center;
-    }
-    
     .m-portlet__head-tools {
         width: 100%;
         justify-content: flex-end;
@@ -389,11 +339,6 @@ body {
     
     .m-portlet__head-title {
         margin-bottom: var(--space-sm);
-    }
-    
-    .semester-btn {
-        flex: 1;
-        min-width: auto;
     }
     
     .modern-btn {

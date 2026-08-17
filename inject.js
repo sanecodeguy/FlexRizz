@@ -733,57 +733,6 @@
                 align-items: center;
             `;
 
-      const semesterContainer = document.createElement('div');
-      semesterContainer.className = 'semester-selector';
-      semesterContainer.style.cssText = `
-                display: flex;
-                align-items: center;
-                gap: 8px;
-                margin-right: auto;
-                flex-wrap: wrap;
-            `;
-
-      const semesterLabel = document.createElement('span');
-      semesterLabel.style.cssText = `
-                color: var(--text-primary);
-                font-size: 0.9rem;
-            `;
-      semesterLabel.textContent = 'Semester:';
-
-      const decreaseBtn = document.createElement('button');
-      decreaseBtn.innerHTML = '&minus;';
-      decreaseBtn.className = 'modern-btn semester-btn';
-      decreaseBtn.style.cssText = `
-                padding: 5px 12px;
-                font-weight: bold;
-                cursor: pointer;
-                min-width: 30px;
-            `;
-
-      const semesterDisplay = document.createElement('span');
-      semesterDisplay.className = 'semester-display';
-      semesterDisplay.style.cssText = `
-                min-width: 30px;
-                text-align: center;
-                font-weight: bold;
-                color: var(--primary-color);
-            `;
-      semesterDisplay.textContent = currentSemester;
-
-      const increaseBtn = document.createElement('button');
-      increaseBtn.innerHTML = '+';
-      increaseBtn.className = 'modern-btn semester-btn';
-      increaseBtn.style.cssText = `
-                padding: 5px 12px;
-                font-weight: bold;
-                cursor: pointer;
-                min-width: 30px;
-            `;
-
-      semesterContainer.appendChild(semesterLabel);
-      semesterContainer.appendChild(decreaseBtn);
-      semesterContainer.appendChild(semesterDisplay);
-      semesterContainer.appendChild(increaseBtn);
 
       const transcriptButton = document.createElement('button');
       transcriptButton.id = 'show-transcript-button';
@@ -900,21 +849,6 @@
         }
       };
 
-      decreaseBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentSemester = Math.max(1, currentSemester - 1);
-        semesterDisplay.textContent = currentSemester;
-        decreaseBtn.disabled = (currentSemester <= 1);
-        increaseBtn.disabled = false;
-      });
-
-      increaseBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        currentSemester = currentSemester + 1;
-        semesterDisplay.textContent = currentSemester;
-        increaseBtn.disabled = (currentSemester >= 8);
-        decreaseBtn.disabled = false;
-      });
 
       transcriptButton.addEventListener('click', () => {
         const existingPanel = portlet.querySelector('.fr-panel');
@@ -1103,10 +1037,7 @@
         });
       });
 
-      decreaseBtn.disabled = (currentSemester <= 1);
-      increaseBtn.disabled = (currentSemester >= 8);
 
-      container.appendChild(semesterContainer);
       container.appendChild(transcriptButton);
       container.appendChild(roundingButton);
       container.appendChild(editMarksButton);
