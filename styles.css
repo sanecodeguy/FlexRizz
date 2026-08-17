@@ -449,7 +449,32 @@ body {
     background: var(--primary-bg) !important;
 }
 
-/* Portal's native tables keep their own text colors — do not override */
+/* Force dark theme on portal's native tables */
+.sum_table,
+.sum_table th,
+.sum_table td,
+.calculationrow,
+.calculationrow td {
+    background: var(--card-bg) !important;
+    color: var(--text-primary) !important;
+    border-color: var(--border-color) !important;
+}
+
+.sum_table th {
+    background: var(--primary-light) !important;
+    color: var(--text-secondary) !important;
+}
+
+.sum_table .sgpa-row,
+.sum_table .sgpa-row td {
+    background: var(--primary-light) !important;
+    color: var(--text-primary) !important;
+}
+
+.sum_table .totalColumn_ {
+    background: var(--primary-light) !important;
+    color: var(--text-primary) !important;
+}
 
 /* Title styling */
 .m-portlet__head-title {
