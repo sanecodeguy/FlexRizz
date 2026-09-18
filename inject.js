@@ -241,6 +241,12 @@
       "CS2006": { name: "OS", grading: "Absolute", credits: 3, semester: 4 },
       "CS3004": { name: "SDA", grading: "Relative", credits: 3, semester: 4 },
       "SS1015": { name: "Pakistan Studies", grading: "Absolute", credits: 3, semester: 4 },
+      "CL3001": { name: "CN Lab", grading: "Relative", credits: 1, semester: 5 },
+      "CS2009": { name: "DAA", grading: "Absolute", credits: 3, semester: 5 },
+      "CS3001": { name: "Computer Networks", grading: "Absolute", credits: 3, semester: 5 },
+      "CS3014": { name: "AHCI", grading: "Absolute", credits: 3, semester: 5 },
+      "EE3009": { name: "Computer Architecture", grading: "Absolute", credits: 3, semester: 5 },
+      "SS2012": { name: "TBW", grading: "Relative", credits: 3, semester: 5 },
     };
     const assessmentNameMapping = {
       'Assignment': 'Assignment',
